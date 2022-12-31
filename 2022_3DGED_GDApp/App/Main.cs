@@ -675,62 +675,77 @@ namespace GD.App
         private void InitializeBaseModel()
         {
             //game object
-            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Transparent);
+            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
             gameObject.GameObjectType = GameObjectType.Collectible;
 
             gameObject.Transform = new Transform(
-                new Vector3(2, 2, 2),
+                new Vector3(1, 1, 1),
                 new Vector3(0, 0, 0),
                 new Vector3(0, 4, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
             var meshBase = new CubeMesh(_graphics.GraphicsDevice);
 
             gameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 1, Color.Red),
+                new Material(texture, 1),
                 meshBase));
 
-            List<GameObject> baseCubeGameObjectsY = new List<GameObject>();
+            int size = 10;
 
-            baseCubeGameObjectsY.Add(gameObject);
+            //for(int x = 0; x < size; x++)
+            //{
+            //    for(int y = 0; y < size; y++)
+            //    {
+            //        for(int z = 0; z < size; z++)
+            //        {
+            //            gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(x, y, z));
+            //            cubeBaseNumber++;
+            //            sceneManager.ActiveScene.Add(gameObject);
+            //        }
+            //    }
+            //}
 
-            cubeBaseNumber++;
-            for (int i = 0; i < 6; i++)
-            {
-                gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(0, gameObject.Transform.Scale.Y, 0));
-                baseCubeGameObjectsY.Add(gameObject);
-                cubeBaseNumber++;
-            }
+            //List<GameObject> baseCubeGameObjectsY = new List<GameObject>();
 
-            List<List<GameObject>> baseCubeGameObjectsX = new List<List<GameObject>>();
+            //baseCubeGameObjectsY.Add(gameObject);
 
-            baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
+            //cubeBaseNumber++;
+            //for (int i = 0; i < 6; i++)
+            //{
+            //    gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(0, gameObject.Transform.Scale.Y, 0));
+            //    baseCubeGameObjectsY.Add(gameObject);
+            //    cubeBaseNumber++;
+            //}
 
-            for (int i = 0; i < 6; i++)
-            {
-                baseCubeGameObjectsY = CloneModelGameObjectList(baseCubeGameObjectsY, "base ", new Vector3(gameObject.Transform.Scale.X, 0, 0));
-                baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
-            }
+            //List<List<GameObject>> baseCubeGameObjectsX = new List<List<GameObject>>();
 
-            List<List<List<GameObject>>> baseCubeGameObjectsZ = new List<List<List<GameObject>>>();
+            //baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
 
-            for (int i = 0; i < 6; i++)
-            {
-                baseCubeGameObjectsX = CloneModelGameObjectListZ(baseCubeGameObjectsX, "base ", new Vector3(0, 0, gameObject.Transform.Scale.Z));
-                baseCubeGameObjectsZ.Add(baseCubeGameObjectsX);
-            }
+            //for (int i = 0; i < 6; i++)
+            //{
+            //    baseCubeGameObjectsY = CloneModelGameObjectList(baseCubeGameObjectsY, "base ", new Vector3(gameObject.Transform.Scale.X, 0, 0));
+            //    baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
+            //}
 
-            foreach(List<List<GameObject>>gameObjectsX in baseCubeGameObjectsZ)
-            {
-                foreach(List<GameObject>gameObjectsY in gameObjectsX)
-                {
-                    foreach (GameObject gameObjectBase in gameObjectsY)
-                    {
-                        sceneManager.ActiveScene.Add(gameObjectBase);
+            //List<List<List<GameObject>>> baseCubeGameObjectsZ = new List<List<List<GameObject>>>();
+
+            //for (int i = 0; i < 6; i++)
+            //{
+            //    baseCubeGameObjectsX = CloneModelGameObjectListZ(baseCubeGameObjectsX, "base ", new Vector3(0, 0, gameObject.Transform.Scale.Z));
+            //    baseCubeGameObjectsZ.Add(baseCubeGameObjectsX);
+            //}
+
+            //foreach(List<List<GameObject>>gameObjectsX in baseCubeGameObjectsZ)
+            //{
+            //    foreach(List<GameObject>gameObjectsY in gameObjectsX)
+            //    {
+            //        foreach (GameObject gameObjectBase in gameObjectsY)
+            //        {
+            //            sceneManager.ActiveScene.Add(gameObjectBase);
                         
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
 
         }
 
@@ -761,7 +776,7 @@ namespace GD.App
 
             return cloneGameObjectList;
         }
-        private GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 offset)
+        private GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
         {
             GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
             gameObjectClone.GameObjectType = gameObject.GameObjectType;
@@ -769,7 +784,7 @@ namespace GD.App
             gameObjectClone.Transform = new Transform(
                 gameObject.Transform.Scale,
                 gameObject.Transform.Rotation,
-                gameObject.Transform.Translation + offset
+                translation
                 );
 
             Renderer renderer = gameObject.GetComponent<Renderer>();
@@ -1027,9 +1042,9 @@ namespace GD.App
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
-                new Vector3(2, 2, 2),
+                new Vector3(1, 1, 1),
                 new Vector3(0, 0, 0),
-                new Vector3(0, 4, 0));
+                new Vector3(5, 5, 5));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
             var meshBase = new CubeMesh(_graphics.GraphicsDevice);
 
