@@ -1,4 +1,5 @@
 ﻿using GD.App;
+using GD.Engine.Events;
 using GD.Engine.Globals;
 using GD.Engine.Managers;
 using Microsoft.Xna.Framework;
@@ -23,10 +24,6 @@ namespace GD.Engine
         private long keyPressedTime = 0;
         private SceneManager<Scene> sceneManager;
 
-        private LinkedList<GameObject>snakePartsList = new LinkedList<GameObject>();
-        private GameObject head;
-        private GameObject tail;
-
         #endregion Fields
 
         #region Temps
@@ -38,15 +35,8 @@ namespace GD.Engine
         #endregion Temps
 
         #region Constructors
-        public SnakeController(GameObject head, SceneManager<Scene>sceneManager)
+        public SnakeController()
         {
-            this.head = head;
-            this.tail = head;
-            this.sceneManager = sceneManager;
-
-            snakePartsList.AddFirst(head);
-            //grow();
-            //grow();
         }
         #endregion Constructors
 
@@ -85,7 +75,8 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.S;
                 pressed = true;
-                move(new Vector3(head.Transform.Translation.X, head.Transform.Translation.Y - 1, head.Transform.Translation.Z)); ;
+
+               // move(new Vector3(this.gameObject.Translation.X, head.Transform.Translation.Y, head.Transform.Translation.Z - 1));
             }
 
             else if (Input.Keys.IsPressed(Keys.A))
@@ -98,7 +89,7 @@ namespace GD.Engine
                 pressed = true;
                 if (this.gameObject.Transform.Translation.X > 0)
                 {
-                    move(new Vector3(head.Transform.Translation.X - 1, head.Transform.Translation.Y, head.Transform.Translation.Z));
+                    //move(new Vector3(head.Transform.Translation.X - 1, head.Transform.Translation.Y, head.Transform.Translation.Z));
                 }
                 else
                 {
@@ -114,9 +105,13 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.D;
                 pressed = true;
-                if (this.gameObject.Transform.Translation.X < 9)
+                if (true)
                 {
-                    move(new Vector3(head.Transform.Translation.X + 1, head.Transform.Translation.Y, head.Transform.Translation.Z));
+                    object[] parameters = { new Vector3(0,0,-1)};
+
+                    System.Diagnostics.Debug.WriteLine(parameters);
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventActionType.OnMove, parameters));
                 }
                 else
                 {
@@ -149,68 +144,7 @@ namespace GD.Engine
 
             //transform.Translate(translation);
         }
-
-        private bool isTail(GameObject gameObject)
-        {
-            System.Diagnostics.Debug.WriteLine(gameObject.Name);
-            return tail.Transform.Translation.X == gameObject.Transform.Translation.X;
-        }
-        private void move(Vector3 newTranslation)
-        {
-
-            System.Diagnostics.Debug.WriteLine("1");
-
-            //tail = snakePartsList.Last();
-
-                snakePartsList.RemoveLast();
-            Predicate<GameObject> predicate = new Predicate<GameObject>(isTail);
-
-            Predicate<GameObject> collisionPredicate =
-            (collidableObject) =>
-            {
-                if (collidableObject != null)
-                    return collidableObject.GameObjectType
-                    == GameObjectType.Player;
-                return false;
-            };
-            System.Diagnostics.Debug.WriteLine("2");
-            //sceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, collisionPredicate);
-            System.Diagnostics.Debug.WriteLine("3");
-
-            head = CloneModelGameObject(head, "head", newTranslation);
-            System.Diagnostics.Debug.WriteLine("4");
-            snakePartsList.AddFirst(head);
-            sceneManager.ActiveScene.Add(head);
-            System.Diagnostics.Debug.WriteLine("5");
-        }
-
-        public GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
-        {
-            GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
-            gameObjectClone.GameObjectType = gameObject.GameObjectType;
-
-            gameObjectClone.Transform = new Transform(
-                gameObject.Transform.Scale,
-                gameObject.Transform.Rotation,
-                translation
-                );
-
-            Renderer renderer = gameObject.GetComponent<Renderer>();
-            Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, renderer.Mesh);
-            gameObjectClone.AddComponent(cloneRenderer);
-
-            return gameObjectClone;
-        }
         #endregion Actions - Update, Input
-
-        #region Snake Parts Methods
-        public void grow()
-        {
-            tail = CloneModelGameObject(tail, "tail", new Vector3(tail.Transform.Translation.X - 1, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
-            snakePartsList.AddLast(tail);
-            sceneManager.ActiveScene.Add(tail);
-        }
-        #endregion Snake Parts Methods
     }
 }
 

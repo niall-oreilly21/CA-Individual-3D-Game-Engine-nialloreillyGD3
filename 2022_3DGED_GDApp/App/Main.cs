@@ -1054,9 +1054,12 @@ namespace GD.App
                 new Material(texture, 1),
                 meshBase));
 
-            snakeGameObject.AddComponent(new SnakeController(snakeGameObject,sceneManager));
-
+            snakeGameObject.AddComponent(new SnakeController());
             sceneManager.ActiveScene.Add(snakeGameObject);
+            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, sceneManager);
+            //snakeGameObject.AddComponent(new SnakeController(snakeGameObject,sceneManager));
+
+            //
 
             //snakeGameObject = CloneModelGameObject(snakeGameObject, "snake  4", new Vector3(1, 2, 1));
            // sceneManager.ActiveScene.Add(snakeGameObject);

@@ -131,6 +131,7 @@
         Video,
 
         //add more here...
+        Snake
     }
 
     /// <summary>
@@ -179,6 +180,7 @@
         OnMouseClick,
 
         //add more here...
+        OnMove
     }
 
     /// <summary>
