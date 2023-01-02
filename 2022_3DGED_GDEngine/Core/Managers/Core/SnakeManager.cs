@@ -58,6 +58,10 @@ namespace GD.Engine
                     move((Vector3)eventData.Parameters[0]);
                     break;
 
+                case EventActionType.Grow: //TODO
+                    grow();
+                    break;
+
                 default:
                     break;
                     //add more cases for each method that we want to support with events
@@ -80,8 +84,6 @@ namespace GD.Engine
                 newTranslate = snakePartsList[i - 1].Transform.Translation - snakePartsList[i].Transform.Translation;
 
                 snakePartsList[i].Transform.Translate(newTranslate);
-
-                System.Diagnostics.Debug.WriteLine(snakePartsList[i].Transform.Translation);
             }
             head.Transform.Translate(newTranslation);
             //tail = snakePartsList.Last();
@@ -140,6 +142,7 @@ namespace GD.Engine
             #region Snake Parts Methods
             public void grow()
             {
+            System.Diagnostics.Debug.WriteLine("HELLO");
                 tail = CloneModelGameObject(tail, "tail", new Vector3(tail.Transform.Translation.X - 1, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
                 snakePartsList.Add(tail);
                 sceneManager.ActiveScene.Add(tail);

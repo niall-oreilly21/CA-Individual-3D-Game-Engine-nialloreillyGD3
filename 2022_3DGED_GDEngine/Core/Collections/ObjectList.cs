@@ -34,8 +34,6 @@ namespace GD.Engine
 
         public GameObject Find(Predicate<GameObject> predicate)
         {GameObject gameObject = gameObjects.Find(predicate);
-
-            System.Diagnostics.Debug.WriteLine(gameObject.Name);
             return gameObjects.Find(predicate);
         }
 

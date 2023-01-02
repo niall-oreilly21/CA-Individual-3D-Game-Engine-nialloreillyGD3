@@ -1,44 +1,31 @@
 ﻿using GD.App;
+using GD.Engine;
 using GD.Engine.Events;
 using GD.Engine.Globals;
-using GD.Engine.Managers;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+using System.Text;
 
 namespace GD.Engine
 {
-    /// <summary>
-    /// Adds simple movement controller for Snake Head using keyboard
-    /// </summary>
-    public class SnakeController : Component
+    class CollidableSnakeController : SnakeController
     {
-        #region Fields
+        private CharacterCollider snakeHeadCollider;
+        private Character snakeHead;
         private bool pressed = false;
         private Keys pressedKey;
         private long keyPressedTime = 0;
-        private SceneManager<Scene> sceneManager;
 
-        #endregion Fields
 
-        #region Temps
-
-        protected Vector3 translation = Vector3.Zero;
-        protected Vector3 rotation = Vector3.Zero;
- 
-
-        #endregion Temps
-
-        #region Constructors
-        public SnakeController()
+        public CollidableSnakeController(CharacterCollider snakeHeadCollider)
         {
+            this.snakeHeadCollider = snakeHeadCollider;
+
+            snakeHead = snakeHeadCollider.Body as Character;
         }
-        #endregion Constructors
+
 
         #region Actions - Update, Input
 
@@ -53,7 +40,6 @@ namespace GD.Engine
             {
                 pressed = false;
             }
-            
 
             translation = Vector3.Zero;
 
@@ -67,11 +53,12 @@ namespace GD.Engine
                 pressed = true;
                 if (transform.Translation.Z > AppData.SNAKE_GAME_MAX_SIZE)
                 {
-                    transform.SetTranslation(transform.Translation.X, transform.Translation.Y, 0);
+
+                    snakeHead.transform.Position.Z = 0;
                 }
                 else
                 {
-                    translation.Z++;
+                    snakeHead.transform.Position.Z++;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                     EventActionType.OnMove, parameters));
@@ -87,13 +74,13 @@ namespace GD.Engine
                 pressedKey = Keys.S;
                 pressed = true;
 
-                if (transform.Translation.Z < 0)
+                if (snakeHead.transform.Position.Z < 0)
                 {
-                    transform.SetTranslation(transform.Translation.X, transform.Translation.Y, AppData.SNAKE_GAME_MAX_SIZE);
+                    snakeHead.transform.Position.Z = AppData.SNAKE_GAME_MAX_SIZE;
                 }
                 else
                 {
-                    translation.Z--;
+                    snakeHead.transform.Position.Z--;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                     EventActionType.OnMove, parameters));
@@ -108,12 +95,13 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.A;
                 pressed = true;
-                if (transform.Translation.X < 0)
+                if (snakeHead.transform.Position.X < 0)
                 {
-                    transform.SetTranslation(AppData.SNAKE_GAME_MAX_SIZE, transform.Translation.Y, transform.Translation.Z);
+                    snakeHead.transform.Position.X = AppData.SNAKE_GAME_MAX_SIZE;
                 }
                 else
                 {
+                    snakeHead.transform.Position.X--;
                     translation.X--;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
@@ -130,16 +118,17 @@ namespace GD.Engine
                 pressedKey = Keys.D;
                 pressed = true;
 
-                if (transform.Translation.X > AppData.SNAKE_GAME_MAX_SIZE)
+                if (snakeHead.transform.Position.X > AppData.SNAKE_GAME_MAX_SIZE)
                 {
-                    transform.SetTranslation(0, transform.Translation.Y, transform.Translation.Z);
+                    snakeHead.transform.Position.X = 0;
                 }
                 else
                 {
-                    translation.X++;
+
+                    snakeHead.transform.Position.X++;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                    EventActionType.OnMove, parameters));                 
+                    EventActionType.OnMove, parameters));
                 }
 
             }
@@ -152,13 +141,13 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.Left;
                 pressed = true;
-                if (transform.Translation.Y < 0)
+                if (snakeHead.transform.Position.Y < 0)
                 {
-                    transform.SetTranslation(transform.Translation.X, AppData.SNAKE_GAME_MAX_SIZE, transform.Translation.Z);
+                    snakeHead.transform.Position.Y = AppData.SNAKE_GAME_MAX_SIZE;
                 }
                 else
                 {
-                    translation.Y--;
+                    snakeHead.transform.Position.Y--;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                     EventActionType.OnMove, parameters));
@@ -173,13 +162,13 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.Right;
                 pressed = true;
-                if (transform.Translation.Y > AppData.SNAKE_GAME_MAX_SIZE)
+                if (snakeHead.transform.Position.Y > AppData.SNAKE_GAME_MAX_SIZE)
                 {
-                    transform.SetTranslation(transform.Translation.X, 0, transform.Translation.Z);
+                    snakeHead.transform.Position.Y = 0;
                 }
                 else
                 {
-                    translation.Y++;
+                    snakeHead.transform.Position.Y++;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                     EventActionType.OnMove, parameters));
@@ -189,4 +178,3 @@ namespace GD.Engine
         #endregion Actions - Update, Input
     }
 }
-

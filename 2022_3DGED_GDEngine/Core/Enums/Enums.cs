@@ -180,7 +180,9 @@
         OnMouseClick,
 
         //add more here...
-        OnMove
+        OnMove,
+        Grow,
+        RemoveFood
     }
 
     /// <summary>
