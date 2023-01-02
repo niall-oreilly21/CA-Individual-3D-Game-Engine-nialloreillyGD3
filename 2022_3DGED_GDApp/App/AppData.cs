@@ -50,7 +50,7 @@ namespace GD.App
 
         #region Front Camera
         public static readonly string FRONT_CAMERA_NAME = "front camera";
-        public static readonly Vector3 DEFAULT_FRONT_CAMERA_POSITION = new Vector3(30, 12, 30);
+        public static readonly Vector3 DEFAULT_FRONT_CAMERA_POSITION = new Vector3(30, 12, 20);
         #endregion Front Camera
 
         #region Camera - First Person
@@ -125,6 +125,10 @@ namespace GD.App
         public static readonly double MAX_GAME_TIME_IN_MSECS = 2500; //180000
         public static readonly Vector3 GRAVITY = new Vector3(0, -9.81f, 0);
 
+        #endregion
+
+        #region Snake
+        public static readonly int SNAKE_GAME_MAX_SIZE = 10;
         #endregion
     }
 }

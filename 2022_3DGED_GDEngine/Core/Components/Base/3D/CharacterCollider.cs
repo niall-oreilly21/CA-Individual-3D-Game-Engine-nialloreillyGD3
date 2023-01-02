@@ -152,47 +152,46 @@ namespace GD.Engine
         {
             ClearForces();
 
-            if (isJumping)
-            {
-                foreach (CollisionInfo info in CollisionSkin.Collisions)
-                {
-                    Vector3 N = info.DirToBody0;
-                    if (this == info.SkinInfo.Skin1.Owner)
-                    {
-                        Vector3.Negate(ref N, out N);
-                    }
+            //if (isJumping)
+            //{
+            //    foreach (CollisionInfo info in CollisionSkin.Collisions)
+            //    {
+            //        Vector3 N = info.DirToBody0;
+            //        if (this == info.SkinInfo.Skin1.Owner)
+            //        {
+            //            Vector3.Negate(ref N, out N);
+            //        }
 
-                    if (Vector3.Dot(N, Orientation.Up) > 0.7f)
-                    {
-                        Vector3 vel = Velocity;
-                        vel.Y = jumpHeight;
-                        Velocity = vel;
-                        break;
-                    }
-                }
-            }
+            //        if (Vector3.Dot(N, Orientation.Up) > 0.7f)
+            //        {
+            //            Vector3 vel = Velocity;
+            //            vel.Y = jumpHeight;
+            //            Velocity = vel;
+            //            break;
+            //        }
+            //    }
+            //}
 
-            Vector3 deltaVel = DesiredVelocity - Velocity;
+            //Vector3 deltaVel = DesiredVelocity - Velocity;
 
-            bool running = true;
+            //bool running = true;
 
-            if (DesiredVelocity.LengthSquared() < JiggleMath.Epsilon)
-                running = false;
-            else
-                deltaVel.Normalize();
+            //if (DesiredVelocity.LengthSquared() < JiggleMath.Epsilon)
+            //    running = false;
+            //else
+            //    deltaVel.Normalize();
 
-            deltaVel.Y = -2.0f;
+            //deltaVel.Y = -2.0f;
 
-            // start fast then slow down
-            if (running)
-                deltaVel *= accelerationRate; //acceleration multiplier
-            else
-                deltaVel *= decelerationRate;  //deceleration multiplier
+            //// start fast then slow down
+            //if (running)
+            //    deltaVel *= accelerationRate; //acceleration multiplier
+            //else
+            //    deltaVel *= decelerationRate;  //deceleration multiplier
 
-            float forceFactor = 500.0f;
-            AddBodyForce(deltaVel * Mass * dt * forceFactor);
-            isJumping = false;
-            AddGravityToExternalForce();
+            //float forceFactor = 500.0f;
+            //AddBodyForce(new Vector3(transform.Position.X + 1, 5, 5));
+            //AddGravityToExternalForce();
         }
     }
 

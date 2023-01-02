@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Application = GD.Engine.Globals.Application;
 using Cue = GD.Engine.Managers.Cue;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
@@ -111,6 +112,16 @@ namespace GD.App
 
                 case EventActionType.OnLose:
                     System.Diagnostics.Debug.WriteLine(eventData.Parameters[2] as string);
+                    break;
+
+                case EventActionType.RemoveFood:
+                    if(sceneManager.ActiveScene.Remove(ObjectType.Static, RenderType.Opaque, (x) => x.Name == "food"))
+                    {
+                        EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+EventActionType.Grow));
+                    }
+
+        
                     break;
 
                 default:
@@ -643,6 +654,7 @@ namespace GD.App
             InitializeCollidableGround(worldScale);
             //InitializeCollidableBox();
             InitializeBaseModel();
+            InitilizeFood();
             //InitializeSnake();
             //InitializeCollidableHighDetailMonkey();
         }
@@ -675,62 +687,77 @@ namespace GD.App
         private void InitializeBaseModel()
         {
             //game object
-            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Transparent);
+            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
             gameObject.GameObjectType = GameObjectType.Collectible;
 
             gameObject.Transform = new Transform(
-                new Vector3(2, 2, 2),
+                new Vector3(1, 1, 1),
                 new Vector3(0, 0, 0),
                 new Vector3(0, 4, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
             var meshBase = new CubeMesh(_graphics.GraphicsDevice);
 
             gameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 1, Color.Red),
+                new Material(texture, 1),
                 meshBase));
 
-            List<GameObject> baseCubeGameObjectsY = new List<GameObject>();
+            int size = 10;
 
-            baseCubeGameObjectsY.Add(gameObject);
+            //for(int x = 0; x < size; x++)
+            //{
+            //    for(int y = 0; y < size; y++)
+            //    {
+            //        for(int z = 0; z < size; z++)
+            //        {
+            //            gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(x, y, z));
+            //            cubeBaseNumber++;
+            //            sceneManager.ActiveScene.Add(gameObject);
+            //        }
+            //    }
+            //}
 
-            cubeBaseNumber++;
-            for (int i = 0; i < 6; i++)
-            {
-                gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(0, gameObject.Transform.Scale.Y, 0));
-                baseCubeGameObjectsY.Add(gameObject);
-                cubeBaseNumber++;
-            }
+            //List<GameObject> baseCubeGameObjectsY = new List<GameObject>();
 
-            List<List<GameObject>> baseCubeGameObjectsX = new List<List<GameObject>>();
+            //baseCubeGameObjectsY.Add(gameObject);
 
-            baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
+            //cubeBaseNumber++;
+            //for (int i = 0; i < 6; i++)
+            //{
+            //    gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(0, gameObject.Transform.Scale.Y, 0));
+            //    baseCubeGameObjectsY.Add(gameObject);
+            //    cubeBaseNumber++;
+            //}
 
-            for (int i = 0; i < 6; i++)
-            {
-                baseCubeGameObjectsY = CloneModelGameObjectList(baseCubeGameObjectsY, "base ", new Vector3(gameObject.Transform.Scale.X, 0, 0));
-                baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
-            }
+            //List<List<GameObject>> baseCubeGameObjectsX = new List<List<GameObject>>();
 
-            List<List<List<GameObject>>> baseCubeGameObjectsZ = new List<List<List<GameObject>>>();
+            //baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
 
-            for (int i = 0; i < 6; i++)
-            {
-                baseCubeGameObjectsX = CloneModelGameObjectListZ(baseCubeGameObjectsX, "base ", new Vector3(0, 0, gameObject.Transform.Scale.Z));
-                baseCubeGameObjectsZ.Add(baseCubeGameObjectsX);
-            }
+            //for (int i = 0; i < 6; i++)
+            //{
+            //    baseCubeGameObjectsY = CloneModelGameObjectList(baseCubeGameObjectsY, "base ", new Vector3(gameObject.Transform.Scale.X, 0, 0));
+            //    baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
+            //}
 
-            foreach(List<List<GameObject>>gameObjectsX in baseCubeGameObjectsZ)
-            {
-                foreach(List<GameObject>gameObjectsY in gameObjectsX)
-                {
-                    foreach (GameObject gameObjectBase in gameObjectsY)
-                    {
-                        sceneManager.ActiveScene.Add(gameObjectBase);
+            //List<List<List<GameObject>>> baseCubeGameObjectsZ = new List<List<List<GameObject>>>();
+
+            //for (int i = 0; i < 6; i++)
+            //{
+            //    baseCubeGameObjectsX = CloneModelGameObjectListZ(baseCubeGameObjectsX, "base ", new Vector3(0, 0, gameObject.Transform.Scale.Z));
+            //    baseCubeGameObjectsZ.Add(baseCubeGameObjectsX);
+            //}
+
+            //foreach(List<List<GameObject>>gameObjectsX in baseCubeGameObjectsZ)
+            //{
+            //    foreach(List<GameObject>gameObjectsY in gameObjectsX)
+            //    {
+            //        foreach (GameObject gameObjectBase in gameObjectsY)
+            //        {
+            //            sceneManager.ActiveScene.Add(gameObjectBase);
                         
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
 
         }
 
@@ -761,7 +788,7 @@ namespace GD.App
 
             return cloneGameObjectList;
         }
-        private GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 offset)
+        public GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
         {
             GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
             gameObjectClone.GameObjectType = gameObject.GameObjectType;
@@ -769,7 +796,7 @@ namespace GD.App
             gameObjectClone.Transform = new Transform(
                 gameObject.Transform.Scale,
                 gameObject.Transform.Rotation,
-                gameObject.Transform.Translation + offset
+                translation
                 );
 
             Renderer renderer = gameObject.GetComponent<Renderer>();
@@ -901,7 +928,7 @@ namespace GD.App
             gameObject.Transform = new Transform(
                 new Vector3(1, 1, 1),
                 new Vector3(0, 0, 0),
-                new Vector3(0, 1, 0));
+                new Vector3(4, 4, 4));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
             var model = Content.Load<Model>("Assets/Models/monkey");
             var mesh = new Engine.ModelMesh(_graphics.GraphicsDevice, model);
@@ -1023,28 +1050,76 @@ namespace GD.App
         private void InitializeSnakeHead()
         {
             //game object
-            var snakeGameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
+            var snakeGameObject = new GameObject("snake", ObjectType.Dynamic, RenderType.Opaque);
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
-                new Vector3(2, 2, 2),
+                new Vector3(1, 1, 1),
                 new Vector3(0, 0, 0),
-                new Vector3(0, 4, 0));
+                new Vector3(5, 5, 5));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
             var meshBase = new CubeMesh(_graphics.GraphicsDevice);
 
             snakeGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
+                new Material(texture, 1),
+                meshBase));
+
+
+
+            var collider = new CharacterCollider(snakeGameObject, true);
+
+            snakeGameObject.AddComponent(collider);
+            collider.AddPrimitive(
+                new Box(
+                    snakeGameObject.Transform.Translation,
+                    snakeGameObject.Transform.Rotation,
+                    snakeGameObject.Transform.Scale
+                    ),
+                new MaterialProperties(0.8f, 0.8f, 0.7f)
+                );
+
+            collider.Enable(snakeGameObject, false, 1);
+
+            snakeGameObject.AddComponent(new CollidableSnakeController(collider));
+
+            sceneManager.ActiveScene.Add(snakeGameObject);
+            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, sceneManager);
+        }
+
+        private void InitilizeFood()
+        {
+
+            //game object
+            var foodGameObject = new GameObject("food", ObjectType.Static, RenderType.Opaque);
+            foodGameObject.GameObjectType = GameObjectType.Consumable;
+            Random random = new Random();
+            foodGameObject.Transform = new Transform(
+                new Vector3(1, 1, 1),
+                new Vector3(0, 0, 0),
+                new Vector3(8,5,5));
+            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+            var meshBase = new CubeMesh(_graphics.GraphicsDevice);
+
+            foodGameObject.AddComponent(new Renderer(
+                new GDBasicEffect(unlitEffect),
                 new Material(texture, 1, Color.Green),
                 meshBase));
 
-            snakeGameObject.AddComponent(new PlayerController(AppData.FIRST_PERSON_MOVE_SPEED, AppData.FIRST_PERSON_STRAFE_SPEED,
-                AppData.PLAYER_ROTATE_SPEED_VECTOR2, true));
+            Collider collider = new FoodCollider(foodGameObject, true,true);
+            collider.AddPrimitive(
+                new Box(
+                    foodGameObject.Transform.Translation,
+                    foodGameObject.Transform.Rotation,
+                    foodGameObject.Transform.Scale
+                    ),
+                new MaterialProperties(0.8f, 0.8f, 0.7f)
+                );
 
-            sceneManager.ActiveScene.Add(snakeGameObject);
+            collider.Enable(foodGameObject, true, 1);
+            foodGameObject.AddComponent(collider);
 
-            //set this as active player
-            Application.Player = snakeGameObject;
+            sceneManager.ActiveScene.Add(foodGameObject);
         }
 
         private void InitializeSkyBox(float worldScale)

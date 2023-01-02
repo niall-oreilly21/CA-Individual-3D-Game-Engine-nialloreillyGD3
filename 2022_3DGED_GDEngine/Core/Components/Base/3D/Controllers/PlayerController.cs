@@ -53,35 +53,10 @@ namespace GD.Engine
         {
             translation = Vector3.Zero;
 
-            if (Input.Keys.IsPressed(Keys.W))
-            {
+            if (Input.Keys.IsPressed(Keys.U))
                 translation += transform.World.Forward * moveSpeed * gameTime.ElapsedGameTime.Milliseconds;
-            }    
-                
-            else if (Input.Keys.IsPressed(Keys.S))
-            {
+            else if (Input.Keys.IsPressed(Keys.J))
                 translation -= transform.World.Forward * moveSpeed * gameTime.ElapsedGameTime.Milliseconds;
-            }
-
-            else if (Input.Keys.IsPressed(Keys.A))
-            {
-                translation -= transform.World.Right * moveSpeed * gameTime.ElapsedGameTime.Milliseconds;
-            }
-
-            else if (Input.Keys.IsPressed(Keys.D))
-            {
-                translation += transform.World.Right * moveSpeed * gameTime.ElapsedGameTime.Milliseconds;
-            }
-
-            else if (Input.Keys.IsPressed(Keys.Q))
-            {
-                translation += transform.World.Down * moveSpeed * gameTime.ElapsedGameTime.Milliseconds;
-            }
-
-            else if (Input.Keys.IsPressed(Keys.R))
-            {
-                translation -= transform.World.Down * moveSpeed * gameTime.ElapsedGameTime.Milliseconds;
-            }
 
             //if (Input.Keys.IsPressed(Keys.H))
             //   // transform.Rotate();

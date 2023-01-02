@@ -1544,6 +1544,8 @@ namespace JigLibX.Physics
             if (immovable) return;
             Vector3.TransformNormal(ref force, ref transform.Orientation, out force);
             Vector3.Add(ref this.force, ref force, out this.force);
+
+            transform.Position = force;
             this.velChanged = true;
         }
 

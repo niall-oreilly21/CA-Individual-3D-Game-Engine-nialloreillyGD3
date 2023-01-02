@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GD.Engine.Collections
 {
@@ -62,7 +63,7 @@ namespace GD.Engine.Collections
             if (objectType == ObjectType.Static)
                 found = staticList.Find(predicate);
             else
-                found = dynamicList.Find(predicate); ;
+                found = dynamicList.Find(predicate); 
 
             return found;
         }
@@ -134,7 +135,7 @@ namespace GD.Engine.Collections
             foreach (GameObject gameObject in staticList.GameObjects)
                 gameObject.Update(gameTime);
 
-            foreach (GameObject gameObject in dynamicList.GameObjects)
+            foreach (GameObject gameObject in dynamicList.GameObjects.ToList())
                 gameObject.Update(gameTime);
         }
 
