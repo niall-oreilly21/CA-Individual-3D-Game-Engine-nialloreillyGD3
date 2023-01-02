@@ -126,5 +126,9 @@ namespace GD.App
         public static readonly Vector3 GRAVITY = new Vector3(0, -9.81f, 0);
 
         #endregion
+
+        #region Snake
+        public static readonly int SNAKE_GAME_MAX_SIZE = 10;
+        #endregion
     }
 }

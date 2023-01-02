@@ -56,6 +56,7 @@ namespace GD.Engine
 
 
             translation = Vector3.Zero;
+
             if (Input.Keys.IsPressed(Keys.W))
             {
                 if (pressed)
@@ -64,7 +65,17 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.W;
                 pressed = true;
-                translation.Z = 1;
+                if (transform.Translation.Z > AppData.SNAKE_GAME_MAX_SIZE)
+                {
+                    transform.SetTranslation(transform.Translation.X, transform.Translation.Y, 0);
+                }
+                else
+                {
+                    translation.Z++;
+                    object[] parameters = { translation };
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventActionType.OnMove, parameters));
+                }
             }
 
             else if (Input.Keys.IsPressed(Keys.S))
@@ -76,7 +87,17 @@ namespace GD.Engine
                 pressedKey = Keys.S;
                 pressed = true;
 
-               // move(new Vector3(this.gameObject.Translation.X, head.Transform.Translation.Y, head.Transform.Translation.Z - 1));
+                if (transform.Translation.Z < 0)
+                {
+                    transform.SetTranslation(transform.Translation.X, transform.Translation.Y, AppData.SNAKE_GAME_MAX_SIZE);
+                }
+                else
+                {
+                    translation.Z--;
+                    object[] parameters = { translation };
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventActionType.OnMove, parameters));
+                }
             }
 
             else if (Input.Keys.IsPressed(Keys.A))
@@ -87,13 +108,16 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.A;
                 pressed = true;
-                if (this.gameObject.Transform.Translation.X > 0)
+                if (transform.Translation.X < 0)
                 {
-                    //move(new Vector3(head.Transform.Translation.X - 1, head.Transform.Translation.Y, head.Transform.Translation.Z));
+                    transform.SetTranslation(AppData.SNAKE_GAME_MAX_SIZE, transform.Translation.Y, transform.Translation.Z);
                 }
                 else
                 {
-                    translation.X = 9;
+                    translation.X--;
+                    object[] parameters = { translation };
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventActionType.OnMove, parameters));
                 }
             }
             else if (Input.Keys.IsPressed(Keys.D))
@@ -105,44 +129,62 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.D;
                 pressed = true;
-                if (true)
-                {
-                    object[] parameters = { new Vector3(0,0,-1)};
 
-                    System.Diagnostics.Debug.WriteLine(parameters);
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                    EventActionType.OnMove, parameters));
+                if (transform.Translation.X > AppData.SNAKE_GAME_MAX_SIZE)
+                {
+                    transform.SetTranslation(0, transform.Translation.Y, transform.Translation.Z);
                 }
                 else
                 {
-                    translation.X = -9;
+                    translation.X++;
+                    object[] parameters = { translation };
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventActionType.OnMove, parameters));                 
                 }
 
             }
 
-            else if (Input.Keys.IsPressed(Keys.Q))
+            else if (Input.Keys.IsPressed(Keys.Left))
             {
                 if (pressed)
                 {
                     return;
                 }
-                pressedKey = Keys.Q;
+                pressedKey = Keys.Left;
                 pressed = true;
-                translation.Y = 1;
+                if (transform.Translation.Y < 0)
+                {
+                    transform.SetTranslation(transform.Translation.X, AppData.SNAKE_GAME_MAX_SIZE, transform.Translation.Z);
+                }
+                else
+                {
+                    translation.Y--;
+                    object[] parameters = { translation };
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventActionType.OnMove, parameters));
+                }
             }
 
-            else if (Input.Keys.IsPressed(Keys.R))
+            else if (Input.Keys.IsPressed(Keys.Right))
             {
                 if (pressed)
                 {
                     return;
                 }
-                pressedKey = Keys.R;
+                pressedKey = Keys.Right;
                 pressed = true;
-                translation.Y = -1;
+                if (transform.Translation.Y > AppData.SNAKE_GAME_MAX_SIZE)
+                {
+                    transform.SetTranslation(transform.Translation.X, 0, transform.Translation.Z);
+                }
+                else
+                {
+                    translation.Y++;
+                    object[] parameters = { translation };
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventActionType.OnMove, parameters));
+                }
             }
-
-            //transform.Translate(translation);
         }
         #endregion Actions - Update, Input
     }
