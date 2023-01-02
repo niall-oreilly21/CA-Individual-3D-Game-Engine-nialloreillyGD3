@@ -33,7 +33,9 @@ namespace GD.Engine
         }
 
         public GameObject Find(Predicate<GameObject> predicate)
-        {
+        {GameObject gameObject = gameObjects.Find(predicate);
+
+            System.Diagnostics.Debug.WriteLine(gameObject.Name);
             return gameObjects.Find(predicate);
         }
 
@@ -47,6 +49,7 @@ namespace GD.Engine
             List<GameObject> removeList = gameObjects.FindAll(predicate);
             foreach (GameObject gameObject in removeList)
             {
+                System.Diagnostics.Debug.WriteLine(gameObject.Name);
                 Remove(gameObject);
             }
 

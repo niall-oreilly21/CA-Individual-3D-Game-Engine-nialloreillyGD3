@@ -3,6 +3,7 @@ using GD.Engine.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace GD.Engine.Globals
 {
@@ -72,6 +73,7 @@ namespace GD.Engine.Globals
         /// Stores and updates all Menu elements
         /// </summary>
         public static SceneManager<Scene2D> MenuSceneManager { get; internal set; }
+        public static List<GameObject> SnakeParts { get; internal set; }
 
         #endregion Properties
     }

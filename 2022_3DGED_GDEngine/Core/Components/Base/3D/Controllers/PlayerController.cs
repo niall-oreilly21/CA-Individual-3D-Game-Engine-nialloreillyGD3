@@ -15,10 +15,7 @@ namespace GD.Engine
         protected float strafeSpeed = 0.025f;
         protected Vector2 rotationSpeed;
         private bool isGrounded;
-        private bool pressed = false;
-        private Keys pressedKey;
-        private long keyPressedTime = 0;
-        
+
         #endregion Fields
 
         #region Temps
@@ -54,105 +51,22 @@ namespace GD.Engine
 
         public virtual void HandleKeyboardInput(GameTime gameTime)
         {
-            if(Input.Keys.WasJustPressed(pressedKey))
-            {
-                System.Diagnostics.Debug.WriteLine("what the hell");
-                pressed = false;
-            }
-
-
             translation = Vector3.Zero;
-            if (Input.Keys.IsPressed(Keys.W))
-            {
-                if (pressed)
-                {
-                    return;
-                }
-                pressedKey = Keys.W;
-                pressed = true;
-                translation.Z = 1;
-            }    
-                
-            else if (Input.Keys.IsPressed(Keys.S))
-            {
-                if (pressed)
-                {
-                    return;
-                }
-                pressedKey = Keys.S;
-                pressed = true;
-                translation.Z = -1;
-            }
 
-            else if (Input.Keys.IsPressed(Keys.A))
-            {
-                if (pressed)
-                {
-                    return;
-                }
-                pressedKey = Keys.A;
-                pressed = true;
-                if (this.gameObject.Transform.Translation.X > 0)
-                {
-                    translation.X = -1;
-                }
-                else
-                {
-                    translation.X = 9;
-                }
-            }
-            else if (Input.Keys.IsPressed(Keys.D))
-            {
-                
-                if (pressed)
-                {
-                    return;
-                }
-                pressedKey = Keys.D;
-                pressed = true;
-                if(this.gameObject.Transform.Translation.X < 9)
-                    {
-                    translation.X = 1;
-                }
-                else
-                {
-                    translation.X = -9;
-                }
-
-            }
-
-            else if (Input.Keys.IsPressed(Keys.Q))
-            {
-                if (pressed)
-                {
-                    return;
-                }
-                pressedKey = Keys.Q;
-                pressed = true;
-                translation.Y = 1;
-            }
-
-            else if (Input.Keys.IsPressed(Keys.R))
-            {
-                if (pressed)
-                {
-                    return;
-                }
-                pressedKey = Keys.R;
-                pressed = true;
-                translation.Y = -1;
-            }
+            if (Input.Keys.IsPressed(Keys.U))
+                translation += transform.World.Forward * moveSpeed * gameTime.ElapsedGameTime.Milliseconds;
+            else if (Input.Keys.IsPressed(Keys.J))
+                translation -= transform.World.Forward * moveSpeed * gameTime.ElapsedGameTime.Milliseconds;
 
             //if (Input.Keys.IsPressed(Keys.H))
             //   // transform.Rotate();
             //else if (Input.Keys.IsPressed(Keys.K))
             //   // transform.Rotate();
 
-            //if (isGrounded)
-              //  translation.Y = 0;
+            if (isGrounded)
+                translation.Y = 0;
 
             //actually apply the movement
-
             transform.Translate(translation);
         }
 

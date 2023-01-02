@@ -50,7 +50,7 @@ namespace GD.App
 
         #region Front Camera
         public static readonly string FRONT_CAMERA_NAME = "front camera";
-        public static readonly Vector3 DEFAULT_FRONT_CAMERA_POSITION = new Vector3(30, 12, 30);
+        public static readonly Vector3 DEFAULT_FRONT_CAMERA_POSITION = new Vector3(30, 12, 20);
         #endregion Front Camera
 
         #region Camera - First Person

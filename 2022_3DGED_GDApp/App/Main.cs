@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Application = GD.Engine.Globals.Application;
 using Cue = GD.Engine.Managers.Cue;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
@@ -776,7 +777,7 @@ namespace GD.App
 
             return cloneGameObjectList;
         }
-        private GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
+        public GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
         {
             GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
             gameObjectClone.GameObjectType = gameObject.GameObjectType;
@@ -1038,7 +1039,7 @@ namespace GD.App
         private void InitializeSnakeHead()
         {
             //game object
-            var snakeGameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
+            var snakeGameObject = new GameObject("snake", ObjectType.Dynamic, RenderType.Opaque);
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
@@ -1050,16 +1051,50 @@ namespace GD.App
 
             snakeGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 1, Color.Green),
+                new Material(texture, 1),
                 meshBase));
 
-            snakeGameObject.AddComponent(new PlayerController(AppData.FIRST_PERSON_MOVE_SPEED, AppData.FIRST_PERSON_STRAFE_SPEED,
-                AppData.PLAYER_ROTATE_SPEED_VECTOR2, true));
+            snakeGameObject.AddComponent(new SnakeController(snakeGameObject,sceneManager));
 
             sceneManager.ActiveScene.Add(snakeGameObject);
 
+            //snakeGameObject = CloneModelGameObject(snakeGameObject, "snake  4", new Vector3(1, 2, 1));
+           // sceneManager.ActiveScene.Add(snakeGameObject);
+
+
+            //snakeGameObject = new GameObject("snake 2", ObjectType.Dynamic, RenderType.Opaque);
+            //snakeGameObject.GameObjectType = GameObjectType.Consumable;
+
+            //snakeGameObject.Transform = new Transform(
+            //    new Vector3(1, 1, 1),
+            //    new Vector3(0, 0, 0),
+            //    new Vector3(5, 7, 5));
+            // texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+            // meshBase = new CubeMesh(_graphics.GraphicsDevice);
+
+            //snakeGameObject.AddComponent(new Renderer(
+            //    new GDBasicEffect(unlitEffect),
+            //    new Material(texture, 1),
+            //    meshBase));
+            //sceneManager.ActiveScene.Add(snakeGameObject);
             //set this as active player
             Application.Player = snakeGameObject;
+
+
+            //List<GameObject> snakeParts = new List<GameObject>();
+
+            //snakeParts.Add(snakeGameObject);
+
+
+            //for(int i = 0; i < 5; i++)
+            //{
+            //    GameObject cloneObject = CloneModelGameObject(snakeGameObject, "snake 1", new Vector3(snakeParts.Last().Transform.Translation.X + 1, snakeParts.Last().Transform.Translation.Y, snakeParts.Last().Transform.Translation.Z));
+
+            //    sceneManager.ActiveScene.Add(cloneObject);
+            //    snakeParts.Add(cloneObject);
+            //}
+
+            //Application.SnakeParts = snakeParts;
         }
 
         private void InitializeSkyBox(float worldScale)
