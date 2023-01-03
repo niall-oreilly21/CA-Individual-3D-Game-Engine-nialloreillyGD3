@@ -58,7 +58,7 @@ namespace GD.Engine
                 }
                 else
                 {
-                    snakeHead.transform.Position.Z++;
+                    translation.Z++;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                     EventActionType.OnMove, parameters));
@@ -80,7 +80,7 @@ namespace GD.Engine
                 }
                 else
                 {
-                    snakeHead.transform.Position.Z--;
+                    translation.Z--;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                     EventActionType.OnMove, parameters));
@@ -101,7 +101,6 @@ namespace GD.Engine
                 }
                 else
                 {
-                    snakeHead.transform.Position.X--;
                     translation.X--;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
@@ -125,7 +124,7 @@ namespace GD.Engine
                 else
                 {
 
-                    snakeHead.transform.Position.X++;
+                    translation.X++;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                     EventActionType.OnMove, parameters));
@@ -147,7 +146,7 @@ namespace GD.Engine
                 }
                 else
                 {
-                    snakeHead.transform.Position.Y--;
+                    translation.Y--;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                     EventActionType.OnMove, parameters));
@@ -168,7 +167,7 @@ namespace GD.Engine
                 }
                 else
                 {
-                    snakeHead.transform.Position.Y++;
+                    translation.Y++;
                     object[] parameters = { translation };
                     EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                     EventActionType.OnMove, parameters));

@@ -1,6 +1,8 @@
 ﻿using GD.Engine.Events;
 using GD.Engine.Globals;
 using GD.Engine.Managers;
+using JigLibX.Collision;
+using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -79,46 +81,29 @@ namespace GD.Engine
         private void move(Vector3 newTranslation)
         {
             Vector3 newTranslate;
+            Vector3 newPosition;
+            List<Character> snakeHeads = new List<Character>();
+
+            for(int i = 0; i < snakePartsList.Count; i++)
+            {
+                snakeHeads.Add(snakePartsList[i].GetComponent<CharacterCollider>().Body as Character);
+            }
+
             for(int i = snakePartsList.Count - 1; i > 0; i--)
             {
                 newTranslate = snakePartsList[i - 1].Transform.Translation - snakePartsList[i].Transform.Translation;
-
                 snakePartsList[i].Transform.Translate(newTranslate);
+                newPosition = snakePartsList[i].Transform.Translation;
+
+                snakeHeads[i].transform.Position = newPosition;
+
+                System.Diagnostics.Debug.WriteLine(snakeHeads[i].transform.Position);
             }
             head.Transform.Translate(newTranslation);
-            //tail = snakePartsList.Last();
 
-            //snakePartsList.RemoveLast();
-            //Predicate<GameObject> predicate = new Predicate<GameObject>(isTail);
+            snakeHeads[0].transform.Position = head.Transform.Translation;
 
-            //Predicate<GameObject> collisionPredicate =
-            //(collidableObject) =>
-            //{
-            //    if (collidableObject != null)
-            //        return collidableObject.GameObjectType
-            //        == GameObjectType.Player;
-            //    return false;
-            //};
-            //sceneManager.ActiveScene.Remove(ObjectType.Dynamic, RenderType.Opaque, collisionPredicate);
-            
-            //GameObject newHead = CloneModelGameObject(head, "head", newTranslation);
-
-            //Predicate<Component> snake =
-            //  (collidableObject) =>
-            //  {
-            //      if (collidableObject != null)
-            //          return collidableObject.gameObject.Transform.Translation
-            //          == head.Transform.Translation;
-            //      return false;
-            //  };
-
-            //head.RemoveComponent(snake);
-
-            //System.Diagnostics.Debug.WriteLine("4");
-            //snakePartsList.AddFirst(newHead);
-            //head = newHead;
-            //sceneManager.ActiveScene.Add(newHead);
-            //System.Diagnostics.Debug.WriteLine("5");
+            System.Diagnostics.Debug.WriteLine("Force:" + snakeHeads[0].Force);
         }
 
             public GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
@@ -136,13 +121,27 @@ namespace GD.Engine
                 Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, renderer.Mesh);
                 gameObjectClone.AddComponent(cloneRenderer);
 
+
+            Collider cloneCollider = new CharacterCollider(gameObjectClone, true);
+
+            cloneCollider.AddPrimitive(
+                new Box(
+                    gameObjectClone.Transform.Translation,
+                    gameObjectClone.Transform.Rotation,
+                    gameObjectClone.Transform.Scale
+                    ),
+                new MaterialProperties(0.8f, 0.8f, 0.7f)
+                );
+
+            cloneCollider.Enable(gameObjectClone, false, 1);
+            gameObjectClone.AddComponent(cloneCollider);
+
             return gameObjectClone;
             }
 
             #region Snake Parts Methods
             public void grow()
             {
-            System.Diagnostics.Debug.WriteLine("HELLO");
                 tail = CloneModelGameObject(tail, "tail", new Vector3(tail.Transform.Translation.X - 1, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
                 snakePartsList.Add(tail);
                 sceneManager.ActiveScene.Add(tail);

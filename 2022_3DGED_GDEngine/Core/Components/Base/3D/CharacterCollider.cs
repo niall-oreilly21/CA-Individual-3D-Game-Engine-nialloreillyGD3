@@ -2,6 +2,7 @@
 using JigLibX.Math;
 using JigLibX.Physics;
 using Microsoft.Xna.Framework;
+using System.Runtime.CompilerServices;
 
 namespace GD.Engine
 {
@@ -64,19 +65,19 @@ namespace GD.Engine
         /// </summary>
         public override void Enable(GameObject gameObject, bool isImmovable, float mass)
         {
-            //set whether the object can move
+            ////set whether the object can move
             Body.Immovable = isImmovable;
-            //calculate the centre of mass
+            ////calculate the centre of mass
             Vector3 com = SetMass(mass);
-            //adjust skin so that it corresponds to the 3D mesh as drawn on screen
+            ////adjust skin so that it corresponds to the 3D mesh as drawn on screen
             Body.MoveTo(transform.Translation, Matrix.Identity);
-            //set the centre of mass
+            ////set the centre of mass
             Collision.ApplyLocalTransform(new JigLibX.Math.Transform(-com, Matrix.Identity));
-            //constraining the collision surface
+            ////constraining the collision surface
             Body.SetBodyInvInertia(0.0f, 0.0f, 0.0f);
-            //preventing the physics engine from marking this object as velocity == 0
+            ////preventing the physics engine from marking this object as velocity == 0
             Body.AllowFreezing = false;
-            //enable so that any applied forces (e.g. gravity) will affect the object
+            ////enable so that any applied forces (e.g. gravity) will affect the object
             Body.EnableBody();
         }
 
@@ -86,7 +87,7 @@ namespace GD.Engine
         {
             //recalculate the world matrix in the parent using the body
             base.Update(gameTime);
-
+    
             //set the drawn object to be where the character collider is
             transform.SetTranslation(Body.Transform.Position);
         }
@@ -150,8 +151,8 @@ namespace GD.Engine
 
         public override void AddExternalForces(float dt)
         {
-            ClearForces();
 
+            ClearForces();
             //if (isJumping)
             //{
             //    foreach (CollisionInfo info in CollisionSkin.Collisions)
