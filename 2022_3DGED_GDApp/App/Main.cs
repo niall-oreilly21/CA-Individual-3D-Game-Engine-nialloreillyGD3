@@ -1055,10 +1055,10 @@ EventActionType.Grow));
 
             snakeGameObject.Transform = new Transform(
                 new Vector3(1, 1, 1),
-                new Vector3(0, 0, 0),
+                new Vector3(0, 90, 0),
                 new Vector3(5, 5, 5));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new CubeMesh(_graphics.GraphicsDevice);
+            var meshBase = new OctahedronMesh(_graphics.GraphicsDevice);
 
             snakeGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
