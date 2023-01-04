@@ -907,7 +907,7 @@ EventActionType.Grow));
                 new Vector3(0, 90, 0),
                 new Vector3(0, 16, 0));
             texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            Tetrahedron meshTriangle = new Tetrahedron(_graphics.GraphicsDevice);
+            TetrahedronMesh meshTriangle = new TetrahedronMesh(_graphics.GraphicsDevice);
 
             gameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
@@ -1054,18 +1054,18 @@ EventActionType.Grow));
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
-                new Vector3(10, 10, 10),
+                new Vector3(1, 1, 1),
                 new Vector3(0, 0, 0),
-                new Vector3(5, 5, 3));
+                new Vector3(5, 5, 5));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new Tetrahedron(_graphics.GraphicsDevice);
+            var meshBase = new OctahedronMesh(_graphics.GraphicsDevice);
 
             snakeGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
                 new Material(texture, 1),
                 meshBase));
 
-
+            Application.Player = snakeGameObject;
 
             var collider = new CharacterCollider(snakeGameObject, true);
 
@@ -1084,7 +1084,7 @@ EventActionType.Grow));
             snakeGameObject.AddComponent(new CollidableSnakeController(collider));
 
             sceneManager.ActiveScene.Add(snakeGameObject);
-            //SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, sceneManager);
+            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, sceneManager);
         }
 
         private void InitilizeFood()
@@ -1099,7 +1099,7 @@ EventActionType.Grow));
                 new Vector3(0, 0, 0),
                 new Vector3(8,5,5));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new CubeMesh(_graphics.GraphicsDevice);
+            var meshBase = new SphereMesh(_graphics.GraphicsDevice);
 
             foodGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),

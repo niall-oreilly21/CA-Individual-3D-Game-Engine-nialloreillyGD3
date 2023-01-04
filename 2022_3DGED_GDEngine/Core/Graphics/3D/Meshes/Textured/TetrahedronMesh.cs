@@ -4,34 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GD.Engine
 {
-
-    class Triangle
+    public class TetrahedronMesh : TexturedMesh<VertexPositionNormalTexture>
     {
-        private Vector3 a;
-        private Vector3 b;
-        private Vector3 c;
-
-        public Triangle(Vector3 a, Vector3 b, Vector3 c)
-        {
-            this.a = a;
-            this.b = b;
-            this.c = c;
-        }
-
-        public Vector3 Normal
-        {
-            get
-            {
-                var dir = Vector3.Cross(b - a, c - a);
-                var normal = Vector3.Normalize(dir);
-                return normal;
-            }
-        }
-    }
-
-    public class Tetrahedron : TexturedMesh<VertexPositionNormalTexture>
-    {
-        public Tetrahedron(GraphicsDevice graphicsDevice) : base(graphicsDevice)
+        public TetrahedronMesh(GraphicsDevice graphicsDevice) : base(graphicsDevice)
         {
             Initialize();
         }
@@ -93,7 +68,7 @@ namespace GD.Engine
             Vector3 leftNormal = new Triangle(buttomLeft, top, back).Normal;
             Vector3 rightNormal = new Triangle(bottomRight, back, top).Normal;
 
-
+            System.Diagnostics.Debug.WriteLine(frontNormal);
             #endregion Normals
 
             vertices = new VertexPositionNormalTexture[]

@@ -39,6 +39,10 @@ namespace GD.Engine
             Vector2 uvRightBack = new Vector2(1.0f, 0.5f);
             #endregion UVs
 
+            #region Normals
+
+            #endregion Normals
+
 
             vertices = new VertexPositionNormalTexture[]
                 {
