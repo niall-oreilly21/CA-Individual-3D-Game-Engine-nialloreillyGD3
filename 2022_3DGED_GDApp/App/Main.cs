@@ -1054,11 +1054,11 @@ EventActionType.Grow));
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
-                new Vector3(0, 90, 0),
-                new Vector3(5, 5, 5));
+                new Vector3(10, 10, 10),
+                new Vector3(0, 0, 0),
+                new Vector3(5, 5, 3));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new OctahedronMesh(_graphics.GraphicsDevice);
+            var meshBase = new Tetrahedron(_graphics.GraphicsDevice);
 
             snakeGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
@@ -1084,7 +1084,7 @@ EventActionType.Grow));
             snakeGameObject.AddComponent(new CollidableSnakeController(collider));
 
             sceneManager.ActiveScene.Add(snakeGameObject);
-            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, sceneManager);
+            //SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, sceneManager);
         }
 
         private void InitilizeFood()

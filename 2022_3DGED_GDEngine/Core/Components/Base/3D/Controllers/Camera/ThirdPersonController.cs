@@ -23,7 +23,7 @@ namespace GD.Engine
 
             snakeParts = Application.SnakeParts;
 
-            target = snakeParts.Last();
+            //target = snakeParts.Last();
             if (target != null)
             {
                 System.Diagnostics.Debug.WriteLine(target.Transform.Translation.Y);
