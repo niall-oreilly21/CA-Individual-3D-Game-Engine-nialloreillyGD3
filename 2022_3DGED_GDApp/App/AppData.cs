@@ -1,7 +1,7 @@
 ﻿#region Pre-compiler directives
 
 //#define DEMO
-//#define HI_RES
+#define HI_RES
 
 #endregion
 
@@ -128,7 +128,7 @@ namespace GD.App
         #endregion
 
         #region Snake
-        public static readonly int SNAKE_GAME_MAX_SIZE = 10;
+        public static readonly int SNAKE_GAME_MAX_SIZE = 20;
         #endregion
     }
 }

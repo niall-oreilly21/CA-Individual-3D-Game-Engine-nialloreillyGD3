@@ -16,7 +16,11 @@ namespace GD.Engine
         private Character snakeHead;
         private bool pressed = false;
         private Keys pressedKey;
+        private Keys previousKey;
         private long keyPressedTime = 0;
+        protected float moveSpeed = 0.01f;
+        protected float multiplier = 1f;
+        private Vector3 direction = new Vector3(0,0,0);
 
 
         public CollidableSnakeController(CharacterCollider snakeHeadCollider)
@@ -45,134 +49,115 @@ namespace GD.Engine
 
             if (Input.Keys.IsPressed(Keys.W))
             {
-                if (pressed)
+                if (!pressed)
                 {
-                    return;
-                }
-                pressedKey = Keys.W;
-                pressed = true;
-                if (transform.Translation.Z > AppData.SNAKE_GAME_MAX_SIZE)
-                {
+                    pressedKey = Keys.W;
+                    if (previousKey != Keys.S)
+                    {
+                        previousKey = Keys.W;
+                        direction = transform.World.Forward;
+                    }
 
-                    snakeHead.transform.Position.Z = 0;
-                }
-                else
-                {
-                    translation.Z++;
-                    object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                    EventActionType.OnMove, parameters));
                 }
             }
 
             else if (Input.Keys.IsPressed(Keys.S))
             {
-                if (pressed)
+                if (!pressed)
                 {
-                    return;
-                }
-                pressedKey = Keys.S;
-                pressed = true;
+                    pressedKey = Keys.S;
+                    if (previousKey != Keys.W)
+                    {
+                        previousKey = Keys.S;
+                        direction = transform.World.Backward;
+                    }
 
-                if (snakeHead.transform.Position.Z < 0)
-                {
-                    snakeHead.transform.Position.Z = AppData.SNAKE_GAME_MAX_SIZE;
-                }
-                else
-                {
-                    translation.Z--;
-                    object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                    EventActionType.OnMove, parameters));
                 }
             }
-
             else if (Input.Keys.IsPressed(Keys.A))
             {
-                if (pressed)
+                if (!pressed)
                 {
-                    return;
+                    pressedKey = Keys.A;
+                    if (previousKey != Keys.D)
+                    {
+                        previousKey = Keys.A;
+                        direction = transform.World.Left;
+                    }
+                    
                 }
-                pressedKey = Keys.A;
-                pressed = true;
-                if (snakeHead.transform.Position.X < 0)
-                {
-                    snakeHead.transform.Position.X = AppData.SNAKE_GAME_MAX_SIZE;
-                }
-                else
-                {
-                    translation.X--;
-                    object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                    EventActionType.OnMove, parameters));
-                }
+                
             }
             else if (Input.Keys.IsPressed(Keys.D))
             {
-
-                if (pressed)
+                if (!pressed)
                 {
-                    return;
-                }
-                pressedKey = Keys.D;
-                pressed = true;
-
-                if (snakeHead.transform.Position.X > AppData.SNAKE_GAME_MAX_SIZE)
-                {
-                    snakeHead.transform.Position.X = 0;
-                }
-                else
-                {
-
-                    translation.X++;
-                    object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                    EventActionType.OnMove, parameters));
+                    pressedKey = Keys.D;
+                    if (previousKey != Keys.A)
+                    {
+                        previousKey = Keys.D;
+                        direction = transform.World.Right;
+                    }                  
                 }
 
             }
-
             else if (Input.Keys.IsPressed(Keys.Left))
             {
-                if (pressed)
+                if (!pressed)
                 {
-                    return;
-                }
-                pressedKey = Keys.Left;
-                pressed = true;
-                if (snakeHead.transform.Position.Y < 0)
-                {
-                    snakeHead.transform.Position.Y = AppData.SNAKE_GAME_MAX_SIZE;
-                }
-                else
-                {
-                    translation.Y--;
-                    object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                    EventActionType.OnMove, parameters));
+                    pressedKey = Keys.Left;
+                    if (previousKey != Keys.Right)
+                    {
+                        previousKey = Keys.Right;
+                        direction = transform.World.Down;
+                    }
                 }
             }
 
             else if (Input.Keys.IsPressed(Keys.Right))
             {
-                if (pressed)
+                if (!pressed)
                 {
-                    return;
-                }
-                pressedKey = Keys.Right;
-                pressed = true;
-                if (snakeHead.transform.Position.Y > AppData.SNAKE_GAME_MAX_SIZE)
-                {
-                    snakeHead.transform.Position.Y = 0;
-                }
-                else
-                {
-                    translation.Y++;
-                    object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                    EventActionType.OnMove, parameters));
+                    pressedKey = Keys.Right;
+                    if (previousKey != Keys.Left)
+                    {
+                        previousKey = Keys.Right;
+                        direction = transform.World.Up;
+                    }
                 }
             }
+
+
+            if (snakeHead.Position.X > AppData.SNAKE_GAME_MAX_SIZE)
+            {
+                snakeHead.transform.Position.X = 0;
+            }
+            else if(snakeHead.Position.X < 0)
+            {
+                snakeHead.transform.Position.X = AppData.SNAKE_GAME_MAX_SIZE;
+            }
+            else if (snakeHead.Position.Y > AppData.SNAKE_GAME_MAX_SIZE)
+            {
+                snakeHead.transform.Position.Y = 0;
+            }
+            else if (snakeHead.Position.Y < 0)
+            {
+                snakeHead.transform.Position.Y = AppData.SNAKE_GAME_MAX_SIZE;
+            }
+            else if (snakeHead.Position.Z < 0)
+            {
+                snakeHead.transform.Position.Z = AppData.SNAKE_GAME_MAX_SIZE;
+            }
+            else if (snakeHead.Position.Z > AppData.SNAKE_GAME_MAX_SIZE)
+            {
+                snakeHead.transform.Position.Z = 0;
+            }
+            object[] parameters = { direction, moveSpeed, multiplier, gameTime };
+            EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+            EventActionType.OnMove, parameters));
+
+
+
         }
         #endregion Actions - Update, Input
     }

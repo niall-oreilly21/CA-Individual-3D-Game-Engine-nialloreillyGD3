@@ -525,7 +525,7 @@ namespace JigLibX.Physics
                 transformRateAux = TransformRate.Zero;
                 return;
             }
-
+           
             PhysicsSystem physics = PhysicsSystem.CurrentPhysicsSystem;
             int ga = physics.MainGravityAxis;
 
@@ -548,7 +548,6 @@ namespace JigLibX.Physics
 
             TransformRate rate;
             TransformRate.Add(ref transformRate, ref transformRateAux, out rate);
-
             #endregion
 
             transform.ApplyTransformRate(ref rate, dt);
@@ -562,7 +561,7 @@ namespace JigLibX.Physics
             transformRateAux.Velocity.Y = 0.0f;
             transformRateAux.Velocity.Z = 0.0f;
 
-            #endregion
+           #endregion
 
             #region REFERENCE: invOrientation = Matrix.Transpose(transform.Orientation);
 
@@ -599,6 +598,7 @@ namespace JigLibX.Physics
 
             if (this.CollisionSkin != null)
                 this.CollisionSkin.SetTransform(ref oldTransform, ref transform);
+
         }
 
         /// <summary>

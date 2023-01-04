@@ -651,7 +651,7 @@ EventActionType.Grow));
 
         private void InitializeCollidableContent(float worldScale)
         {
-            InitializeCollidableGround(worldScale);
+            //InitializeCollidableGround(worldScale);
             //InitializeCollidableBox();
             InitializeBaseModel();
             InitilizeFood();
@@ -687,7 +687,7 @@ EventActionType.Grow));
         private void InitializeBaseModel()
         {
             //game object
-            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
+            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Transparent);
             gameObject.GameObjectType = GameObjectType.Collectible;
 
             gameObject.Transform = new Transform(
@@ -699,23 +699,22 @@ EventActionType.Grow));
 
             gameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 1),
+                new Material(texture, 0.3f),
                 meshBase));
 
-            int size = 10;
 
-            //for(int x = 0; x < size; x++)
-            //{
-            //    for(int y = 0; y < size; y++)
-            //    {
-            //        for(int z = 0; z < size; z++)
-            //        {
-            //            gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(x, y, z));
-            //            cubeBaseNumber++;
-            //            sceneManager.ActiveScene.Add(gameObject);
-            //        }
-            //    }
-            //}
+            for (int x = 0; x < AppData.SNAKE_GAME_MAX_SIZE; x++)
+            {
+                for (int y = 0; y < AppData.SNAKE_GAME_MAX_SIZE; y++)
+                {
+                    for (int z = 0; z < AppData.SNAKE_GAME_MAX_SIZE; z++)
+                    {
+                        gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(x, y, z));
+                        cubeBaseNumber++;
+                        //sceneManager.ActiveScene.Add(gameObject);
+                    }
+                }
+            }
 
             //List<GameObject> baseCubeGameObjectsY = new List<GameObject>();
 
@@ -754,7 +753,7 @@ EventActionType.Grow));
             //        foreach (GameObject gameObjectBase in gameObjectsY)
             //        {
             //            sceneManager.ActiveScene.Add(gameObjectBase);
-                        
+
             //        }
             //    }
             //}
@@ -1082,6 +1081,8 @@ EventActionType.Grow));
             collider.Enable(snakeGameObject, false, 1);
 
             snakeGameObject.AddComponent(new CollidableSnakeController(collider));
+
+            
 
             sceneManager.ActiveScene.Add(snakeGameObject);
             SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, sceneManager);

@@ -182,7 +182,8 @@
         //add more here...
         OnMove,
         Grow,
-        RemoveFood
+        RemoveFood,
+        ResetVelocity
     }
 
     /// <summary>

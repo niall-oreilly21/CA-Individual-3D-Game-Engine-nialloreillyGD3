@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Text;
 
@@ -24,6 +25,7 @@ namespace GD.Engine
             private SceneManager<Scene> sceneManager;
 
             private List<GameObject> snakePartsList = new List<GameObject>();
+            private List<Character> snakePartsListBodies = new List<Character>();
             private GameObject head;
             private GameObject tail;
 
@@ -36,8 +38,9 @@ namespace GD.Engine
             this.tail = head;
             this.sceneManager = sceneManager;
             snakePartsList.Add(head);
+            snakePartsListBodies.Add(head.GetComponent<CharacterCollider>().Body as Character);
 
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 grow();
             }
@@ -57,11 +60,20 @@ namespace GD.Engine
             switch (eventData.EventActionType)
             {
                 case EventActionType.OnMove: //TODO
-                    move((Vector3)eventData.Parameters[0]);
+                    Vector3 direction = (Vector3)eventData.Parameters[0];
+                    float moveSpeed = (float)eventData.Parameters[1];
+                    float multiplier = (float)eventData.Parameters[2];
+                    GameTime gameTime = (GameTime)eventData.Parameters[3];
+
+                    move(direction, moveSpeed, multiplier, gameTime);
                     break;
 
                 case EventActionType.Grow: //TODO
                     grow();
+                    break;
+
+                case EventActionType.ResetVelocity:
+                    resetVelocity();
                     break;
 
                 default:
@@ -73,37 +85,39 @@ namespace GD.Engine
             base.HandleEvent(eventData);
         }
 
+        private void resetVelocity()
+        {
+            foreach(Character snakeHead in snakePartsListBodies)
+            {
+                snakeHead.Velocity = Vector3.Zero;
+            }
+        }
+
         private bool isTail(GameObject gameObject)
         {
             System.Diagnostics.Debug.WriteLine(gameObject.Name);
             return tail.Transform.Translation.X == gameObject.Transform.Translation.X;
         }
-        private void move(Vector3 newTranslation)
+        private void move(Vector3 newTranslation, float moveSpeed, float multiplier, GameTime gameTime)
         {
+           
             Vector3 newTranslate;
             Vector3 newPosition;
-            List<Character> snakeHeads = new List<Character>();
-
-            for(int i = 0; i < snakePartsList.Count; i++)
+            //System.Diagnostics.Debug.WriteLine(snakePartsListBodies[0].Position);
+            for (int i = snakePartsListBodies.Count - 1; i > 0; i--)
             {
-                snakeHeads.Add(snakePartsList[i].GetComponent<CharacterCollider>().Body as Character);
+                newTranslate = snakePartsListBodies[i - 1].Position - snakePartsListBodies[i].Position;
+
+                snakePartsListBodies[i].Position += newTranslate * (moveSpeed * multiplier) * gameTime.ElapsedGameTime.Milliseconds;
             }
 
-            for(int i = snakePartsList.Count - 1; i > 0; i--)
-            {
-                newTranslate = snakePartsList[i - 1].Transform.Translation - snakePartsList[i].Transform.Translation;
-                snakePartsList[i].Transform.Translate(newTranslate);
-                newPosition = snakePartsList[i].Transform.Translation;
+            //head.Transform.Translate(newTranslation);
 
-                snakeHeads[i].transform.Position = newPosition;
+            //snakePartsListBodies[0].transform.Position = head.Transform.Translation;
 
-                System.Diagnostics.Debug.WriteLine(snakeHeads[i].transform.Position);
-            }
-            head.Transform.Translate(newTranslation);
-
-            snakeHeads[0].transform.Position = head.Transform.Translation;
-
-            System.Diagnostics.Debug.WriteLine("Force:" + snakeHeads[0].Force);
+            snakePartsListBodies[0].Position += newTranslation * (moveSpeed * multiplier) * gameTime.ElapsedGameTime.Milliseconds;
+         
+            //System.Diagnostics.Debug.WriteLine(snakeHeads[0].transform.Position);
         }
 
             public GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
@@ -144,7 +158,8 @@ namespace GD.Engine
             {
                 tail = CloneModelGameObject(tail, "tail", new Vector3(tail.Transform.Translation.X - 1, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
                 snakePartsList.Add(tail);
-                sceneManager.ActiveScene.Add(tail);
+            snakePartsListBodies.Add(tail.GetComponent<CharacterCollider>().Body as Character);
+            sceneManager.ActiveScene.Add(tail);
             }
             #endregion Snake Parts Methods
         }
