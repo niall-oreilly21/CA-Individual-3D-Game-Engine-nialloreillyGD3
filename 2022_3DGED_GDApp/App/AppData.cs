@@ -50,7 +50,8 @@ namespace GD.App
 
         #region Front Camera
         public static readonly string FRONT_CAMERA_NAME = "front camera";
-        public static readonly Vector3 DEFAULT_FRONT_CAMERA_POSITION = new Vector3(30, 12, 20);
+        public static readonly Vector3 DEFAULT_FRONT_CAMERA_POSITION = new Vector3(0, 4, 40);
+        //public static readonly Vector3 DEFAULT_FRONT_CAMERA_POSITION = new Vector3(20, 20, 85);
         #endregion Front Camera
 
         #region Camera - First Person
@@ -79,8 +80,8 @@ namespace GD.App
 
         #region Camera - Security Camera
 
-        public static readonly float SECURITY_CAMERA_MAX_ANGLE = 45;
-        public static readonly float SECURITY_CAMERA_ANGULAR_SPEED_MUL = 50;
+        public static readonly float SECURITY_CAMERA_MAX_ANGLE = 180;
+        public static readonly float SECURITY_CAMERA_ANGULAR_SPEED_MUL = 300;
         public static readonly Vector3 SECURITY_CAMERA_ROTATION_AXIS = new Vector3(0, 1, 0);
         public static readonly string SECURITY_CAMERA_NAME = "security camera 1";
 

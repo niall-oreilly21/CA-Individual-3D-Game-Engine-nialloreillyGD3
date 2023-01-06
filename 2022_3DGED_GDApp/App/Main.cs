@@ -347,7 +347,7 @@ EventActionType.Grow));
             mainMenuScene.Add(menuGameObject);
 
             #endregion
-
+            
             #region Add Scene to Manager and Set Active
 
             //add scene2D to menu manager
@@ -572,7 +572,7 @@ EventActionType.Grow));
             cameraGameObject.Transform
                 = new Transform(null,
                 null,
-                new Vector3(0, 2, 25));
+                new Vector3(0, 10, 50));
 
             //add camera (view, projection)
             cameraGameObject.AddComponent(new Camera(
@@ -602,7 +602,7 @@ EventActionType.Grow));
 
             cameraGameObject.Transform
                 = new Transform(null,
-                new Vector3(0,45,0),
+                Vector3.Zero,
                 AppData.DEFAULT_FRONT_CAMERA_POSITION);
 
             //add camera (view, projection)
@@ -612,6 +612,12 @@ EventActionType.Grow));
                 0.1f, 3500,
                 new Viewport(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight)));
 
+            cameraGameObject.AddComponent(new SnakeCameraController(
+                AppData.SECURITY_CAMERA_ROTATION_AXIS,
+                AppData.SECURITY_CAMERA_MAX_ANGLE,
+                AppData.SECURITY_CAMERA_ANGULAR_SPEED_MUL,
+                TurnDirectionType.Right));
+
             cameraManager.Add(cameraGameObject.Name, cameraGameObject);
 
             #endregion Front Camera
@@ -620,10 +626,24 @@ EventActionType.Grow));
             #region Curve
 
             Curve3D curve3D = new Curve3D(CurveLoopType.Oscillate);
-            curve3D.Add(new Vector3(0, 2, 5), 0);
-            curve3D.Add(new Vector3(0, 5, 10), 1000);
-            curve3D.Add(new Vector3(0, 8, 25), 2500);
-            curve3D.Add(new Vector3(0, 5, 35), 4000);
+            int x = 0;
+            int y = 10;
+            int z = 50;
+            curve3D.Add(new Vector3(10, y, z), 0);
+            curve3D.Add(new Vector3(10, y, z), 1000);
+            curve3D.Add(new Vector3(20, y, z), 2000);
+            //curve3D.Add(new Vector3(30, y, 10), 3000);
+            //curve3D.Add(new Vector3(30, y, 13), 3000);
+            //curve3D.Add(new Vector3(50, y, z), 5000);
+
+
+            Curve3D curve3D2 = new Curve3D(CurveLoopType.Oscillate);
+            curve3D2.Add(new Vector3(20, y, z), 0);
+            curve3D2.Add(new Vector3(10, y, z), 1000);
+            curve3D2.Add(new Vector3(10, y, z), 2000);
+            //curve3D2.Add(new Vector3(30, y, 10), 3000);
+            //curve3D2.Add(new Vector3(30, y, 13), 3000);
+            //curve3D2.Add(new Vector3(50, y, z), 5000);
 
             cameraGameObject = new GameObject(AppData.CURVE_CAMERA_NAME);
             cameraGameObject.Transform =
@@ -637,10 +657,11 @@ EventActionType.Grow));
             //define what action the curve will apply to the target game object
             var curveAction = (Curve3D curve, GameObject target, GameTime gameTime) =>
             {
-                target.Transform.SetTranslation(curve.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 4));
+                target.Transform.SetTranslation(curve.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
             };
 
-            cameraGameObject.AddComponent(new CurveBehaviour(curve3D, curveAction));
+            Curve3D[] curve3DArray = { curve3D, curve3D2};
+            cameraGameObject.AddComponent(new CurveBehaviourManager(curve3DArray, curveAction));
 
             cameraManager.Add(cameraGameObject.Name, cameraGameObject);
 
@@ -666,7 +687,7 @@ EventActionType.Grow));
             gameObject.GameObjectType = GameObjectType.Collectible;
 
             gameObject.Transform = new Transform(
-                new Vector3(2, 2, 2),
+                new Vector3(1, 1, 1),
                 new Vector3(0, 0, 0),
                 new Vector3(0, 4, 0));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
@@ -691,30 +712,44 @@ EventActionType.Grow));
             gameObject.GameObjectType = GameObjectType.Collectible;
 
             gameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
+                new Vector3(20, 20, 20),
                 new Vector3(0, 0, 0),
-                new Vector3(0, 4, 0));
+                new Vector3(0, 0, 0));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
             var meshBase = new CubeMesh(_graphics.GraphicsDevice);
 
             gameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 0.3f),
+                new Material(texture, 0.2f),
                 meshBase));
 
+ //var collider = new BaseCollider(gameObject, true);
 
-            for (int x = 0; x < AppData.SNAKE_GAME_MAX_SIZE; x++)
-            {
-                for (int y = 0; y < AppData.SNAKE_GAME_MAX_SIZE; y++)
-                {
-                    for (int z = 0; z < AppData.SNAKE_GAME_MAX_SIZE; z++)
-                    {
-                        gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(x, y, z));
-                        cubeBaseNumber++;
-                        //sceneManager.ActiveScene.Add(gameObject);
-                    }
-                }
-            }
+ //           gameObject.AddComponent(collider);
+ //           collider.AddPrimitive(
+ //               new Box(
+ //                   gameObject.Transform.Translation,
+ //                   gameObject.Transform.Rotation,
+ //                   gameObject.Transform.Scale
+ //                   ),
+ //               new MaterialProperties(0.8f, 0.8f, 0.7f)
+ //               );
+
+ //           collider.Enable(gameObject, true, 1);
+            sceneManager.ActiveScene.Add(gameObject);
+
+            //for (int x = 0; x < AppData.SNAKE_GAME_MAX_SIZE; x++)
+            //{
+            //    for (int y = 0; y < AppData.SNAKE_GAME_MAX_SIZE; y++)
+            //    {
+            //        for (int z = 0; z < AppData.SNAKE_GAME_MAX_SIZE; z++)
+            //        {
+            //            gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, 2 * new Vector3(x, y, z));
+            //            cubeBaseNumber++;
+            //            sceneManager.ActiveScene.Add(gameObject);
+            //        }
+            //    }
+            //}
 
             //List<GameObject> baseCubeGameObjectsY = new List<GameObject>();
 

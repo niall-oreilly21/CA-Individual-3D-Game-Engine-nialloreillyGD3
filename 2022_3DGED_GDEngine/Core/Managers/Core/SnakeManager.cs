@@ -1,4 +1,5 @@
-﻿using GD.Engine.Events;
+﻿using GD.App;
+using GD.Engine.Events;
 using GD.Engine.Globals;
 using GD.Engine.Managers;
 using JigLibX.Collision;
@@ -28,8 +29,9 @@ namespace GD.Engine
             private List<Character> snakePartsListBodies = new List<Character>();
             private GameObject head;
             private GameObject tail;
+        float timeFlag = 0f;
 
-            #endregion Fields
+        #endregion Fields
 
         #region Constructors
         public SnakeManager(Game game, GameObject head, SceneManager<Scene> sceneManager) : base(game)
@@ -40,9 +42,9 @@ namespace GD.Engine
             snakePartsList.Add(head);
             snakePartsListBodies.Add(head.GetComponent<CharacterCollider>().Body as Character);
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 10; i++)
             {
-                grow();
+                Grow();
             }
         }
         #endregion Constructors
@@ -64,16 +66,18 @@ namespace GD.Engine
                     float moveSpeed = (float)eventData.Parameters[1];
                     float multiplier = (float)eventData.Parameters[2];
                     GameTime gameTime = (GameTime)eventData.Parameters[3];
+                    Keys pressedKey = (Keys)eventData.Parameters[4];
 
-                    move(direction, moveSpeed, multiplier, gameTime);
+
+                    Move(direction, moveSpeed, multiplier, gameTime, pressedKey);
                     break;
 
                 case EventActionType.Grow: //TODO
-                    grow();
+                    Grow();
                     break;
 
                 case EventActionType.ResetVelocity:
-                    resetVelocity();
+                    ResetVelocity();
                     break;
 
                 default:
@@ -85,7 +89,7 @@ namespace GD.Engine
             base.HandleEvent(eventData);
         }
 
-        private void resetVelocity()
+        private void ResetVelocity()
         {
             foreach(Character snakeHead in snakePartsListBodies)
             {
@@ -93,31 +97,127 @@ namespace GD.Engine
             }
         }
 
-        private bool isTail(GameObject gameObject)
+        private bool IsTail(GameObject gameObject)
         {
             System.Diagnostics.Debug.WriteLine(gameObject.Name);
             return tail.Transform.Translation.X == gameObject.Transform.Translation.X;
         }
-        private void move(Vector3 newTranslation, float moveSpeed, float multiplier, GameTime gameTime)
-        {
-           
-            Vector3 newTranslate;
-            Vector3 newPosition;
-            //System.Diagnostics.Debug.WriteLine(snakePartsListBodies[0].Position);
-            for (int i = snakePartsListBodies.Count - 1; i > 0; i--)
-            {
-                newTranslate = snakePartsListBodies[i - 1].Position - snakePartsListBodies[i].Position;
 
-                snakePartsListBodies[i].Position += newTranslate * (moveSpeed * multiplier) * gameTime.ElapsedGameTime.Milliseconds;
+        private void ZeroPosition(Character snake)
+        {
+            if (snake.Position.X > AppData.SNAKE_GAME_MAX_SIZE)
+            {
+                snake.transform.Position.X = 0;
+            }
+            else if (snake.Position.X < 0)
+            {
+                snake.transform.Position.X = AppData.SNAKE_GAME_MAX_SIZE;
+            }
+            else if (snake.Position.Y > AppData.SNAKE_GAME_MAX_SIZE)
+            {
+                snake.transform.Position.Y = 0;
+            }
+            else if (snake.Position.Y < 0)
+            {
+                snake.transform.Position.Y = AppData.SNAKE_GAME_MAX_SIZE;
+            }
+            else if (snake.Position.Z < 0)
+            {
+                snake.transform.Position.Z = AppData.SNAKE_GAME_MAX_SIZE;
+            }
+            else if (snake.Position.Z > AppData.SNAKE_GAME_MAX_SIZE)
+            {
+                snake.transform.Position.Z = 0;
+            }
+        }
+
+        private float totalTime = 0f;
+        private void Move(Vector3 newTranslation, float moveSpeed, float multiplier, GameTime gameTime, Keys pressedKey)
+        {
+
+            Vector3 newTranslate;
+  
+            totalTime = totalTime + gameTime.ElapsedGameTime.Milliseconds;
+            if(timeFlag == 0f)
+            {
+                timeFlag = gameTime.TotalGameTime.Milliseconds;
             }
 
-            //head.Transform.Translate(newTranslation);
 
-            //snakePartsListBodies[0].transform.Position = head.Transform.Translation;
+            if (totalTime - timeFlag < (100f))
+            {
+                return;
+            }
+            timeFlag = totalTime + gameTime.ElapsedGameTime.Milliseconds;
 
-            snakePartsListBodies[0].Position += newTranslation * (moveSpeed * multiplier) * gameTime.ElapsedGameTime.Milliseconds;
-         
-            //System.Diagnostics.Debug.WriteLine(snakeHeads[0].transform.Position);
+            for (int i = snakePartsListBodies.Count - 1; i > 0; i--)
+            {
+
+                ///head = 9 body = 0                           
+                newTranslate = snakePartsListBodies[i - 1].Position - snakePartsListBodies[i].Position;
+
+                //if (
+
+                //(((int)Math.Round(snakePartsListBodies[i - 1].Position.X, 0) > (int)Math.Round(snakePartsListBodies[i].Position.X, 0)) && pressedKey == Keys.A) ||
+
+
+                //(((int)Math.Round(snakePartsListBodies[i - 1].Position.Z, 0) > (int)Math.Round(snakePartsListBodies[i].Position.Z, 0)) && pressedKey == Keys.W) ||
+
+
+                //(((int)Math.Round(snakePartsListBodies[i - 1].Position.Z, 0) < (int)Math.Round(snakePartsListBodies[i].Position.Z, 0)) && pressedKey == Keys.S)
+
+                //)
+                //{
+                //    snakePartsListBodies[i].Position += newTranslation * (moveSpeed * multiplier) * gameTime.ElapsedGameTime.Milliseconds;
+                //}
+                //else
+                //{
+
+                /// newTranslate = 9
+                    snakePartsListBodies[i].Position += newTranslate;
+                //}
+
+
+
+                //if (snakePartsListBodies[i].transform.Position.X > AppData.SNAKE_GAME_MAX_SIZE)
+                //{
+                //    snakePartsListBodies[i].transform.Position.X = 0;
+                //}
+                //else if (snakePartsListBodies[i].transform.Position.X < 0)
+                //{
+                //    zeroPosition = new Vector3(AppData.SNAKE_GAME_MAX_SIZE - 1, snakePartsListBodies[i].Position.Y, snakePartsListBodies[i].Position.Z) - snakePartsListBodies[i].Position;
+                //    snakePartsListBodies[i].Position += zeroPosition; 
+                //}
+
+            }
+
+            //Move head
+
+            snakePartsListBodies[0].Position += newTranslation ;
+
+
+            
+
+            //if (snakePartsListBodies[0].transform.Position.X > AppData.SNAKE_GAME_MAX_SIZE)
+            //{
+            //        snakePartsListBodies[0].transform.Position.X = 0;
+            //}
+            //else if (snakePartsListBodies[0].transform.Position.X < 0)
+            //{
+            //    zeroPosition = new Vector3(AppData.SNAKE_GAME_MAX_SIZE - 1, snakePartsListBodies[0].Position.Y, snakePartsListBodies[0].Position.Z) - snakePartsListBodies[0].Position;
+            //    snakePartsListBodies[0].Position += zeroPosition; //* (moveSpeed * multiplier) * gameTime.ElapsedGameTime.Milliseconds;
+
+            //    System.Diagnostics.Debug.WriteLine("new translate" + zeroPosition);
+            //    System.Diagnostics.Debug.WriteLine(snakePartsListBodies[0].Position);
+            //    //    snakePartsListBodies[0].transform.Position.X = AppData.SNAKE_GAME_MAX_SIZE;
+            //}
+            ////Adjusting for edges
+            //// for (int i = 0; i < snakePartsListBodies.Count; i++)
+            //{
+
+               ZeroPosition(snakePartsListBodies[0]);
+            //}
+
         }
 
             public GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
@@ -154,9 +254,9 @@ namespace GD.Engine
             }
 
             #region Snake Parts Methods
-            public void grow()
+            public void Grow()
             {
-                tail = CloneModelGameObject(tail, "tail", new Vector3(tail.Transform.Translation.X - 1, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
+                tail = CloneModelGameObject(tail, "tail", new Vector3(tail.Transform.Translation.X - 2, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
                 snakePartsList.Add(tail);
             snakePartsListBodies.Add(tail.GetComponent<CharacterCollider>().Body as Character);
             sceneManager.ActiveScene.Add(tail);

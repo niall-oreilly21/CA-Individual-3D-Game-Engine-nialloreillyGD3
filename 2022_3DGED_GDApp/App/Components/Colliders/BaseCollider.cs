@@ -1,4 +1,5 @@
 ﻿using GD.Engine.Events;
+using GD.Engine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
-    public class FoodCollider : Collider
+    public class BaseCollider : Collider
     {
-        public FoodCollider(GameObject gameObject, bool isHandlingCollision = false, bool isTrigger = false) : base(gameObject, isHandlingCollision, isTrigger)
+        public BaseCollider(GameObject gameObject, bool isHandlingCollision = false, bool isTrigger = false) : base(gameObject, isHandlingCollision, isTrigger)
         {
 
         }
@@ -18,8 +19,10 @@ namespace GD.Engine
         {
             // send event to game state to check time remaining. If time is still left,
             // change state to win state
+            System.Diagnostics.Debug.WriteLine("HELLO");
+            EventDispatcher.Raise(new EventData(EventCategoryType.Player, EventActionType.RemoveFood));
 
-            EventDispatcher.Raise(new EventData(EventCategoryType.Player, EventActionType.RemoveFood));   
         }
     }
 }
+

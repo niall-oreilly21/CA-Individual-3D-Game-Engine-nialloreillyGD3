@@ -19,7 +19,7 @@ namespace GD.Engine
         private Keys previousKey;
         private long keyPressedTime = 0;
         protected float moveSpeed = 0.01f;
-        protected float multiplier = 1f;
+        protected float multiplier = 0.5f;
         private Vector3 direction = new Vector3(0,0,0);
 
 
@@ -52,6 +52,7 @@ namespace GD.Engine
                 if (!pressed)
                 {
                     pressedKey = Keys.W;
+                    pressed = true;
                     if (previousKey != Keys.S)
                     {
                         previousKey = Keys.W;
@@ -66,6 +67,7 @@ namespace GD.Engine
                 if (!pressed)
                 {
                     pressedKey = Keys.S;
+                    pressed = true;
                     if (previousKey != Keys.W)
                     {
                         previousKey = Keys.S;
@@ -79,6 +81,7 @@ namespace GD.Engine
                 if (!pressed)
                 {
                     pressedKey = Keys.A;
+                    pressed = true;
                     if (previousKey != Keys.D)
                     {
                         previousKey = Keys.A;
@@ -93,6 +96,7 @@ namespace GD.Engine
                 if (!pressed)
                 {
                     pressedKey = Keys.D;
+                    pressed = true;
                     if (previousKey != Keys.A)
                     {
                         previousKey = Keys.D;
@@ -106,6 +110,7 @@ namespace GD.Engine
                 if (!pressed)
                 {
                     pressedKey = Keys.Left;
+                    pressed = true;
                     if (previousKey != Keys.Right)
                     {
                         previousKey = Keys.Right;
@@ -119,6 +124,7 @@ namespace GD.Engine
                 if (!pressed)
                 {
                     pressedKey = Keys.Right;
+                    pressed = true;
                     if (previousKey != Keys.Left)
                     {
                         previousKey = Keys.Right;
@@ -128,31 +134,8 @@ namespace GD.Engine
             }
 
 
-            if (snakeHead.Position.X > AppData.SNAKE_GAME_MAX_SIZE)
-            {
-                snakeHead.transform.Position.X = 0;
-            }
-            else if(snakeHead.Position.X < 0)
-            {
-                snakeHead.transform.Position.X = AppData.SNAKE_GAME_MAX_SIZE;
-            }
-            else if (snakeHead.Position.Y > AppData.SNAKE_GAME_MAX_SIZE)
-            {
-                snakeHead.transform.Position.Y = 0;
-            }
-            else if (snakeHead.Position.Y < 0)
-            {
-                snakeHead.transform.Position.Y = AppData.SNAKE_GAME_MAX_SIZE;
-            }
-            else if (snakeHead.Position.Z < 0)
-            {
-                snakeHead.transform.Position.Z = AppData.SNAKE_GAME_MAX_SIZE;
-            }
-            else if (snakeHead.Position.Z > AppData.SNAKE_GAME_MAX_SIZE)
-            {
-                snakeHead.transform.Position.Z = 0;
-            }
-            object[] parameters = { direction, moveSpeed, multiplier, gameTime };
+            
+            object[] parameters = { direction, moveSpeed, multiplier, gameTime, pressedKey};
             EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
             EventActionType.OnMove, parameters));
 
