@@ -485,6 +485,22 @@ EventActionType.Grow));
             litEffect.EnableDefaultLighting();
         }
 
+        public GameObject CloneModelGameObjectCamera(GameObject gameObject, string newName, Vector3 rotation, Vector3 translation)
+        {
+            GameObject gameObjectClone = new GameObject(newName);
+
+            gameObjectClone.Transform = new Transform(
+                null,
+                rotation,
+                translation
+                );
+
+            Camera camera = gameObject.GetComponent<Camera>();
+            Camera cloneCamera = new Camera(camera.FieldOfView, camera.AspectRatio, camera.NearPlaneDistance, camera.FarPlaneDistance, camera.ViewPort);
+            gameObjectClone.AddComponent(cloneCamera);
+
+            return gameObjectClone;
+        }
         private void InitializeCameras()
         {
             //camera
@@ -595,15 +611,15 @@ EventActionType.Grow));
 
             #endregion Security
 
-            #region Front Camera
+            #region Snake Cameras
 
-            //camera 2
+            //Front Camera
             cameraGameObject = new GameObject(AppData.FRONT_CAMERA_NAME);
 
             cameraGameObject.Transform
                 = new Transform(null,
-                Vector3.Zero,
-                AppData.DEFAULT_FRONT_CAMERA_POSITION);
+                AppData.DEFAULT_FRONT_CAMERA_ROTATION,
+                AppData.DEFAULT_FRONT_CAMERA_TRANSLATION);
 
             //add camera (view, projection)
             cameraGameObject.AddComponent(new Camera(
@@ -612,15 +628,23 @@ EventActionType.Grow));
                 0.1f, 3500,
                 new Viewport(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight)));
 
-            cameraGameObject.AddComponent(new SnakeCameraController(
-                AppData.SECURITY_CAMERA_ROTATION_AXIS,
-                AppData.SECURITY_CAMERA_MAX_ANGLE,
-                AppData.SECURITY_CAMERA_ANGULAR_SPEED_MUL,
-                TurnDirectionType.Right));
-
             cameraManager.Add(cameraGameObject.Name, cameraGameObject);
 
-            #endregion Front Camera
+            //Back Camera
+            cameraManager.Add(AppData.BACK_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.BACK_CAMERA_NAME, AppData.DEFAULT_BACK_CAMERA_ROTATION, AppData.DEFAULT_BACK_CAMERA_TRANSLATION));
+
+            //Top Camera
+            cameraManager.Add(AppData.TOP_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.TOP_CAMERA_NAME, AppData.DEFAULT_TOP_CAMERA_ROTATION, AppData.DEFAULT_TOP_CAMERA_TRANSLATION));
+
+            //Bottom Camera
+            cameraManager.Add(AppData.BOTTOM_CAMERA_NAME,CloneModelGameObjectCamera(cameraGameObject, AppData.BOTTOM_CAMERA_NAME, AppData.DEFAULT_BOTTOM_CAMERA_ROTATION, AppData.DEFAULT_BOTTOM_CAMERA_TRANSLATION));
+
+            //Right Camera
+            cameraManager.Add(AppData.RIGHT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.RIGHT_CAMERA_NAME, AppData.DEFAULT_RIGHT_CAMERA_ROTATION, AppData.DEFAULT_RIGHT_CAMERA_TRANSLATION));
+
+            //Left Camera
+            cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
+            #endregion Snake Cameras
 
 
             #region Curve
@@ -1495,14 +1519,111 @@ EventActionType.Grow));
 
             #region Demo - Camera switching
 
-            if (Input.Keys.IsPressed(Keys.F1))
-                cameraManager.SetActiveCamera(AppData.FIRST_PERSON_CAMERA_NAME);
-            else if (Input.Keys.IsPressed(Keys.F2))
-                cameraManager.SetActiveCamera(AppData.SECURITY_CAMERA_NAME);
-            else if (Input.Keys.IsPressed(Keys.F3))
-                cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
-            else if (Input.Keys.IsPressed(Keys.F4))
-                cameraManager.SetActiveCamera(AppData.THIRD_PERSON_CAMERA_NAME);
+            //if (Input.Keys.IsPressed(Keys.F1))
+            //    cameraManager.SetActiveCamera(AppData.FIRST_PERSON_CAMERA_NAME);
+            //else if (Input.Keys.IsPressed(Keys.F2))
+            //    cameraManager.SetActiveCamera(AppData.SECURITY_CAMERA_NAME);
+            //else if (Input.Keys.IsPressed(Keys.F3))
+            //    cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
+            //else if (Input.Keys.IsPressed(Keys.F4))
+            //    cameraManager.SetActiveCamera(AppData.THIRD_PERSON_CAMERA_NAME);
+
+
+            if (Input.Keys.WasJustPressed(Keys.Up))
+            {
+                if  (
+                        cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
+                        cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME  ||
+                        cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME
+                    )
+                {
+                    cameraManager.SetActiveCamera(AppData.TOP_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                }
+            }
+            else if (Input.Keys.WasJustPressed(Keys.Right))
+            {
+                if (cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                }
+            }
+            else if (Input.Keys.WasJustPressed(Keys.Left))
+            {
+                if (cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                }
+            }
+            else if (Input.Keys.WasJustPressed(Keys.Down))
+            {
+                if (
+                        cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME
+                   )
+                {
+                    cameraManager.SetActiveCamera(AppData.BOTTOM_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                }
+            }
+
 
             #endregion Demo - Camera switching
 

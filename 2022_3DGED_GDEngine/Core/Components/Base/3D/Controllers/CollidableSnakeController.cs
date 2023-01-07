@@ -105,29 +105,29 @@ namespace GD.Engine
                 }
 
             }
-            else if (Input.Keys.IsPressed(Keys.Left))
+            else if (Input.Keys.IsPressed(Keys.Q))
             {
                 if (!pressed)
                 {
-                    pressedKey = Keys.Left;
+                    pressedKey = Keys.Q;
                     pressed = true;
-                    if (previousKey != Keys.Right)
+                    if (previousKey != Keys.R)
                     {
-                        previousKey = Keys.Right;
+                        previousKey = Keys.R;
                         direction = transform.World.Down;
                     }
                 }
             }
 
-            else if (Input.Keys.IsPressed(Keys.Right))
+            else if (Input.Keys.IsPressed(Keys.R))
             {
                 if (!pressed)
                 {
-                    pressedKey = Keys.Right;
+                    pressedKey = Keys.R;
                     pressed = true;
-                    if (previousKey != Keys.Left)
+                    if (previousKey != Keys.Q)
                     {
-                        previousKey = Keys.Right;
+                        previousKey = Keys.Q;
                         direction = transform.World.Up;
                     }
                 }

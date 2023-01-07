@@ -48,12 +48,6 @@ namespace GD.App
 
         #endregion
 
-        #region Front Camera
-        public static readonly string FRONT_CAMERA_NAME = "front camera";
-        public static readonly Vector3 DEFAULT_FRONT_CAMERA_POSITION = new Vector3(0, 4, 40);
-        //public static readonly Vector3 DEFAULT_FRONT_CAMERA_POSITION = new Vector3(20, 20, 85);
-        #endregion Front Camera
-
         #region Camera - First Person
 
         public static readonly string FIRST_PERSON_CAMERA_NAME = "fpc 1";
@@ -130,6 +124,49 @@ namespace GD.App
 
         #region Snake
         public static readonly int SNAKE_GAME_MAX_SIZE = 20;
+
+
+        #region Cameras
+        public static readonly int CAMERA_POSITION = 40;
+        public static readonly int CAMERA_ROTATION = 90;
+
+        #region Front Camera
+        public static readonly string FRONT_CAMERA_NAME = "front camera";
+        public static readonly Vector3 DEFAULT_FRONT_CAMERA_TRANSLATION = new Vector3(0, 0, CAMERA_POSITION);
+        public static readonly Vector3 DEFAULT_FRONT_CAMERA_ROTATION = Vector3.Zero;
+        #endregion Front Camera
+
+        #region Back Camera
+        public static readonly string BACK_CAMERA_NAME = "back camera";
+        public static readonly Vector3 DEFAULT_BACK_CAMERA_TRANSLATION = new Vector3(0, 0, -CAMERA_POSITION);
+        public static readonly Vector3 DEFAULT_BACK_CAMERA_ROTATION = new Vector3(0, CAMERA_ROTATION * 2, 0);
+        #endregion Back Camera
+
+        #region Top Camera
+        public static readonly string TOP_CAMERA_NAME = "top camera";
+        public static readonly Vector3 DEFAULT_TOP_CAMERA_TRANSLATION = new Vector3(0, CAMERA_POSITION, 0);
+        public static readonly Vector3 DEFAULT_TOP_CAMERA_ROTATION = new Vector3(-CAMERA_ROTATION, 0, 0);
+        #endregion Top Camera
+
+        #region Bottom Camera
+        public static readonly string BOTTOM_CAMERA_NAME = "bottom camera";
+        public static readonly Vector3 DEFAULT_BOTTOM_CAMERA_TRANSLATION = new Vector3(0, -CAMERA_POSITION, 0);
+        public static readonly Vector3 DEFAULT_BOTTOM_CAMERA_ROTATION = new Vector3(CAMERA_ROTATION, 0, 0);
+        #endregion Bottom Camera
+
+        #region Right Camera
+        public static readonly string RIGHT_CAMERA_NAME = "right camera";
+        public static readonly Vector3 DEFAULT_RIGHT_CAMERA_TRANSLATION = new Vector3(CAMERA_POSITION, 0, 0);
+        public static readonly Vector3 DEFAULT_RIGHT_CAMERA_ROTATION = new Vector3(0, CAMERA_ROTATION, 0);
+        #endregion Right Camera
+
+        #region Left Camera
+        public static readonly string LEFT_CAMERA_NAME = "left camera";
+        public static readonly Vector3 DEFAULT_LEFT_CAMERA_TRANSLATION = new Vector3(-CAMERA_POSITION, 0, 0);
+        public static readonly Vector3 DEFAULT_LEFT_CAMERA_ROTATION = new Vector3(0, -CAMERA_ROTATION, 0);
+        #endregion Left Camera
+
+        #endregion Cameras
         #endregion
     }
 }

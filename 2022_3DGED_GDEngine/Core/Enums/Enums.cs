@@ -160,6 +160,7 @@
 
         OnCameraSetActive,
         OnCameraCycle,
+        OnCameraUp,
 
         OnLose,
         OnWin,
