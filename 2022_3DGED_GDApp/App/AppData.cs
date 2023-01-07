@@ -5,6 +5,7 @@
 
 #endregion
 
+using GD.Engine;
 using GD.Engine.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -123,12 +124,30 @@ namespace GD.App
         #endregion
 
         #region Snake
-        public static readonly int SNAKE_GAME_MAX_SIZE = 20;
 
+        #region Snake Attributes
+        public static readonly Vector3 SNAKE_START_POSITION = new Vector3(0, 5, 5);
+        #endregion Snake Attributes
+
+        #region Snake World
+
+        #region Cube Dimensions
+        private static readonly int SNAKE_GAME_SIZE = 21;
+
+        public static readonly int SNAKE_GAME_MIN_SIZE = -SNAKE_GAME_SIZE;
+        public static readonly int SNAKE_GAME_MAX_SIZE = SNAKE_GAME_SIZE;
+        #endregion Cube Dimensions
+
+        #region GameObjects Scale
+        public static readonly int SCALE_AMOUNT = 3;
+        public static readonly Vector3 SNAKE_GAMEOBJECTS_SCALE =  new Vector3(SCALE_AMOUNT, SCALE_AMOUNT, SCALE_AMOUNT);
+        #endregion GameObjects Scale
+
+        #endregion Snake World
 
         #region Cameras
-        public static readonly int CAMERA_POSITION = 40;
-        public static readonly int CAMERA_ROTATION = 90;
+        private static readonly int CAMERA_POSITION = 65;
+        private static readonly int CAMERA_ROTATION = 90;
 
         #region Front Camera
         public static readonly string FRONT_CAMERA_NAME = "front camera";
@@ -167,6 +186,7 @@ namespace GD.App
         #endregion Left Camera
 
         #endregion Cameras
-        #endregion
+
+        #endregion Snake
     }
 }

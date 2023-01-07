@@ -12,22 +12,16 @@ namespace GD.Engine
 {
     class CollidableSnakeController : SnakeController
     {
-        private CharacterCollider snakeHeadCollider;
-        private Character snakeHead;
         private bool pressed = false;
         private Keys pressedKey;
         private Keys previousKey;
-        private long keyPressedTime = 0;
         protected float moveSpeed = 0.01f;
         protected float multiplier = 0.5f;
-        private Vector3 direction = new Vector3(0,0,0);
+        private Vector3 direction = new Vector3(AppData.SCALE_AMOUNT, 0, 0);
 
 
-        public CollidableSnakeController(CharacterCollider snakeHeadCollider)
+        public CollidableSnakeController()
         {
-            this.snakeHeadCollider = snakeHeadCollider;
-
-            snakeHead = snakeHeadCollider.Body as Character;
         }
 
 
@@ -135,7 +129,7 @@ namespace GD.Engine
 
 
             
-            object[] parameters = { direction, moveSpeed, multiplier, gameTime, pressedKey};
+            object[] parameters = { direction, moveSpeed, multiplier, gameTime};
             EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
             EventActionType.OnMove, parameters));
 

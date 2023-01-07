@@ -704,31 +704,6 @@ EventActionType.Grow));
             //InitializeCollidableHighDetailMonkey();
         }
 
-        private void InitializeSnake()
-        {
-            //game object
-            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
-            gameObject.GameObjectType = GameObjectType.Collectible;
-
-            gameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
-                new Vector3(0, 0, 0),
-                new Vector3(0, 4, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new CubeMesh(_graphics.GraphicsDevice);
-
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(unlitEffect),
-                new Material(texture, 1, Color.Green),
-                meshBase));
-
-            gameObject.AddComponent(new ThirdPersonController());
-
-
-
-            sceneManager.ActiveScene.Add(gameObject);
-        }
-
         private void InitializeBaseModel()
         {
             //game object
@@ -736,7 +711,7 @@ EventActionType.Grow));
             gameObject.GameObjectType = GameObjectType.Collectible;
 
             gameObject.Transform = new Transform(
-                new Vector3(20, 20, 20),
+                new Vector3(40, 40, 40),
                 new Vector3(0, 0, 0),
                 new Vector3(0, 0, 0));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
@@ -1112,9 +1087,9 @@ EventActionType.Grow));
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
-                new Vector3(0, 0, 0),
-                new Vector3(5, 5, 5));
+                AppData.SNAKE_GAMEOBJECTS_SCALE,
+                Vector3.Zero,
+                AppData.SNAKE_START_POSITION);
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
             var meshBase = new OctahedronMesh(_graphics.GraphicsDevice);
 
@@ -1139,12 +1114,12 @@ EventActionType.Grow));
 
             collider.Enable(snakeGameObject, false, 1);
 
-            snakeGameObject.AddComponent(new CollidableSnakeController(collider));
+            snakeGameObject.AddComponent(new CollidableSnakeController());
 
             
 
             sceneManager.ActiveScene.Add(snakeGameObject);
-            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, sceneManager);
+            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject);
         }
 
         private void InitilizeFood()
@@ -1155,7 +1130,7 @@ EventActionType.Grow));
             foodGameObject.GameObjectType = GameObjectType.Consumable;
             Random random = new Random();
             foodGameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
+                AppData.SNAKE_GAMEOBJECTS_SCALE,
                 new Vector3(0, 0, 0),
                 new Vector3(8,5,5));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
