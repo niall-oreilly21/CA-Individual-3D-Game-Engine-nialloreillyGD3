@@ -132,7 +132,8 @@
 
         //add more here...
         Snake,
-        Food
+        Food,
+        UpdateUIElements
     }
 
     /// <summary>
@@ -186,7 +187,8 @@
         Grow,
         RemoveFood,
         AddFood,
-        ResetVelocity
+        ResetVelocity,
+        UpdateUI
     }
 
     /// <summary>

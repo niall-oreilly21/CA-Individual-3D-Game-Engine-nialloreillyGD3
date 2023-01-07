@@ -1,4 +1,5 @@
-﻿using GD.Core;
+﻿using App.Managers;
+using GD.Core;
 using GD.Engine.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -74,6 +75,8 @@ namespace GD.Engine.Globals
         /// </summary>
         public static SceneManager<Scene2D> MenuSceneManager { get; internal set; }
         public static List<Character> SnakeParts { get; internal set; }
+
+        public static MyStateManager StateManager { get; internal set; }
 
         #endregion Properties
     }

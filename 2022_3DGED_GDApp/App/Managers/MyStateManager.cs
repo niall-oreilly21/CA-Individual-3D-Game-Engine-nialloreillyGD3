@@ -1,5 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GD.Engine.Events;
+using GD.Engine;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using GD.Engine.Globals;
 
 namespace App.Managers
 {
@@ -27,30 +30,59 @@ namespace App.Managers
     /// </summary>
     public class MyStateManager : GameComponent
     {
-        private double maxTimeInMS;
-        private double totalElapsedTimeMS;
-        private List<InventoryItem> inventory;
+        private float maxTimeInMS;
+        private float totalElapsedTimeMS;
+        private int currentLevel;
+        private int currentScore;
 
-        public MyStateManager(Game game, double maxTimeInMS) : base(game)
+        public MyStateManager(Game game, float maxTimeInMS) : base(game)
         {
             this.maxTimeInMS = maxTimeInMS;
-            totalElapsedTimeMS = 0;
-            inventory = new List<InventoryItem>();
-
-            //Register
+            this.totalElapsedTimeMS = 0;
+            this.currentLevel = 0;
         }
+
+        #region Properties
+        public int CurrentLevel
+        {
+            get
+            {
+                return currentLevel;
+            }
+            set
+            {
+                currentLevel = value;
+            }
+        }
+
+        public int CurrentScore
+        {
+            get
+            {
+                return currentScore;
+            }
+            set
+            {
+                currentScore = value;
+            }
+        }
+        #endregion Properties
 
         public override void Update(GameTime gameTime)
         {
+
+
             totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
 
             if (totalElapsedTimeMS >= maxTimeInMS)
             {
-                //object[] parameters = { "You win!", totalElapsedTimeMS, "win_soundcue" };
-                //EventDispatcher.Raise(
-                //    new EventData(EventCategoryType.Player,
-                //    EventActionType.OnLose,
-                //    parameters));
+                totalElapsedTimeMS = 0;
+                currentLevel++;
+                string text = "Level: " + Application.StateManager.CurrentLevel;
+                object[] parameters = { text };
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.UpdateUIElements,
+                    EventActionType.UpdateUI, parameters));
             }
 
             //check game state

@@ -21,6 +21,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Application = GD.Engine.Globals.Application;
 using Cue = GD.Engine.Managers.Cue;
@@ -386,6 +387,40 @@ namespace GD.App
             mainHUD.Add(uiGameObject);
 
             #endregion
+
+
+            uiGameObject = new GameObject("level text");
+
+            uiGameObject.Transform = new Transform(
+                new Vector3(1,1, 1), //s
+                new Vector3(0, 0, 0), //r
+                new Vector3(10,10,0)); //t
+
+            #region text
+
+            //button material and renderer
+
+            SpriteFont spriteFont = Content.Load<SpriteFont>("Assets/Fonts/menu");
+
+            material = new TextMaterial2D(spriteFont, "Level: " + stateManager.CurrentLevel, new Vector2(70, 5), Color.White, 0.8f);
+            //add renderer to draw the text
+           Renderer2D renderer2D = new Renderer2D(material);
+
+            uiGameObject.AddComponent(renderer2D);
+            LevelTextUpdate level = new LevelTextUpdate(this, uiGameObject);
+
+            #endregion
+
+            #region demo - color change button
+
+            //menuGameObject.AddComponent(new UIColorFlipOnTimeBehaviour(Color.Red, Color.Orange, 500));
+
+            #endregion
+
+            //add to scene2D
+            mainHUD.Add(uiGameObject);
+
+            
 
             #region Add Scene to Manager and Set Active
 
@@ -1237,6 +1272,7 @@ namespace GD.App
 
             Application.UISceneManager = uiManager;
             Application.MenuSceneManager = menuManager;
+            Application.StateManager = stateManager;
         }
 
         private void InitializeInput()
@@ -1333,7 +1369,7 @@ namespace GD.App
             #region Game State
 
             //add state manager for inventory and countdown
-            stateManager = new MyStateManager(this, AppData.MAX_GAME_TIME_IN_MSECS);
+            stateManager = new MyStateManager(this, AppData.MAX_SNAKE_LEVEL_TIME);
             Components.Add(stateManager);
 
             #endregion

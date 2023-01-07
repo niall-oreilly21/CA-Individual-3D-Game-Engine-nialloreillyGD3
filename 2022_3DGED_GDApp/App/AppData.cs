@@ -191,6 +191,11 @@ namespace GD.App
         public static readonly string FOOD_BASE_NAME = "food";
         #endregion Food
 
+        #region Game State Manager Data
+        public static readonly float MAX_SNAKE_LEVEL_TIME = 10000f;
+        #endregion Game State Manager Data
+
+
         #endregion Snake
     }
 }
