@@ -16,10 +16,9 @@ namespace GD.Engine
 
         protected override void HandleResponse(GameObject parentGameObject)
         {
-            // send event to game state to check time remaining. If time is still left,
-            // change state to win state
+            object[] parameters = {this.gameObject};
 
-            EventDispatcher.Raise(new EventData(EventCategoryType.Player, EventActionType.RemoveFood));   
+            EventDispatcher.Raise(new EventData(EventCategoryType.Food, EventActionType.RemoveFood, parameters));   
         }
     }
 }

@@ -131,7 +131,8 @@
         Video,
 
         //add more here...
-        Snake
+        Snake,
+        Food
     }
 
     /// <summary>
@@ -184,6 +185,7 @@
         OnMove,
         Grow,
         RemoveFood,
+        AddFood,
         ResetVelocity
     }
 

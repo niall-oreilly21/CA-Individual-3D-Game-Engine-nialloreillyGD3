@@ -24,7 +24,8 @@ namespace GD.Engine
             private List<Character> snakePartsListBodies = new List<Character>();
             private GameObject head;
             private GameObject tail;
-        float timeFlag = 0f;
+            private int snakeNumber = 1;
+            float timeFlag = 0f;
 
         #endregion Fields
 
@@ -34,6 +35,8 @@ namespace GD.Engine
             this.head = head;
             this.tail = head;
             snakePartsListBodies.Add(head.GetComponent<CharacterCollider>().Body as Character);
+
+            Application.SnakeParts = snakePartsListBodies;
 
             for (int i = 0; i < 10; i++)
             {
@@ -190,7 +193,9 @@ namespace GD.Engine
             #region Snake Parts Methods
             public void Grow()
             {
-                tail = CloneModelGameObject(tail, "tail", new Vector3(tail.Transform.Translation.X - tail.Transform.Scale.X, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
+            snakeNumber++;
+
+            tail = CloneModelGameObject(tail, "snake part " + snakeNumber, new Vector3(tail.Transform.Translation.X - tail.Transform.Scale.X, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
             snakePartsListBodies.Add(tail.GetComponent<CharacterCollider>().Body as Character);
             Application.SceneManager.ActiveScene.Add(tail);
             }

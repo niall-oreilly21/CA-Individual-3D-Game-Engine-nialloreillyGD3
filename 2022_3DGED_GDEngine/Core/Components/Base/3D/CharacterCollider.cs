@@ -16,8 +16,24 @@ namespace GD.Engine
 
         private float accelerationRate;
         private float decelerationRate;
+        private bool isColliding = false;
 
         #endregion Fields
+
+        #region Properties
+        public bool IsColliding
+        {
+            get
+            {
+                return isColliding;
+            }
+            set
+            {
+                isColliding = value;
+            }
+        }
+
+        #endregion Properties
 
         #region Constructors
 
@@ -56,6 +72,15 @@ namespace GD.Engine
             //add collision reponse handling
             if (isHandlingCollision)
                 Body.CollisionSkin.callbackFn += HandleCollision;
+        }
+
+        protected override void HandleResponse(GameObject parentGameObject)
+        {
+            if(parentGameObject.GameObjectType == GameObjectType.Consumable)
+            {
+                isColliding = true;
+            }
+            
         }
 
         #region Actions - Physics setup related

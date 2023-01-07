@@ -93,7 +93,6 @@ namespace GD.App
 
             //EventDispatcher.Raise(new EventData(EventCategoryType.Sound,
             //    EventActionType.OnPlay3D, parameters));
-
             //throw new NotImplementedException();
         }
 
@@ -112,19 +111,6 @@ namespace GD.App
 
                 case EventActionType.OnLose:
                     System.Diagnostics.Debug.WriteLine(eventData.Parameters[2] as string);
-                    break;
-
-                case EventActionType.RemoveFood:
-                    if(sceneManager.ActiveScene.Remove(ObjectType.Static, RenderType.Opaque, (x) => x.Name == "food"))
-                    {
-                        EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-EventActionType.Grow));
-                    }
-
-        
-                    break;
-
-                default:
                     break;
             }
         }
@@ -1083,7 +1069,7 @@ EventActionType.Grow));
         private void InitializeSnakeHead()
         {
             //game object
-            var snakeGameObject = new GameObject("snake", ObjectType.Dynamic, RenderType.Opaque);
+            var snakeGameObject = new GameObject("snake part 1", ObjectType.Dynamic, RenderType.Opaque);
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
@@ -1126,9 +1112,9 @@ EventActionType.Grow));
         {
 
             //game object
-            var foodGameObject = new GameObject("food", ObjectType.Static, RenderType.Opaque);
+            var foodGameObject = new GameObject("food 1", ObjectType.Static, RenderType.Opaque);
             foodGameObject.GameObjectType = GameObjectType.Consumable;
-            Random random = new Random();
+
             foodGameObject.Transform = new Transform(
                 AppData.SNAKE_GAMEOBJECTS_SCALE,
                 new Vector3(0, 0, 0),
@@ -1143,10 +1129,9 @@ EventActionType.Grow));
 
             Collider collider = new FoodCollider(foodGameObject, true,true);
             collider.AddPrimitive(
-                new Box(
+                new Sphere(
                     foodGameObject.Transform.Translation,
-                    foodGameObject.Transform.Rotation,
-                    foodGameObject.Transform.Scale
+                    AppData.SCALE_AMOUNT / 2f
                     ),
                 new MaterialProperties(0.8f, 0.8f, 0.7f)
                 );
@@ -1155,6 +1140,7 @@ EventActionType.Grow));
             foodGameObject.AddComponent(collider);
 
             sceneManager.ActiveScene.Add(foodGameObject);
+            FoodManager foodManager = new FoodManager(this, foodGameObject);
         }
 
         private void InitializeSkyBox(float worldScale)

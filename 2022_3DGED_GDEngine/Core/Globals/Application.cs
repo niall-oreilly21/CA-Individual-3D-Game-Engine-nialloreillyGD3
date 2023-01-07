@@ -73,7 +73,7 @@ namespace GD.Engine.Globals
         /// Stores and updates all Menu elements
         /// </summary>
         public static SceneManager<Scene2D> MenuSceneManager { get; internal set; }
-        public static List<GameObject> SnakeParts { get; internal set; }
+        public static List<Character> SnakeParts { get; internal set; }
 
         #endregion Properties
     }

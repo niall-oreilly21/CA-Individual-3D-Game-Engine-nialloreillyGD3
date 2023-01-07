@@ -187,6 +187,10 @@ namespace GD.App
 
         #endregion Cameras
 
+        #region Food
+        public static readonly string FOOD_BASE_NAME = "food";
+        #endregion Food
+
         #endregion Snake
     }
 }
