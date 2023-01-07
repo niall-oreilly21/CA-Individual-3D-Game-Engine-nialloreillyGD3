@@ -1110,7 +1110,7 @@ namespace GD.App
 
         private void InitilizeFood()
         {
-
+    
             //game object
             var foodGameObject = new GameObject("food 1", ObjectType.Static, RenderType.Opaque);
             foodGameObject.GameObjectType = GameObjectType.Consumable;
@@ -1138,6 +1138,8 @@ namespace GD.App
 
             collider.Enable(foodGameObject, true, 1);
             foodGameObject.AddComponent(collider);
+
+            foodGameObject.AddComponent(new FoodController());
 
             sceneManager.ActiveScene.Add(foodGameObject);
             FoodManager foodManager = new FoodManager(this, foodGameObject);

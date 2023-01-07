@@ -26,6 +26,7 @@ namespace GD.Engine
                 throw new ArgumentNullException("Active object not set. Please make sure the food item is not null");
             }
             this.food = food;
+            
         }
 
         protected override void SubscribeToEvents()
@@ -134,6 +135,8 @@ namespace GD.Engine
 
             cloneCollider.Enable(gameObjectClone, false, 1);
             gameObjectClone.AddComponent(cloneCollider);
+
+            gameObjectClone.AddComponent(new FoodController());
 
             return gameObjectClone;
 
