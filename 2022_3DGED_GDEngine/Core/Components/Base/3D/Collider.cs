@@ -84,7 +84,6 @@ namespace GD.Engine
         protected virtual bool HandleCollision(CollisionSkin collider,
             CollisionSkin collidee)
         {
-          
             //get the game object that we just collided with
             HandleResponse(collidee.Owner.Parent as GameObject);
 

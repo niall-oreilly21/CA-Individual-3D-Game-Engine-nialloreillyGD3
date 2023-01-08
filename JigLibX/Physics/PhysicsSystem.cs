@@ -2039,7 +2039,10 @@ namespace JigLibX.Physics
 
             LimitAllVelocities();
 
-            UpdateAllPositions(dt);
+            /// <summary>
+            /// Deactivated for snakes game
+            /// </summary>
+            //UpdateAllPositions(dt);
 
             NotifyAllPostPhysics(dt);
 

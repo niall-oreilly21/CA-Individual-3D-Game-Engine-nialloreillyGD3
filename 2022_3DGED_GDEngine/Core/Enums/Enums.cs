@@ -131,7 +131,9 @@
         Video,
 
         //add more here...
-        Snake
+        Snake,
+        Food,
+        UpdateUIElements
     }
 
     /// <summary>
@@ -160,6 +162,7 @@
 
         OnCameraSetActive,
         OnCameraCycle,
+        OnCameraUp,
 
         OnLose,
         OnWin,
@@ -182,7 +185,11 @@
         //add more here...
         OnMove,
         Grow,
-        RemoveFood
+        RemoveFood,
+        AddFood,
+        ResetVelocity,
+        UpdateUI,
+        UpdateActiveCameraPosition
     }
 
     /// <summary>

@@ -188,6 +188,7 @@ namespace GD.Engine.Events
                 //remove from sentinel set
                 sentinelSet.Remove(eventData);
             }
+ 
         }
 
         #endregion Update

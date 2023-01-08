@@ -1,11 +1,12 @@
 ﻿#region Pre-compiler directives
 
 #define DEMO
-#define SHOW_DEBUG_INFO
+//#define SHOW_DEBUG_INFO
 
 #endregion
 
 using App.Managers;
+using GD.App;
 using GD.Core;
 using GD.Engine;
 using GD.Engine.Events;
@@ -21,6 +22,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Application = GD.Engine.Globals.Application;
 using Cue = GD.Engine.Managers.Cue;
@@ -93,7 +95,6 @@ namespace GD.App
 
             //EventDispatcher.Raise(new EventData(EventCategoryType.Sound,
             //    EventActionType.OnPlay3D, parameters));
-
             //throw new NotImplementedException();
         }
 
@@ -113,22 +114,10 @@ namespace GD.App
                 case EventActionType.OnLose:
                     System.Diagnostics.Debug.WriteLine(eventData.Parameters[2] as string);
                     break;
-
-                case EventActionType.RemoveFood:
-                    if(sceneManager.ActiveScene.Remove(ObjectType.Static, RenderType.Opaque, (x) => x.Name == "food"))
-                    {
-                        EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-EventActionType.Grow));
-                    }
-
-        
-                    break;
-
-                default:
-                    break;
             }
         }
 
+   
         private void DemoEvent()
         {
             OnChanged += HandleOnChanged;
@@ -150,7 +139,7 @@ EventActionType.Grow));
             InitializeEngine(AppData.APP_RESOLUTION, true, true);
 
             //game specific content
-            InitializeLevel("My Amazing Game", AppData.SKYBOX_WORLD_SCALE);
+            InitializeLevel("Snake 3D", AppData.SKYBOX_WORLD_SCALE);
 
 #if SHOW_DEBUG_INFO
             InitializeDebug();
@@ -347,7 +336,7 @@ EventActionType.Grow));
             mainMenuScene.Add(menuGameObject);
 
             #endregion
-
+            
             #region Add Scene to Manager and Set Active
 
             //add scene2D to menu manager
@@ -400,6 +389,40 @@ EventActionType.Grow));
             mainHUD.Add(uiGameObject);
 
             #endregion
+
+
+            uiGameObject = new GameObject("level text");
+
+            uiGameObject.Transform = new Transform(
+                new Vector3(1,1, 1), //s
+                new Vector3(0, 0, 0), //r
+                new Vector3(10,10,0)); //t
+
+            #region text
+
+            //button material and renderer
+
+            SpriteFont spriteFont = Content.Load<SpriteFont>("Assets/Fonts/menu");
+
+            material = new TextMaterial2D(spriteFont, "Level: " + stateManager.CurrentLevel, new Vector2(70, 5), Color.White, 0.8f);
+            //add renderer to draw the text
+           Renderer2D renderer2D = new Renderer2D(material);
+
+            uiGameObject.AddComponent(renderer2D);
+            LevelTextUpdate level = new LevelTextUpdate(this, uiGameObject);
+
+            #endregion
+
+            #region demo - color change button
+
+            //menuGameObject.AddComponent(new UIColorFlipOnTimeBehaviour(Color.Red, Color.Orange, 500));
+
+            #endregion
+
+            //add to scene2D
+            mainHUD.Add(uiGameObject);
+
+            
 
             #region Add Scene to Manager and Set Active
 
@@ -485,6 +508,22 @@ EventActionType.Grow));
             litEffect.EnableDefaultLighting();
         }
 
+        public GameObject CloneModelGameObjectCamera(GameObject gameObject, string newName, Vector3 rotation, Vector3 translation)
+        {
+            GameObject gameObjectClone = new GameObject(newName);
+
+            gameObjectClone.Transform = new Transform(
+                null,
+                rotation,
+                translation
+                );
+
+            Camera camera = gameObject.GetComponent<Camera>();
+            Camera cloneCamera = new Camera(camera.FieldOfView, camera.AspectRatio, camera.NearPlaneDistance, camera.FarPlaneDistance, camera.ViewPort);
+            gameObjectClone.AddComponent(cloneCamera);
+
+            return gameObjectClone;
+        }
         private void InitializeCameras()
         {
             //camera
@@ -572,7 +611,7 @@ EventActionType.Grow));
             cameraGameObject.Transform
                 = new Transform(null,
                 null,
-                new Vector3(0, 2, 25));
+                new Vector3(0, 10, 50));
 
             //add camera (view, projection)
             cameraGameObject.AddComponent(new Camera(
@@ -595,15 +634,15 @@ EventActionType.Grow));
 
             #endregion Security
 
-            #region Front Camera
+            #region Snake Cameras
 
-            //camera 2
+            //Front Camera
             cameraGameObject = new GameObject(AppData.FRONT_CAMERA_NAME);
 
             cameraGameObject.Transform
                 = new Transform(null,
-                new Vector3(0,45,0),
-                AppData.DEFAULT_FRONT_CAMERA_POSITION);
+                AppData.DEFAULT_FRONT_CAMERA_ROTATION,
+                AppData.DEFAULT_FRONT_CAMERA_TRANSLATION);
 
             //add camera (view, projection)
             cameraGameObject.AddComponent(new Camera(
@@ -614,16 +653,44 @@ EventActionType.Grow));
 
             cameraManager.Add(cameraGameObject.Name, cameraGameObject);
 
-            #endregion Front Camera
+            //Back Camera
+            cameraManager.Add(AppData.BACK_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.BACK_CAMERA_NAME, AppData.DEFAULT_BACK_CAMERA_ROTATION, AppData.DEFAULT_BACK_CAMERA_TRANSLATION));
+
+            //Top Camera
+            cameraManager.Add(AppData.TOP_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.TOP_CAMERA_NAME, AppData.DEFAULT_TOP_CAMERA_ROTATION, AppData.DEFAULT_TOP_CAMERA_TRANSLATION));
+
+            //Bottom Camera
+            cameraManager.Add(AppData.BOTTOM_CAMERA_NAME,CloneModelGameObjectCamera(cameraGameObject, AppData.BOTTOM_CAMERA_NAME, AppData.DEFAULT_BOTTOM_CAMERA_ROTATION, AppData.DEFAULT_BOTTOM_CAMERA_TRANSLATION));
+
+            //Right Camera
+            cameraManager.Add(AppData.RIGHT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.RIGHT_CAMERA_NAME, AppData.DEFAULT_RIGHT_CAMERA_ROTATION, AppData.DEFAULT_RIGHT_CAMERA_TRANSLATION));
+
+            //Left Camera
+            cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
+            #endregion Snake Cameras
 
 
             #region Curve
 
             Curve3D curve3D = new Curve3D(CurveLoopType.Oscillate);
-            curve3D.Add(new Vector3(0, 2, 5), 0);
-            curve3D.Add(new Vector3(0, 5, 10), 1000);
-            curve3D.Add(new Vector3(0, 8, 25), 2500);
-            curve3D.Add(new Vector3(0, 5, 35), 4000);
+            int x = 0;
+            int y = 10;
+            int z = 50;
+            curve3D.Add(new Vector3(10, y, z), 0);
+            curve3D.Add(new Vector3(10, y, z), 1000);
+            curve3D.Add(new Vector3(20, y, z), 2000);
+            //curve3D.Add(new Vector3(30, y, 10), 3000);
+            //curve3D.Add(new Vector3(30, y, 13), 3000);
+            //curve3D.Add(new Vector3(50, y, z), 5000);
+
+
+            Curve3D curve3D2 = new Curve3D(CurveLoopType.Oscillate);
+            curve3D2.Add(new Vector3(20, y, z), 0);
+            curve3D2.Add(new Vector3(10, y, z), 1000);
+            curve3D2.Add(new Vector3(10, y, z), 2000);
+            //curve3D2.Add(new Vector3(30, y, 10), 3000);
+            //curve3D2.Add(new Vector3(30, y, 13), 3000);
+            //curve3D2.Add(new Vector3(50, y, z), 5000);
 
             cameraGameObject = new GameObject(AppData.CURVE_CAMERA_NAME);
             cameraGameObject.Transform =
@@ -637,10 +704,11 @@ EventActionType.Grow));
             //define what action the curve will apply to the target game object
             var curveAction = (Curve3D curve, GameObject target, GameTime gameTime) =>
             {
-                target.Transform.SetTranslation(curve.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 4));
+                target.Transform.SetTranslation(curve.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
             };
 
-            cameraGameObject.AddComponent(new CurveBehaviour(curve3D, curveAction));
+            Curve3D[] curve3DArray = { curve3D, curve3D2};
+            cameraGameObject.AddComponent(new CurveBehaviourManager(curve3DArray, curveAction));
 
             cameraManager.Add(cameraGameObject.Name, cameraGameObject);
 
@@ -651,7 +719,7 @@ EventActionType.Grow));
 
         private void InitializeCollidableContent(float worldScale)
         {
-            InitializeCollidableGround(worldScale);
+            //InitializeCollidableGround(worldScale);
             //InitializeCollidableBox();
             InitializeBaseModel();
             InitilizeFood();
@@ -659,58 +727,46 @@ EventActionType.Grow));
             //InitializeCollidableHighDetailMonkey();
         }
 
-        private void InitializeSnake()
-        {
-            //game object
-            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
-            gameObject.GameObjectType = GameObjectType.Collectible;
-
-            gameObject.Transform = new Transform(
-                new Vector3(2, 2, 2),
-                new Vector3(0, 0, 0),
-                new Vector3(0, 4, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new CubeMesh(_graphics.GraphicsDevice);
-
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(unlitEffect),
-                new Material(texture, 1, Color.Green),
-                meshBase));
-
-            gameObject.AddComponent(new ThirdPersonController());
-
-
-
-            sceneManager.ActiveScene.Add(gameObject);
-        }
-
         private void InitializeBaseModel()
         {
             //game object
-            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
+            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Transparent);
             gameObject.GameObjectType = GameObjectType.Collectible;
 
             gameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
+                new Vector3(40, 40, 40),
                 new Vector3(0, 0, 0),
-                new Vector3(0, 4, 0));
+                new Vector3(0, 0, 0));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
             var meshBase = new CubeMesh(_graphics.GraphicsDevice);
 
             gameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 1),
+                new Material(texture, 0.2f),
                 meshBase));
 
-            int size = 10;
+ //var collider = new BaseCollider(gameObject, true);
 
-            //for(int x = 0; x < size; x++)
+ //           gameObject.AddComponent(collider);
+ //           collider.AddPrimitive(
+ //               new Box(
+ //                   gameObject.Transform.Translation,
+ //                   gameObject.Transform.Rotation,
+ //                   gameObject.Transform.Scale
+ //                   ),
+ //               new MaterialProperties(0.8f, 0.8f, 0.7f)
+ //               );
+
+ //           collider.Enable(gameObject, true, 1);
+            sceneManager.ActiveScene.Add(gameObject);
+
+            //for (int x = 0; x < AppData.SNAKE_GAME_MAX_SIZE; x++)
             //{
-            //    for(int y = 0; y < size; y++)
+            //    for (int y = 0; y < AppData.SNAKE_GAME_MAX_SIZE; y++)
             //    {
-            //        for(int z = 0; z < size; z++)
+            //        for (int z = 0; z < AppData.SNAKE_GAME_MAX_SIZE; z++)
             //        {
-            //            gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(x, y, z));
+            //            gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, 2 * new Vector3(x, y, z));
             //            cubeBaseNumber++;
             //            sceneManager.ActiveScene.Add(gameObject);
             //        }
@@ -754,7 +810,7 @@ EventActionType.Grow));
             //        foreach (GameObject gameObjectBase in gameObjectsY)
             //        {
             //            sceneManager.ActiveScene.Add(gameObjectBase);
-                        
+
             //        }
             //    }
             //}
@@ -907,7 +963,7 @@ EventActionType.Grow));
                 new Vector3(0, 90, 0),
                 new Vector3(0, 16, 0));
             texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            Tetrahedron meshTriangle = new Tetrahedron(_graphics.GraphicsDevice);
+            TetrahedronMesh meshTriangle = new TetrahedronMesh(_graphics.GraphicsDevice);
 
             gameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
@@ -1050,22 +1106,22 @@ EventActionType.Grow));
         private void InitializeSnakeHead()
         {
             //game object
-            var snakeGameObject = new GameObject("snake", ObjectType.Dynamic, RenderType.Opaque);
+            var snakeGameObject = new GameObject("snake part 1", ObjectType.Dynamic, RenderType.Opaque);
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
-                new Vector3(0, 0, 0),
-                new Vector3(5, 5, 5));
+                AppData.SNAKE_GAMEOBJECTS_SCALE,
+                Vector3.Zero,
+                AppData.SNAKE_START_POSITION);
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new CubeMesh(_graphics.GraphicsDevice);
+            var meshBase = new OctahedronMesh(_graphics.GraphicsDevice);
 
             snakeGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
                 new Material(texture, 1),
                 meshBase));
 
-
+            Application.Player = snakeGameObject;
 
             var collider = new CharacterCollider(snakeGameObject, true);
 
@@ -1081,25 +1137,27 @@ EventActionType.Grow));
 
             collider.Enable(snakeGameObject, false, 1);
 
-            snakeGameObject.AddComponent(new CollidableSnakeController(collider));
+            snakeGameObject.AddComponent(new CollidableSnakeController());
+
+            
 
             sceneManager.ActiveScene.Add(snakeGameObject);
-            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, sceneManager);
+            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject);
         }
 
         private void InitilizeFood()
         {
-
+    
             //game object
-            var foodGameObject = new GameObject("food", ObjectType.Static, RenderType.Opaque);
+            var foodGameObject = new GameObject("food 1", ObjectType.Static, RenderType.Opaque);
             foodGameObject.GameObjectType = GameObjectType.Consumable;
-            Random random = new Random();
+
             foodGameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
+                AppData.SNAKE_GAMEOBJECTS_SCALE,
                 new Vector3(0, 0, 0),
                 new Vector3(8,5,5));
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new CubeMesh(_graphics.GraphicsDevice);
+            var meshBase = new SphereMesh(_graphics.GraphicsDevice);
 
             foodGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
@@ -1108,10 +1166,9 @@ EventActionType.Grow));
 
             Collider collider = new FoodCollider(foodGameObject, true,true);
             collider.AddPrimitive(
-                new Box(
+                new Sphere(
                     foodGameObject.Transform.Translation,
-                    foodGameObject.Transform.Rotation,
-                    foodGameObject.Transform.Scale
+                    AppData.SCALE_AMOUNT / 2f
                     ),
                 new MaterialProperties(0.8f, 0.8f, 0.7f)
                 );
@@ -1119,7 +1176,10 @@ EventActionType.Grow));
             collider.Enable(foodGameObject, true, 1);
             foodGameObject.AddComponent(collider);
 
+            foodGameObject.AddComponent(new FoodController());
+
             sceneManager.ActiveScene.Add(foodGameObject);
+            FoodManager foodManager = new FoodManager(this, foodGameObject);
         }
 
         private void InitializeSkyBox(float worldScale)
@@ -1214,6 +1274,7 @@ EventActionType.Grow));
 
             Application.UISceneManager = uiManager;
             Application.MenuSceneManager = menuManager;
+            Application.StateManager = stateManager;
         }
 
         private void InitializeInput()
@@ -1310,7 +1371,7 @@ EventActionType.Grow));
             #region Game State
 
             //add state manager for inventory and countdown
-            stateManager = new MyStateManager(this, AppData.MAX_GAME_TIME_IN_MSECS);
+            stateManager = new MyStateManager(this, AppData.MAX_SNAKE_LEVEL_TIME);
             Components.Add(stateManager);
 
             #endregion
@@ -1459,14 +1520,111 @@ EventActionType.Grow));
 
             #region Demo - Camera switching
 
-            if (Input.Keys.IsPressed(Keys.F1))
-                cameraManager.SetActiveCamera(AppData.FIRST_PERSON_CAMERA_NAME);
-            else if (Input.Keys.IsPressed(Keys.F2))
-                cameraManager.SetActiveCamera(AppData.SECURITY_CAMERA_NAME);
-            else if (Input.Keys.IsPressed(Keys.F3))
-                cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
-            else if (Input.Keys.IsPressed(Keys.F4))
-                cameraManager.SetActiveCamera(AppData.THIRD_PERSON_CAMERA_NAME);
+            //if (Input.Keys.IsPressed(Keys.F1))
+            //    cameraManager.SetActiveCamera(AppData.FIRST_PERSON_CAMERA_NAME);
+            //else if (Input.Keys.IsPressed(Keys.F2))
+            //    cameraManager.SetActiveCamera(AppData.SECURITY_CAMERA_NAME);
+            //else if (Input.Keys.IsPressed(Keys.F3))
+            //    cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
+            //else if (Input.Keys.IsPressed(Keys.F4))
+            //    cameraManager.SetActiveCamera(AppData.THIRD_PERSON_CAMERA_NAME);
+
+
+            if (Input.Keys.WasJustPressed(Keys.Up))
+            {
+                if  (
+                        cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
+                        cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME  ||
+                        cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME
+                    )
+                {
+                    cameraManager.SetActiveCamera(AppData.TOP_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                }
+            }
+            else if (Input.Keys.WasJustPressed(Keys.Right))
+            {
+                if (cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                }
+            }
+            else if (Input.Keys.WasJustPressed(Keys.Left))
+            {
+                if (cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                }
+            }
+            else if (Input.Keys.WasJustPressed(Keys.Down))
+            {
+                if (
+                        cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME
+                   )
+                {
+                    cameraManager.SetActiveCamera(AppData.BOTTOM_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                }
+            }
+
 
             #endregion Demo - Camera switching
 

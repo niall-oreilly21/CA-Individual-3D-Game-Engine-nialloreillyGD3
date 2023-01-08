@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GD.Engine
 {
-    public class Tetrahedron : TexturedMesh<VertexPositionNormalTexture>
+    public class TetrahedronMesh : TexturedMesh<VertexPositionNormalTexture>
     {
-        public Tetrahedron(GraphicsDevice graphicsDevice) : base(graphicsDevice)
+        public TetrahedronMesh(GraphicsDevice graphicsDevice) : base(graphicsDevice)
         {
             Initialize();
         }
@@ -15,12 +15,15 @@ namespace GD.Engine
         {
             #region Positions
 
-            Vector3 buttomLeft = new Vector3(0f, 0f, 0f);
-            Vector3 bottomRight = new Vector3(1f, 0f, 0f);
-            Vector3 back = new Vector3(0.5f, 0f, 0.8f);
-            Vector3 top = new Vector3(0.5f, 0.8f, 0.4f);
+            //Vector3 buttomLeft = new Vector3(0f, 0f, 0f);
+            //Vector3 bottomRight = new Vector3(1f, 0f, 0f);
+            //Vector3 back = new Vector3(0.5f, 0f, 0.8f);
+            //Vector3 top = new Vector3(0.5f, 0.8f, 0.5f);
 
-
+            Vector3 buttomLeft = new Vector3(-0.5f, -0.5f, -0.5f);
+            Vector3 bottomRight = new Vector3(0.5f, -0.5f, -0.5f);
+            Vector3 back = new Vector3(0f, -0.5f, 0.5f);
+            Vector3 top = new Vector3(0f, 0.5f, 0f);
 
             #endregion Positions
 
@@ -60,12 +63,12 @@ namespace GD.Engine
 
             #region Normals
 
-            Vector3 frontNormal = new Vector3(0, 1, -1);
-            Vector3 bottomNormal = new Vector3(0, -1, 0);
-            Vector3 leftNormal = new Vector3(-1, 0, 1);
-            Vector3 rightNormal = new Vector3(1, 0, 1);
+            Vector3 frontNormal = new Triangle(buttomLeft, top, bottomRight).Normal;
+            Vector3 bottomNormal = new Triangle(buttomLeft, bottomRight, back).Normal;
+            Vector3 leftNormal = new Triangle(buttomLeft, top, back).Normal;
+            Vector3 rightNormal = new Triangle(bottomRight, back, top).Normal;
 
-
+            System.Diagnostics.Debug.WriteLine(frontNormal);
             #endregion Normals
 
             vertices = new VertexPositionNormalTexture[]
@@ -82,27 +85,33 @@ namespace GD.Engine
             //Vector3 top = new Vector3(0.5f, 0.8f, 0.4f);
 
                 // Front Surface
-                new VertexPositionNormalTexture(buttomLeft,frontNormal,frontBottomLeft),
-                new VertexPositionNormalTexture(back ,frontNormal,frontTopLeft),
+                new VertexPositionNormalTexture(buttomLeft,leftNormal,frontBottomLeft),
                 new VertexPositionNormalTexture(top,frontNormal,frontBottomRight),
+                new VertexPositionNormalTexture(back ,bottomNormal,frontTopLeft),
+                
 
 
                 // Back Surface                
-                new VertexPositionNormalTexture(bottomRight,bottomNormal,backBottomRight),
-                new VertexPositionNormalTexture(top,bottomNormal,backBottomLeft),
-                new VertexPositionNormalTexture(back,bottomNormal,backTopLeft),
+                new VertexPositionNormalTexture(bottomRight,rightNormal,backBottomRight),
+                //new VertexPositionNormalTexture(top,bottomNormal,backBottomLeft),
+                //new VertexPositionNormalTexture(back,bottomNormal,backTopLeft),
 
-                // Left Surface
-                new VertexPositionNormalTexture(buttomLeft,leftNormal,leftBottomLeft),
-                new VertexPositionNormalTexture(top,leftNormal,leftTopLeft),
-                new VertexPositionNormalTexture(bottomRight,leftNormal,leftBottomRight),
+                //// Left Surface
+                //new VertexPositionNormalTexture(buttomLeft,leftNormal,leftBottomLeft),
+                //new VertexPositionNormalTexture(top,leftNormal,leftTopLeft),
+                //new VertexPositionNormalTexture(bottomRight,leftNormal,leftBottomRight),
 
-                // Right Surface
-                new VertexPositionNormalTexture(buttomLeft,rightNormal,rightBottomLeft),              
-                new VertexPositionNormalTexture(bottomRight,rightNormal,rightBottomRight),
-                new VertexPositionNormalTexture(back,rightNormal,rightTopLeft),
+                //// Right Surface
+                //new VertexPositionNormalTexture(buttomLeft,rightNormal,rightBottomLeft),              
+                //new VertexPositionNormalTexture(bottomRight,rightNormal,rightBottomRight),
+                //new VertexPositionNormalTexture(back,rightNormal,rightTopLeft),
 
             };
+
+            //Vector3 buttomLeft = new Vector3(0f, 0f, 0f); 0
+            //Vector3 bottomRight = new Vector3(1f, 0f, 0f); 1
+            //Vector3 back = new Vector3(0.5f, 0f, 0.8f); 2
+            //Vector3 top = new Vector3(0.5f, 0.8f, 0.5f); 3
 
             indices = new ushort[] {
                 0, 1, 2,
