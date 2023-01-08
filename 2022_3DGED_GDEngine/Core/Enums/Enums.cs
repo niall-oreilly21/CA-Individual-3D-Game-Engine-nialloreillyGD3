@@ -188,7 +188,8 @@
         RemoveFood,
         AddFood,
         ResetVelocity,
-        UpdateUI
+        UpdateUI,
+        UpdateActiveCameraPosition
     }
 
     /// <summary>

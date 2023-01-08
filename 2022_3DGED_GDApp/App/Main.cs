@@ -1,11 +1,12 @@
 ﻿#region Pre-compiler directives
 
 #define DEMO
-#define SHOW_DEBUG_INFO
+//#define SHOW_DEBUG_INFO
 
 #endregion
 
 using App.Managers;
+using GD.App;
 using GD.Core;
 using GD.Engine;
 using GD.Engine.Events;
@@ -116,6 +117,7 @@ namespace GD.App
             }
         }
 
+   
         private void DemoEvent()
         {
             OnChanged += HandleOnChanged;
@@ -137,7 +139,7 @@ namespace GD.App
             InitializeEngine(AppData.APP_RESOLUTION, true, true);
 
             //game specific content
-            InitializeLevel("My Amazing Game", AppData.SKYBOX_WORLD_SCALE);
+            InitializeLevel("Snake 3D", AppData.SKYBOX_WORLD_SCALE);
 
 #if SHOW_DEBUG_INFO
             InitializeDebug();
@@ -1541,7 +1543,7 @@ namespace GD.App
                 }
                 else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
                 {
-                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
                 }
                 else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
                 {
@@ -1615,7 +1617,7 @@ namespace GD.App
                 }
                 else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
                 {
-                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
                 }
                 else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
                 {
