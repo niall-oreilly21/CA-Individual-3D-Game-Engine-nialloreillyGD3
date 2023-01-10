@@ -19,7 +19,7 @@ namespace GD.Engine
                   EventActionType.OnPause));
 
             EventDispatcher.Raise(new EventData(EventCategoryType.Player,
-      EventActionType.OnLose));
+            EventActionType.OnLose));
         }
       
     }

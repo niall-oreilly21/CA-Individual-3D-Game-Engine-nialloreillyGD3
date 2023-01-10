@@ -127,6 +127,9 @@ namespace GD.App
 
         #region Snake Attributes
         public static readonly Vector3 SNAKE_START_POSITION = new Vector3(0, 5, 5);
+        public static readonly float SNAKE_DEFAULT_MOVE_SPEED = 600f;
+        private static readonly float SNAKE_MULTIPLIER_SPEED = 0.02f;
+        public static readonly float SNAKE_MULTIPLIER = SNAKE_DEFAULT_MOVE_SPEED * SNAKE_MULTIPLIER_SPEED;
         #endregion Snake Attributes
 
         #region Snake World
@@ -194,11 +197,13 @@ namespace GD.App
         #region Food
         public static readonly string FOOD_BASE_NAME = "food";
         public static readonly float FOOD_ROTATE_SPEED = 0.05f;
+        public static readonly int DEFAULT_INITIAL_FOOD = 5;
         #endregion Food
 
         #region Bomb
         public static readonly string BOMB_BASE_NAME = "bomb";
         public static readonly float BOMB_ROTATE_SPEED = 0.03f;
+        public static readonly int DEFAULT_INITIAL_BOMBS = 2;
         #endregion Bomb
 
         #endregion Consumables
@@ -214,6 +219,10 @@ namespace GD.App
         #endregion End Menu
 
         #endregion Menus
+
+        #region Snake State Manager
+        public static readonly int TOTAL_LEVELS = 2;
+        #endregion Snake State Manager
 
         #endregion Snake
     }

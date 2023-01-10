@@ -32,20 +32,22 @@ namespace App.Managers
     /// <summary>
     /// Countdown/up timer and we need an inventory system
     /// </summary>
-    public class MyStateManager : GameComponent
+    public class MyStateManager : PausableGameComponent
     {
         private float maxTimeInMS;
         private float totalElapsedTimeMS;
         private float totalElapsedTimeCameraRotationMS;
         private int currentLevel;
         private int currentScore;
+        private int totalLevels;
 
-        public MyStateManager(Game game, float maxTimeInMS) : base(game)
+        public MyStateManager(Game game, float maxTimeInMS, int totalLevels) : base(game)
         {
             this.maxTimeInMS = maxTimeInMS;
             this.totalElapsedTimeMS = 0;
             this.totalElapsedTimeCameraRotationMS = 0;
             this.currentLevel = 1;
+            this.totalLevels = totalLevels;
         }
 
         #region Properties
@@ -76,45 +78,57 @@ namespace App.Managers
 
         public override void Update(GameTime gameTime)
         {
-            currentLevel++;
-            totalElapsedTimeMS = 0;
-            currentLevel++;
-            string text = "Level: " + Application.StateManager.CurrentLevel;
-            object[] parameters = { text };
-            //totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
+            //System.Diagnostics.Debug.WriteLine(totalElapsedTimeMS);
+            //totalElapsedTimeMS = 0;
+            //currentLevel++;
+            //string text = "Level: " + Application.StateManager.CurrentLevel;
+            //object[] parameters = { text };
+            totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
 
-            //if (totalElapsedTimeMS >= maxTimeInMS)
-            //{
-            //    totalElapsedTimeMS = 0;
-            //    currentLevel++;
-            //    string text = "Level: " + Application.StateManager.CurrentLevel;
-            //    object[] parameters = { text };
+            if (totalElapsedTimeMS >= maxTimeInMS)
+            {
+                StartNewLevel();       
+            }
 
-            //    EventDispatcher.Raise(new EventData(EventCategoryType.UpdateUIElements,
-            //        EventActionType.UpdateUI, parameters));
-            //}
 
-            //if (CheckCameraRotateStart())
-            //{
-            //    UpdateCameraRotataion(gameTime);
-            //}
-
-            //check game state
-            //if win then
-            //CheckWinLose()
-            //show win toast
-            //if lose then
-            //show lose toast
-            //fade to black
-            //show restart screen
-
-            base.Update(gameTime);
+            //CheckCurrentLevel();
+            // base.Update(gameTime);
         }
 
-        private bool CheckWinLose()
+        private void UpdateUI()
         {
-            return false;
-            //check individual game items
+            string text = "Level: " + Application.StateManager.CurrentLevel;
+            object[] parameters = { text };
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.UpdateUIElements,
+                EventActionType.UpdateUI, parameters));
+        }
+        private void StartNewLevel()
+        {
+            UpdateUI();
+            totalElapsedTimeMS = 0;            
+
+            Application.StateManager.CurrentLevel++;
+
+            if(currentLevel == 2)
+            {
+                EventDispatcher.Raise(new EventData(EventCategoryType.Player,
+                  EventActionType.InitilizeBombManager));
+            }
+           
+
+        }
+
+        private void CheckCurrentLevel()
+        {
+            if(currentLevel > totalLevels)
+            {
+                EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+                EventActionType.OnPause));
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.Player,
+                EventActionType.OnLose));
+            }
         }
 
         private bool CheckCameraRotateStart()

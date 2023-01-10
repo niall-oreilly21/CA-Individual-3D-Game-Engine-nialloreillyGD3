@@ -12,6 +12,8 @@ using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
+using Application = GD.Engine.Globals.Application;
 
 namespace GD.Engine
 {
@@ -38,7 +40,7 @@ namespace GD.Engine
 
             Application.SnakeParts = snakePartsListBodies;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 2; i++)
             {
                 Grow();
             }
@@ -60,11 +62,9 @@ namespace GD.Engine
                 case EventActionType.OnMove: //TODO
                     Vector3 direction = (Vector3)eventData.Parameters[0];
                     float moveSpeed = (float)eventData.Parameters[1];
-                    float multiplier = (float)eventData.Parameters[2];
-                    GameTime gameTime = (GameTime)eventData.Parameters[3];
+                    GameTime gameTime = (GameTime)eventData.Parameters[2];
 
-
-                    Move(direction, moveSpeed, multiplier, gameTime);
+                    Move(direction, moveSpeed, gameTime);
                     break;
 
                 case EventActionType.Grow: //TODO
@@ -127,7 +127,7 @@ namespace GD.Engine
         }
 
         private float totalTime = 0f;
-        private void Move(Vector3 newTranslation, float moveSpeed, float multiplier, GameTime gameTime)
+        private void Move(Vector3 newTranslation, float moveSpeed, GameTime gameTime)
         {
 
             Vector3 newTranslate;
@@ -139,7 +139,7 @@ namespace GD.Engine
             }
 
 
-            if (totalTime - timeFlag < (500f))
+            if (totalTime - timeFlag < moveSpeed)
             {
                 return;
             }
@@ -194,10 +194,12 @@ namespace GD.Engine
             public void Grow()
             {
             snakeNumber++;
-
             tail = CloneModelGameObject(tail, "snake part " + snakeNumber, new Vector3(tail.Transform.Translation.X - tail.Transform.Scale.X, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
             snakePartsListBodies.Add(tail.GetComponent<CharacterCollider>().Body as Character);
             Application.SceneManager.ActiveScene.Add(tail);
+
+            Application.SnakeMoveSpeed -= AppData.SNAKE_MULTIPLIER;
+            Application.StateManager.CurrentScore++;
             }
             #endregion Snake Parts Methods
         }

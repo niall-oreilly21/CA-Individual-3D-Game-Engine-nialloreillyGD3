@@ -15,13 +15,13 @@ namespace GD.Engine
         private bool pressed = false;
         private Keys pressedKey;
         private Keys previousKey;
-        protected float moveSpeed = 0.01f;
-        protected float multiplier = 0.5f;
+        protected float moveSpeed;
         private Vector3 direction = new Vector3(AppData.SCALE_AMOUNT, 0, 0);
 
 
         public CollidableSnakeController()
         {
+            this.moveSpeed = Application.SnakeMoveSpeed;
         }
 
 
@@ -129,7 +129,7 @@ namespace GD.Engine
 
 
             
-            object[] parameters = { direction, moveSpeed, multiplier, gameTime};
+            object[] parameters = { direction, moveSpeed, gameTime};
             EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
             EventActionType.OnMove, parameters));
 

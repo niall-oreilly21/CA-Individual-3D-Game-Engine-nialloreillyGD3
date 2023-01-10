@@ -30,8 +30,6 @@ namespace GD.Engine
 
             this.consumable = consumable;
             this.consumableID = 0;
-            InitializeConsumableItem();
-
         }
 
         #region Properties
@@ -65,11 +63,6 @@ namespace GD.Engine
         protected bool RemoveConsumable(GameObject consumableToRemove)
         {
             return Application.SceneManager.ActiveScene.Remove(ObjectType.Static, RenderType.Opaque, (consumable) => consumable.Transform == consumableToRemove.Transform);
-        }
-
-        protected virtual void RemoveConsumableItem(GameObject consumableToRemove)
-        {
-
         }
 
         protected virtual void InitializeConsumableItem()

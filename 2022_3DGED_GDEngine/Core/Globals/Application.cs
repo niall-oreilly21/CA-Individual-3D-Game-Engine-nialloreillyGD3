@@ -78,6 +78,8 @@ namespace GD.Engine.Globals
 
         public static MyStateManager StateManager { get; internal set; }
 
+        public static float SnakeMoveSpeed { get; internal set; }
+
         #endregion Properties
     }
 }

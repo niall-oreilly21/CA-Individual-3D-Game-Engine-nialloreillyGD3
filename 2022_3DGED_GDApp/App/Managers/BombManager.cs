@@ -17,6 +17,10 @@ namespace GD.Engine
     {
         public BombManager(Game game, GameObject consumable) : base(game, consumable)
         {
+            for (int i = 0; i < AppData.DEFAULT_INITIAL_BOMBS; i++)
+            {
+                InitializeConsumableItem();
+            }
         }
 
         protected override void SubscribeToEvents()
@@ -28,11 +32,6 @@ namespace GD.Engine
         {
             switch (eventData.EventActionType)
             {
-                case EventActionType.RemoveBomb:
-                    GameObject removeFoodItem = (GameObject)eventData.Parameters[0];
-                    RemoveConsumableItem(removeFoodItem);
-                    break;
-
                 case EventActionType.AddBomb:
                     InitializeConsumableItem();
                     break;
@@ -43,14 +42,6 @@ namespace GD.Engine
 
         }
 
-        protected override void RemoveConsumableItem(GameObject consumableToRemove)
-        {
-            if (base.RemoveConsumable(consumableToRemove))
-            {
-                EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                EventActionType.Grow));
-            }
-        }
         protected override void InitializeConsumableItem()
         {
             base.ResetSnakeHeadColliding();

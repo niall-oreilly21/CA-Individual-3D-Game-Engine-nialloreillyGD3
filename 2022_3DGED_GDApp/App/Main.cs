@@ -116,6 +116,10 @@ namespace GD.App
                 case EventActionType.OnLose:
                     menuManager.SetActiveScene(AppData.END_MENU_ID);
                     break;
+
+                case EventActionType.InitilizeBombManager:
+                    bombManager = new BombManager(this, bombGameObject);
+                    break;
             }
         }
 
@@ -209,7 +213,6 @@ namespace GD.App
         private void InitilizeConsumableManagers()
         {
             foodManager = new FoodManager(this, foodGameObject);
-            bombManager = new BombManager(this, bombGameObject);
         }
 
         private void InitializeMenu()
@@ -505,7 +508,7 @@ namespace GD.App
 
             SpriteFont spriteFont = Content.Load<SpriteFont>("Assets/Fonts/menu");
 
-            material = new TextMaterial2D(spriteFont, "Level: " + stateManager.CurrentLevel, new Vector2(70, 5), Color.White, 0.8f);
+            material = new TextMaterial2D(spriteFont, "Level: " + stateManager.CurrentScore, new Vector2(70, 5), Color.White, 0.8f);
             //add renderer to draw the text
            Renderer2D renderer2D = new Renderer2D(material);
 
@@ -1239,6 +1242,8 @@ namespace GD.App
 
             collider.Enable(snakeGameObject, false, 1);
 
+            Application.SnakeMoveSpeed = AppData.SNAKE_DEFAULT_MOVE_SPEED;
+
             snakeGameObject.AddComponent(new CollidableSnakeController());
 
             
@@ -1505,7 +1510,7 @@ namespace GD.App
             #region Game State
 
             //add state manager for inventory and countdown
-            stateManager = new MyStateManager(this, AppData.MAX_SNAKE_LEVEL_TIME);
+            stateManager = new MyStateManager(this, AppData.MAX_SNAKE_LEVEL_TIME, AppData.TOTAL_LEVELS);
             Components.Add(stateManager);
 
             #endregion

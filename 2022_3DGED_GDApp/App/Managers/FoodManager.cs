@@ -20,6 +20,10 @@ namespace GD.Engine
     {
         public FoodManager(Game game, GameObject consumable) : base(game, consumable)
         {
+            for (int i = 0; i < AppData.DEFAULT_INITIAL_FOOD; i++)
+            {
+                InitializeConsumableItem();
+            }
         }
 
         protected override void SubscribeToEvents()
@@ -33,7 +37,7 @@ namespace GD.Engine
             {
                 case EventActionType.RemoveFood:
                     GameObject removeFoodItem = (GameObject)eventData.Parameters[0];
-                    RemoveConsumableItem(removeFoodItem);
+                    RemoveFoodItem(removeFoodItem);
                     break;
 
                 case EventActionType.AddFood:
@@ -46,13 +50,18 @@ namespace GD.Engine
 
         }
 
-        protected override void RemoveConsumableItem(GameObject consumableToRemove)
+        private void RemoveFoodItem(GameObject consumableToRemove)
         {
             if(base.RemoveConsumable(consumableToRemove))
             {
-                EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                EventActionType.Grow));
+                for(int i = 0; i <= Application.StateManager.CurrentLevel; i++)
+                {
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake, EventActionType.Grow));
+                }
+
+                InitializeConsumableItem();
             }
+
         }
         protected override void InitializeConsumableItem()
         {

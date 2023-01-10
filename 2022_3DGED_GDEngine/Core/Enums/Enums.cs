@@ -191,8 +191,8 @@
         ResetVelocity,
         UpdateUI,
         UpdateActiveCameraPosition,
-        RemoveBomb,
-        AddBomb
+        AddBomb,
+        InitilizeBombManager
     }
 
     /// <summary>
