@@ -187,9 +187,19 @@ namespace GD.App
 
         #endregion Cameras
 
+        #region Consumables
+
         #region Food
         public static readonly string FOOD_BASE_NAME = "food";
+        public static readonly float FOOD_ROTATE_SPEED = 0.05f;
         #endregion Food
+
+        #region Bomb
+        public static readonly string BOMB_BASE_NAME = "bomb";
+        public static readonly float BOMB_ROTATE_SPEED = 0.03f;
+        #endregion Bomb
+
+        #endregion Consumables
 
         #region Game State Manager Data
         public static readonly float MAX_SNAKE_LEVEL_TIME = 10000f;

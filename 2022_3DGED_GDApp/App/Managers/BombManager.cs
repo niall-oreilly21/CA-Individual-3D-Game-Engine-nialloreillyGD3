@@ -1,42 +1,39 @@
 ﻿using GD.App;
 using GD.Engine.Events;
-using GD.Engine.Globals;
-using GD.Engine.Managers;
+using GD.Engine;
 using JigLibX.Collision;
 using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
-using SharpDX.Direct2D1.Effects;
-using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using GD.Engine.Globals;
 
 namespace GD.Engine
 {
-    public class FoodManager : ConsumableManager
+    public class BombManager : ConsumableManager
     {
-        public FoodManager(Game game, GameObject consumable) : base(game, consumable)
+        public BombManager(Game game, GameObject consumable) : base(game, consumable)
         {
         }
 
         protected override void SubscribeToEvents()
         {
-            EventDispatcher.Subscribe(EventCategoryType.Food, HandleEvent);
+            EventDispatcher.Subscribe(EventCategoryType.Bomb, HandleEvent);
         }
 
         protected override void HandleEvent(EventData eventData)
         {
             switch (eventData.EventActionType)
             {
-                case EventActionType.RemoveFood:
+                case EventActionType.RemoveBomb:
                     GameObject removeFoodItem = (GameObject)eventData.Parameters[0];
                     RemoveConsumableItem(removeFoodItem);
                     break;
 
-                case EventActionType.AddFood:
+                case EventActionType.AddBomb:
                     InitializeConsumableItem();
                     break;
 
@@ -48,7 +45,7 @@ namespace GD.Engine
 
         protected override void RemoveConsumableItem(GameObject consumableToRemove)
         {
-            if(base.RemoveConsumable(consumableToRemove))
+            if (base.RemoveConsumable(consumableToRemove))
             {
                 EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
                 EventActionType.Grow));
@@ -58,7 +55,7 @@ namespace GD.Engine
         {
             base.ResetSnakeHeadColliding();
 
-            Consumable = CloneModelGameObject(AppData.FOOD_BASE_NAME + ConsumableID);
+            Consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
 
             GameObject snakePart;
             CharacterCollider snakePartCollider;
@@ -70,7 +67,7 @@ namespace GD.Engine
 
                 if (snakePartCollider.IsColliding)
                 {
-                    Consumable = CloneModelGameObject(AppData.FOOD_BASE_NAME + ConsumableID);
+                    Consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
                     snakePartCollider.IsColliding = false;
                 }
             }
@@ -84,12 +81,15 @@ namespace GD.Engine
 
             GameObject gameObjectClone = base.CloneModelGameObject(newName);
 
-            Collider cloneCollider = new FoodCollider(gameObjectClone, true);
+            Collider cloneCollider = new BombCollider(gameObjectClone, true);
 
             cloneCollider.AddPrimitive(
-                new Sphere(
-                     gameObjectClone.Transform.Translation,
-                    AppData.SCALE_AMOUNT / 2f
+                new Box
+                (
+                    gameObjectClone.Transform.Translation,
+                    gameObjectClone.Transform.Rotation,
+                    gameObjectClone.Transform.Scale
+
                     ),
                 new MaterialProperties(0.8f, 0.8f, 0.7f)
                 );
@@ -97,7 +97,7 @@ namespace GD.Engine
             cloneCollider.Enable(gameObjectClone, false, 1);
             gameObjectClone.AddComponent(cloneCollider);
 
-            gameObjectClone.AddComponent(new FoodController(AppData.FOOD_ROTATE_SPEED));
+            gameObjectClone.AddComponent(new BombController(AppData.BOMB_ROTATE_SPEED));
 
             return gameObjectClone;
 

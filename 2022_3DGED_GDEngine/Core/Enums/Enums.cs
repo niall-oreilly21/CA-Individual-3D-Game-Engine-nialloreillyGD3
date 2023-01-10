@@ -133,7 +133,8 @@
         //add more here...
         Snake,
         Food,
-        UpdateUIElements
+        UpdateUIElements,
+        Bomb
     }
 
     /// <summary>
@@ -189,7 +190,9 @@
         AddFood,
         ResetVelocity,
         UpdateUI,
-        UpdateActiveCameraPosition
+        UpdateActiveCameraPosition,
+        RemoveBomb,
+        AddBomb
     }
 
     /// <summary>

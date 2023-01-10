@@ -50,6 +50,8 @@ namespace GD.App
         private MyStateManager stateManager;
         private SceneManager<Scene2D> uiManager;
         private SceneManager<Scene2D> menuManager;
+        private ConsumableManager foodManager, bombManager;
+        private GameObject foodGameObject, bombGameObject;
         private int cubeBaseNumber = 1;
 
 #if DEMO
@@ -187,6 +189,7 @@ namespace GD.App
 
             //add the player
             InitializeSnakeHead();
+            InitilizeConsumableManagers();
 
             //add UI and menu
             InitializeUI();
@@ -200,6 +203,12 @@ namespace GD.App
             EventDispatcher.Raise(new EventData(EventCategoryType.Menu, EventActionType.OnPause));
 
             #endregion
+        }
+
+        private void InitilizeConsumableManagers()
+        {
+            foodManager = new FoodManager(this, foodGameObject);
+            bombManager = new BombManager(this, bombGameObject);
         }
 
         private void InitializeMenu()
@@ -723,6 +732,7 @@ namespace GD.App
             //InitializeCollidableBox();
             InitializeBaseModel();
             InitilizeFood();
+            InitilizeBomb();
             //InitializeSnake();
             //InitializeCollidableHighDetailMonkey();
         }
@@ -1149,13 +1159,13 @@ namespace GD.App
         {
     
             //game object
-            var foodGameObject = new GameObject("food 1", ObjectType.Static, RenderType.Opaque);
+            foodGameObject = new GameObject("food 1", ObjectType.Static, RenderType.Opaque);
             foodGameObject.GameObjectType = GameObjectType.Consumable;
 
             foodGameObject.Transform = new Transform(
                 AppData.SNAKE_GAMEOBJECTS_SCALE,
-                new Vector3(0, 0, 0),
-                new Vector3(8,5,5));
+                Vector3.Zero,
+                Vector3.Zero);
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
             var meshBase = new SphereMesh(_graphics.GraphicsDevice);
 
@@ -1176,10 +1186,42 @@ namespace GD.App
             collider.Enable(foodGameObject, true, 1);
             foodGameObject.AddComponent(collider);
 
-            foodGameObject.AddComponent(new FoodController());
+            foodGameObject.AddComponent(new FoodController(AppData.FOOD_ROTATE_SPEED));
+        }
 
-            sceneManager.ActiveScene.Add(foodGameObject);
-            FoodManager foodManager = new FoodManager(this, foodGameObject);
+        private void InitilizeBomb()
+        {
+
+            //game object
+            bombGameObject = new GameObject("bomb 1", ObjectType.Static, RenderType.Opaque);
+            bombGameObject.GameObjectType = GameObjectType.Consumable;
+
+            bombGameObject.Transform = new Transform
+                (
+                AppData.SNAKE_GAMEOBJECTS_SCALE,
+                Vector3.Zero,
+                Vector3.Zero);
+            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+            var meshBase = new TetrahedronMesh(_graphics.GraphicsDevice);
+
+            bombGameObject.AddComponent(new Renderer(
+                new GDBasicEffect(unlitEffect),
+                new Material(texture, 1, Color.Green),
+                meshBase));
+
+            Collider collider = new FoodCollider(bombGameObject, true, true);
+            collider.AddPrimitive(
+                new Sphere(
+                    bombGameObject.Transform.Translation,
+                    AppData.SCALE_AMOUNT / 2f
+                    ),
+                new MaterialProperties(0.8f, 0.8f, 0.7f)
+                );
+
+            collider.Enable(bombGameObject, true, 1);
+            bombGameObject.AddComponent(collider);
+
+            bombGameObject.AddComponent(new BombController(AppData.BOMB_ROTATE_SPEED));
         }
 
         private void InitializeSkyBox(float worldScale)

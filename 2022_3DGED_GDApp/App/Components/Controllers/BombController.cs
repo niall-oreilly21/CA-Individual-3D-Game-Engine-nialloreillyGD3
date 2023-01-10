@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
-    public class FoodController : ConsumableController
+    public class BombController : ConsumableController
     {
-        public FoodController(float rotationSpeed) : base(rotationSpeed)
+        public BombController(float rotationSpeed) : base(rotationSpeed)
         {
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            transform.Rotate(RotationAmount, RotationAmount, RotationAmount);
+            transform.Rotate(0, RotationAmount, 0);
         }
     }
 }

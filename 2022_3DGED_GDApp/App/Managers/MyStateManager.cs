@@ -76,18 +76,18 @@ namespace App.Managers
 
         public override void Update(GameTime gameTime)
         {
-            totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
+            //totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
 
-            if (totalElapsedTimeMS >= maxTimeInMS)
-            {
-                totalElapsedTimeMS = 0;
-                currentLevel++;
-                string text = "Level: " + Application.StateManager.CurrentLevel;
-                object[] parameters = { text };
+            //if (totalElapsedTimeMS >= maxTimeInMS)
+            //{
+            //    totalElapsedTimeMS = 0;
+            //    currentLevel++;
+            //    string text = "Level: " + Application.StateManager.CurrentLevel;
+            //    object[] parameters = { text };
 
-                EventDispatcher.Raise(new EventData(EventCategoryType.UpdateUIElements,
-                    EventActionType.UpdateUI, parameters));
-            }
+            //    EventDispatcher.Raise(new EventData(EventCategoryType.UpdateUIElements,
+            //        EventActionType.UpdateUI, parameters));
+            //}
 
             if(CheckCameraRotateStart())
             {
