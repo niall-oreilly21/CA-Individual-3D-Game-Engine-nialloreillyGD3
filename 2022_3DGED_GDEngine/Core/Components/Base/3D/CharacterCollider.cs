@@ -1,4 +1,5 @@
-﻿using JigLibX.Collision;
+﻿using GD.Engine.Events;
+using JigLibX.Collision;
 using JigLibX.Math;
 using JigLibX.Physics;
 using Microsoft.Xna.Framework;
@@ -80,7 +81,18 @@ namespace GD.Engine
             {
                 isColliding = true;
             }
-            
+
+            if(parentGameObject.GameObjectType == GameObjectType.Player && parentGameObject.Name == "snake part 1")
+            {
+                System.Diagnostics.Debug.WriteLine("Here");
+                EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+                EventActionType.OnPause));
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.Player,
+                EventActionType.OnLose));
+            }
+           
+
         }
 
         #region Actions - Physics setup related

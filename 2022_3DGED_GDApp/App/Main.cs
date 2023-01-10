@@ -1,7 +1,7 @@
 ﻿#region Pre-compiler directives
 
 #define DEMO
-//#define SHOW_DEBUG_INFO
+#define SHOW_DEBUG_INFO
 
 #endregion
 
@@ -114,7 +114,7 @@ namespace GD.App
                     break;
 
                 case EventActionType.OnLose:
-                    System.Diagnostics.Debug.WriteLine(eventData.Parameters[2] as string);
+                    menuManager.SetActiveScene(AppData.END_MENU_ID);
                     break;
             }
         }
@@ -194,6 +194,7 @@ namespace GD.App
             //add UI and menu
             InitializeUI();
             InitializeMenu();
+            InitializeEndGameMenu();
 
             //send all initial events
 
@@ -354,6 +355,97 @@ namespace GD.App
             //what menu do i see first?
             menuManager.SetActiveScene(mainMenuScene.ID);
 
+            #endregion
+        }
+
+        private void InitializeEndGameMenu()
+        {
+            GameObject menuGameObject = null;
+            Material2D material = null;
+            Renderer2D renderer2D = null;
+            Texture2D btnTexture = Content.Load<Texture2D>("Assets/Textures/Menu/Controls/genericbtn");
+            Texture2D backGroundtexture = Content.Load<Texture2D>("Assets/Textures/Menu/Backgrounds/exitmenuwithtrans");
+            SpriteFont spriteFont = Content.Load<SpriteFont>("Assets/Fonts/menu");
+            Vector2 btnScale = new Vector2(0.8f, 0.8f);
+
+            #region Create new menu scene
+
+            //add new main menu scene
+            var endMenuScene = new Scene2D(AppData.END_MENU_ID);
+
+            #endregion
+
+            #region Add Background Texture
+
+            menuGameObject = new GameObject("background");
+            var scaleToWindow = _graphics.GetScaleFactorForResolution(backGroundtexture, Vector2.Zero);
+            //set transform
+            menuGameObject.Transform = new Transform(
+                new Vector3(scaleToWindow, 1), //s
+                new Vector3(0, 0, 0), //r
+                new Vector3(0, 0, 0)); //t
+
+            #region texture
+
+            //material and renderer
+            material = new TextureMaterial2D(backGroundtexture, Color.White, 1);
+            menuGameObject.AddComponent(new Renderer2D(material));
+
+            #endregion
+
+            //add to scene2D
+            endMenuScene.Add(menuGameObject);
+
+            #endregion
+
+            #region Add Play button and text
+
+            menuGameObject = new GameObject("replay");
+            menuGameObject.Transform = new Transform(
+            new Vector3(btnScale, 1), //s
+            new Vector3(0, 0, 0), //r
+            new Vector3(Application.Screen.ScreenCentre - btnScale * btnTexture.GetCenter() - new Vector2(0, 30), 0)); //t
+
+            #region texture
+
+            //material and renderer
+            material = new TextureMaterial2D(btnTexture, Color.Green, 0.9f);
+            //add renderer to draw the texture
+            renderer2D = new Renderer2D(material);
+            //add renderer as a component
+            menuGameObject.AddComponent(renderer2D);
+
+            #endregion
+
+            #region collider
+
+            //add bounding box for mouse collisions using the renderer for the texture (which will automatically correctly size the bounding box for mouse interactions)
+            var buttonCollider2D = new ButtonCollider2D(menuGameObject, renderer2D);
+            //add any events on MouseButton (e.g. Left, Right, Hover)
+            buttonCollider2D.AddEvent(MouseButton.Left, new EventData(EventCategoryType.Menu, EventActionType.OnPlay));
+            menuGameObject.AddComponent(buttonCollider2D);
+
+            #endregion
+
+            #region text
+
+            //material and renderer
+            material = new TextMaterial2D(spriteFont, "Replay", new Vector2(70, 5), Color.White, 0.8f);
+            //add renderer to draw the text
+            renderer2D = new Renderer2D(material);
+            menuGameObject.AddComponent(renderer2D);
+
+            #endregion
+
+            //add to scene2D
+            endMenuScene.Add(menuGameObject);
+
+            #endregion
+
+            #region Add Scene to Manager and Set Active
+
+            //add scene2D to menu manager
+            menuManager.Add(endMenuScene.ID, endMenuScene);
             #endregion
         }
 
@@ -1140,7 +1232,7 @@ namespace GD.App
                 new Box(
                     snakeGameObject.Transform.Translation,
                     snakeGameObject.Transform.Rotation,
-                    snakeGameObject.Transform.Scale
+                    AppData.SNAKE_GAMEOBJECTS_COLLIDER_SCALE
                     ),
                 new MaterialProperties(0.8f, 0.8f, 0.7f)
                 );

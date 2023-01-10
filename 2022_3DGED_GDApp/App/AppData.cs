@@ -140,7 +140,9 @@ namespace GD.App
 
         #region GameObjects Scale
         public static readonly int SCALE_AMOUNT = 3;
+        public static readonly float COLLIDER_SCALE_AMOUNT = 2.5f;
         public static readonly Vector3 SNAKE_GAMEOBJECTS_SCALE =  new Vector3(SCALE_AMOUNT, SCALE_AMOUNT, SCALE_AMOUNT);
+        public static readonly Vector3 SNAKE_GAMEOBJECTS_COLLIDER_SCALE = new Vector3(COLLIDER_SCALE_AMOUNT, COLLIDER_SCALE_AMOUNT, COLLIDER_SCALE_AMOUNT);
         #endregion GameObjects Scale
 
         #endregion Snake World
@@ -205,6 +207,13 @@ namespace GD.App
         public static readonly float MAX_SNAKE_LEVEL_TIME = 10000f;
         #endregion Game State Manager Data
 
+        #region Menus
+
+        #region End Menu
+        public static readonly string END_MENU_ID = "end menu";
+        #endregion End Menu
+
+        #endregion Menus
 
         #endregion Snake
     }

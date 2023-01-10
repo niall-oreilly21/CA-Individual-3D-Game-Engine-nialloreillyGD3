@@ -76,6 +76,11 @@ namespace App.Managers
 
         public override void Update(GameTime gameTime)
         {
+            currentLevel++;
+            totalElapsedTimeMS = 0;
+            currentLevel++;
+            string text = "Level: " + Application.StateManager.CurrentLevel;
+            object[] parameters = { text };
             //totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
 
             //if (totalElapsedTimeMS >= maxTimeInMS)
@@ -89,10 +94,10 @@ namespace App.Managers
             //        EventActionType.UpdateUI, parameters));
             //}
 
-            if(CheckCameraRotateStart())
-            {
-                UpdateCameraRotataion(gameTime);
-            }
+            //if (CheckCameraRotateStart())
+            //{
+            //    UpdateCameraRotataion(gameTime);
+            //}
 
             //check game state
             //if win then

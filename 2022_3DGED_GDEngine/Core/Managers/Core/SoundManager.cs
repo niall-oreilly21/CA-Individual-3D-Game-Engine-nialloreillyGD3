@@ -181,11 +181,11 @@ namespace GD.Engine.Managers
 
         private void HandlePlayerEvent(EventData eventData)
         {
-            if (eventData.EventActionType == EventActionType.OnLose
-                || eventData.EventActionType == EventActionType.OnWin)
-            {
-                Play2D(eventData.Parameters[0] as string);
-            }
+            //if (eventData.EventActionType == EventActionType.OnLose
+            //    || eventData.EventActionType == EventActionType.OnWin)
+            //{
+            //    Play2D(eventData.Parameters[0] as string);
+            //}
 
             //switch (eventData.EventActionType)
             //{

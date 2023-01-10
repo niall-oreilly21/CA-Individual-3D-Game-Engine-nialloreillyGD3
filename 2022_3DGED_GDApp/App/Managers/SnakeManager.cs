@@ -179,7 +179,7 @@ namespace GD.Engine
                 new Box(
                     gameObjectClone.Transform.Translation,
                     gameObjectClone.Transform.Rotation,
-                    gameObjectClone.Transform.Scale
+                    AppData.SNAKE_GAMEOBJECTS_COLLIDER_SCALE
                     ),
                 new MaterialProperties(0.8f, 0.8f, 0.7f)
                 );
