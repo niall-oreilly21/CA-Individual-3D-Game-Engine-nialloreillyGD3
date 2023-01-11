@@ -39,6 +39,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Fonts/Perf.spritefont
 
+#begin Assets/Fonts/snake.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Assets/Fonts/snake.spritefont
+
 #begin Assets/Models/bottle2.fbx
 /importer:FbxImporter
 /processor:ModelProcessor
@@ -390,6 +397,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Menu/Backgrounds/exitmenuwithtrans.png
 
+#begin Assets/Textures/Menu/Backgrounds/main_menu_bg_1280x720.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Menu/Backgrounds/main_menu_bg_1280x720.png
+
 #begin Assets/Textures/Menu/Backgrounds/mainmenu.PNG
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -401,6 +420,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Menu/Backgrounds/mainmenu.PNG
+
+#begin Assets/Textures/Menu/Backgrounds/snake_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Menu/Backgrounds/snake_background.png
 
 #begin Assets/Textures/Menu/Controls/genericbtn.png
 /importer:TextureImporter
@@ -461,6 +492,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Menu/Controls/reticuleOpen.png
+
+#begin Assets/Textures/Menu/Controls/snake_button_texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Menu/Controls/snake_button_texture.png
+
+#begin Assets/Textures/Menu/Controls/snake_button_texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Menu/Controls/snake_button_texture.png
 
 #begin Assets/Textures/Menu/Controls/ui_progress_32_8.png
 /importer:TextureImporter

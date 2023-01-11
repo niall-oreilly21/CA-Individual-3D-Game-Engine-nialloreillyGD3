@@ -1,5 +1,7 @@
 ﻿using GD.Engine.Events;
+using GD.Engine.Globals;
 using GD.Engine.Inputs;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
 namespace GD.Engine
@@ -58,9 +60,19 @@ namespace GD.Engine
             }
         }
 
+        public override void CheckMouseOver()
+        {
+            base.CheckMouseOver();
+
+            if (!Bounds.Intersects(Input.Mouse.Bounds))
+            {
+                gameObject.Transform.SetScale(Vector3.One);
+            }
+        }
         protected override void HandleMouseHover()
         {
             List<EventData> eventList;
+
 
             //get events for this button
             events.TryGetValue(MouseButton.Hover, out eventList);
@@ -71,6 +83,7 @@ namespace GD.Engine
                 foreach (EventData eventData in eventList)
                     EventDispatcher.Raise(eventData);
             }
+            gameObject.Transform.SetScale(1.1f, 1.1f,0);
         }
 
         protected override void HandleMouseScroll(int scrollDelta)

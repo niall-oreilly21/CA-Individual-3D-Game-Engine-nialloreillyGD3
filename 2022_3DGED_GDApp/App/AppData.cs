@@ -214,8 +214,26 @@ namespace GD.App
 
         #region Menus
 
+        #region Menu Background
+        public static readonly string SNAKE_MENU_BACKGROUND_TEXTURE_PATH = "Assets/Textures/Menu/Backgrounds/snake_background";
+        public static readonly string BACKGROUND_NAME = "background";
+        #endregion Menu Background
+
+        #region Controls
+        public static readonly string SNAKE_MENU_BUTTON_TEXTURE_PATH = "Assets/Textures/Menu/Controls/snake_button_texture";
+        #endregion Controls
+
+        #region Main Menu
+
+        #region Start Game Button
+        public static readonly string START_GAME_BUTTON_NAME = "start game button";
+        #endregion Start Game Button
+
+        #endregion Main Menu
+
+
         #region End Menu
-        public static readonly string END_MENU_ID = "end menu";
+        public static readonly string END_MENU_NAME = "end menu";
         #endregion End Menu
 
         #endregion Menus

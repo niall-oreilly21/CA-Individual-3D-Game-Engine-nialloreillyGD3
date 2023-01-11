@@ -26,21 +26,23 @@ namespace GD.Engine
             private List<Character> snakePartsListBodies = new List<Character>();
             private GameObject head;
             private GameObject tail;
+            private OctahedronMesh snakeBodyMesh;
             private int snakeNumber = 1;
             float timeFlag = 0f;
 
         #endregion Fields
 
         #region Constructors
-        public SnakeManager(Game game, GameObject head) : base(game)
+        public SnakeManager(Game game, GameObject head, OctahedronMesh snakeBodyMesh) : base(game)
         {
             this.head = head;
             this.tail = head;
+            this.snakeBodyMesh = snakeBodyMesh;
             snakePartsListBodies.Add(head.GetComponent<CharacterCollider>().Body as Character);
 
             Application.SnakeParts = snakePartsListBodies;
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 6; i++)
             {
                 Grow();
             }
@@ -169,7 +171,7 @@ namespace GD.Engine
                     );
 
                 Renderer renderer = gameObject.GetComponent<Renderer>();
-                Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, renderer.Mesh);
+                Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, snakeBodyMesh);
                 gameObjectClone.AddComponent(cloneRenderer);
 
 
