@@ -60,15 +60,6 @@ namespace GD.Engine
             }
         }
 
-        public override void CheckMouseOver()
-        {
-            base.CheckMouseOver();
-
-            if (!Bounds.Intersects(Input.Mouse.Bounds))
-            {
-                gameObject.Transform.SetScale(Vector3.One);
-            }
-        }
         protected override void HandleMouseHover()
         {
             List<EventData> eventList;
@@ -83,7 +74,6 @@ namespace GD.Engine
                 foreach (EventData eventData in eventList)
                     EventDispatcher.Raise(eventData);
             }
-            gameObject.Transform.SetScale(1.1f, 1.1f,0);
         }
 
         protected override void HandleMouseScroll(int scrollDelta)

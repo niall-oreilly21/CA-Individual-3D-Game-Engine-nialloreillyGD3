@@ -165,7 +165,7 @@ namespace GD.Engine
                 gameObjectClone.GameObjectType = gameObject.GameObjectType;
 
                 gameObjectClone.Transform = new Transform(
-                    gameObject.Transform.Scale,
+                    AppData.SNAKE_GAMEOBJECTS_SCALE,
                     gameObject.Transform.Rotation,
                     translation
                     );

@@ -142,7 +142,7 @@ namespace GD.App
         #endregion Cube Dimensions
 
         #region GameObjects Scale
-        public static readonly int SCALE_AMOUNT = 3;
+        public static readonly float SCALE_AMOUNT = 3f;
         public static readonly float COLLIDER_SCALE_AMOUNT = 2.5f;
         public static readonly Vector3 SNAKE_GAMEOBJECTS_SCALE =  new Vector3(SCALE_AMOUNT, SCALE_AMOUNT, SCALE_AMOUNT);
         public static readonly Vector3 SNAKE_GAMEOBJECTS_COLLIDER_SCALE = new Vector3(COLLIDER_SCALE_AMOUNT, COLLIDER_SCALE_AMOUNT, COLLIDER_SCALE_AMOUNT);
@@ -213,6 +213,11 @@ namespace GD.App
         #endregion Game State Manager Data
 
         #region Menus
+
+        #region Button Attributes
+        public static readonly float BUTTON_HOVER_SCALE_BY = 0.1f;
+        public static readonly float BUTTON_HOVER_OFFSET = 12f;
+        #endregion button Attributes
 
         #region Menu Background
         public static readonly string SNAKE_MENU_BACKGROUND_TEXTURE_PATH = "Assets/Textures/Menu/Backgrounds/snake_background";

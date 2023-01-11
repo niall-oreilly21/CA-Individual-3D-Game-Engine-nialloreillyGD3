@@ -224,7 +224,7 @@ namespace GD.App
             Texture2D btnTexture = Content.Load<Texture2D>(AppData.SNAKE_MENU_BUTTON_TEXTURE_PATH);
             Texture2D menuBackgroundTexture = Content.Load<Texture2D>(AppData.SNAKE_MENU_BACKGROUND_TEXTURE_PATH);
             SpriteFont spriteFont = Content.Load<SpriteFont>("Assets/Fonts/snake");
-            Vector2 btnScale = Vector2.One;
+            Vector2 btnScale = new Vector2(1f, 1f);
             
             #region Create new menu scene
 
@@ -266,7 +266,6 @@ namespace GD.App
                 new Vector3(0, 0, 0),
                 new Vector3(Application.Screen.ScreenCentre - btnScale * btnTexture.GetCenter() - new Vector2(0, 150), 0)
             );
-
             #region Texture
             material = new TextureMaterial2D(btnTexture, Color.MediumPurple, 0.9f);
             renderer2D = new Renderer2D(material);
@@ -275,7 +274,7 @@ namespace GD.App
 
             #region Collider
             //add bounding box for mouse collisions using the renderer for the texture (which will automatically correctly size the bounding box for mouse interactions)
-            buttonCollider2D = new ButtonCollider2D(menuGameObject, renderer2D);
+            buttonCollider2D = new SnakeButtonCollider2D(menuGameObject, renderer2D, AppData.BUTTON_HOVER_SCALE_BY, AppData.BUTTON_HOVER_OFFSET);
             //add any events on MouseButton (e.g. Left, Right, Hover)
             buttonCollider2D.AddEvent(MouseButton.Left, new EventData(EventCategoryType.Menu, EventActionType.OnPlay));
             menuGameObject.AddComponent(buttonCollider2D);
@@ -314,7 +313,7 @@ namespace GD.App
 
             #region Collider
             //add bounding box for mouse collisions using the renderer for the texture (which will automatically correctly size the bounding box for mouse interactions)
-            buttonCollider2D = new ButtonCollider2D(menuGameObject, renderer2D);
+            buttonCollider2D = new SnakeButtonCollider2D(menuGameObject, renderer2D, AppData.BUTTON_HOVER_SCALE_BY, AppData.BUTTON_HOVER_OFFSET);
             //add any events on MouseButton (e.g. Left, Right, Hover)
             buttonCollider2D.AddEvent(MouseButton.Left, new EventData(EventCategoryType.Menu, EventActionType.OnPlay));
             menuGameObject.AddComponent(buttonCollider2D);
@@ -350,7 +349,7 @@ namespace GD.App
 
             #region Collider
             //add bounding box for mouse collisions using the renderer for the texture (which will automatically correctly size the bounding box for mouse interactions)
-            buttonCollider2D = new ButtonCollider2D(menuGameObject, renderer2D);
+            buttonCollider2D = new SnakeButtonCollider2D(menuGameObject, renderer2D, AppData.BUTTON_HOVER_SCALE_BY, AppData.BUTTON_HOVER_OFFSET);
             //add any events on MouseButton (e.g. Left, Right, Hover)
             buttonCollider2D.AddEvent(MouseButton.Left, new EventData(EventCategoryType.Menu, EventActionType.OnPlay));
             menuGameObject.AddComponent(buttonCollider2D);
@@ -388,7 +387,7 @@ namespace GD.App
 
             #region Collider
             //add bounding box for mouse collisions using the renderer for the texture (which will automatically correctly size the bounding box for mouse interactions)
-            buttonCollider2D = new ButtonCollider2D(menuGameObject, renderer2D);
+            buttonCollider2D = new SnakeButtonCollider2D(menuGameObject, renderer2D, AppData.BUTTON_HOVER_SCALE_BY, AppData.BUTTON_HOVER_OFFSET);
             //add any events on MouseButton (e.g. Left, Right, Hover)
             buttonCollider2D.AddEvent(MouseButton.Left, new EventData(EventCategoryType.Menu, EventActionType.OnPlay));
             menuGameObject.AddComponent(buttonCollider2D);
@@ -1290,7 +1289,7 @@ namespace GD.App
                 Vector3.Zero,
                 AppData.SNAKE_START_POSITION);
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new CubeMesh(_graphics.GraphicsDevice);
+            var meshBase = new OctahedronMesh(_graphics.GraphicsDevice);
 
             snakeGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
