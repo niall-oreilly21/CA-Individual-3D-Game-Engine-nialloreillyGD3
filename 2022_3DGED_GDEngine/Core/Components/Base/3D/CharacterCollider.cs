@@ -84,9 +84,9 @@ namespace GD.Engine
 
             if(parentGameObject.GameObjectType == GameObjectType.Player && parentGameObject.Name == "snake part 1")
             {
-                System.Diagnostics.Debug.WriteLine("Here");
-                EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
-                EventActionType.OnPause));
+                //System.Diagnostics.Debug.WriteLine("Here");
+                //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+                //EventActionType.OnPause));
 
                 EventDispatcher.Raise(new EventData(EventCategoryType.Player,
                 EventActionType.OnLose));

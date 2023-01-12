@@ -1,7 +1,7 @@
 ﻿#region Pre-compiler directives
 
 #define DEMO
-#define SHOW_DEBUG_INFO
+//#define SHOW_DEBUG_INFO
 
 #endregion
 
@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using static GD.Engine.Camera;
 using Application = GD.Engine.Globals.Application;
 using Cue = GD.Engine.Managers.Cue;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
@@ -50,9 +51,15 @@ namespace GD.App
         private MyStateManager stateManager;
         private SceneManager<Scene2D> uiManager;
         private SceneManager<Scene2D> menuManager;
-        private ConsumableManager foodManager, bombManager;
-        private GameObject foodGameObject, bombGameObject;
+        private ConsumableManager foodManager;
+        private ConsumableManager bombManager;
+        private GameObject foodGameObject;
+        private GameObject bombGameObject;
+        private GameObject menuBackgroundTextureGameObject;
+        private GameObject snakeCameraGameObject;
         private int cubeBaseNumber = 1;
+        private BasicEffect exitSignEffect;
+        private Vector3 cameraPosition;
 
 #if DEMO
 
@@ -114,6 +121,7 @@ namespace GD.App
                     break;
 
                 case EventActionType.OnLose:
+
                     menuManager.SetActiveScene(AppData.END_MENU_NAME);
                     break;
 
@@ -197,8 +205,7 @@ namespace GD.App
 
             //add UI and menu
             InitializeUI();
-            InitializeMenu();
-            InitializeEndGameMenu();
+            InitializeMenus();
 
             //send all initial events
 
@@ -215,14 +222,41 @@ namespace GD.App
             foodManager = new FoodManager(this, foodGameObject);
         }
 
-        private void InitializeMenu()
+        private void InitializeMenus()
+        {
+            InitializeMenusBackgroundTexture();
+            InitializeMainMenu();
+            InitializeEndGameMenu();
+        }
+
+        private void InitializeMenusBackgroundTexture()
+        {
+            #region Menus Background Texture
+            Texture2D menuBackgroundTexture = Content.Load<Texture2D>(AppData.SNAKE_MENU_BACKGROUND_TEXTURE_PATH);
+
+            menuBackgroundTextureGameObject = new GameObject(AppData.BACKGROUND_NAME);
+            var scaleToWindow = _graphics.GetScaleFactorForResolution(menuBackgroundTexture, Vector2.Zero);
+
+            menuBackgroundTextureGameObject.Transform =
+                new Transform
+                (
+                    new Vector3(scaleToWindow, 1),
+                    new Vector3(0, 0, 0),
+                    new Vector3(0, 0, 0)
+                );
+
+            var material = new TextureMaterial2D(menuBackgroundTexture, Color.White, 1);
+            menuBackgroundTextureGameObject.AddComponent(new Renderer2D(material));
+
+            #endregion Menus Background Texture
+        }
+        private void InitializeMainMenu()
         {
             GameObject menuGameObject = null;
             Material2D material = null;
             Renderer2D renderer2D = null;
             ButtonCollider2D buttonCollider2D = null;
             Texture2D btnTexture = Content.Load<Texture2D>(AppData.SNAKE_MENU_BUTTON_TEXTURE_PATH);
-            Texture2D menuBackgroundTexture = Content.Load<Texture2D>(AppData.SNAKE_MENU_BACKGROUND_TEXTURE_PATH);
             SpriteFont spriteFont = Content.Load<SpriteFont>("Assets/Fonts/snake");
             Vector2 btnScale = new Vector2(1f, 1f);
             
@@ -230,31 +264,23 @@ namespace GD.App
 
             //add new main menu scene
             var mainMenuScene = new Scene2D("main menu");
-
+            mainMenuScene.Add(menuBackgroundTextureGameObject);
             #endregion
 
-            #region Add Background Texture
-
-            menuGameObject = new GameObject(AppData.BACKGROUND_NAME);
-            var scaleToWindow = _graphics.GetScaleFactorForResolution(menuBackgroundTexture, Vector2.Zero);
-            //set transform
+            #region Main Menu Title
+            Vector2 titleScale = new Vector2(1.5f, 1.5f);
+            menuGameObject = new GameObject("menu title");
             menuGameObject.Transform = new Transform(
-                new Vector3(scaleToWindow, 1), //s
-                new Vector3(0, 0, 0), //r
-                new Vector3(0, 0, 0)); //t
+            new Vector3(titleScale, 1), //s
+            new Vector3(0, 0, 0), //r
+            new Vector3(Application.Screen.ScreenCentre - titleScale * btnTexture.GetCenter() - new Vector2(0, 300), 0)); //t
+            material = new TextMaterial2D(spriteFont, "SNAKE 3D", new Vector2(20, 5), Color.Black, 0.8f);
+            //add renderer to draw the text
+            renderer2D = new Renderer2D(material);
+            menuGameObject.AddComponent(renderer2D);
 
-            #region texture
-
-            //material and renderer
-            material = new TextureMaterial2D(menuBackgroundTexture, Color.White, 1);
-            menuGameObject.AddComponent(new Renderer2D(material));
-
-            #endregion
-
-            //add to scene2D
             mainMenuScene.Add(menuGameObject);
-
-            #endregion
+            #endregion Main Menu Title
 
             #region Start Game Button
 
@@ -407,19 +433,6 @@ namespace GD.App
             mainMenuScene.Add(menuGameObject);
             #endregion Exit Button
 
-            Vector2 titleScale = new Vector2(1.5f, 1.5f);
-            menuGameObject = new GameObject("menu title");
-            menuGameObject.Transform = new Transform(
-            new Vector3(titleScale, 1), //s
-            new Vector3(0, 0, 0), //r
-            new Vector3(Application.Screen.ScreenCentre - titleScale * btnTexture.GetCenter() - new Vector2(0, 300), 0)); //t
-            material = new TextMaterial2D(spriteFont, "SNAKE 3D", new Vector2(20, 5), Color.Black, 0.8f);
-            //add renderer to draw the text
-            renderer2D = new Renderer2D(material);
-            menuGameObject.AddComponent(renderer2D);
-
-            mainMenuScene.Add(menuGameObject);
-            
             #region Add Scene to Manager and Set Active
 
             //add scene2D to menu manager
@@ -433,93 +446,7 @@ namespace GD.App
 
         private void InitializeEndGameMenu()
         {
-            GameObject menuGameObject = null;
-            Material2D material = null;
-            Renderer2D renderer2D = null;
-            Texture2D btnTexture = Content.Load<Texture2D>("Assets/Textures/Menu/Controls/genericbtn");
-            Texture2D backGroundtexture = Content.Load<Texture2D>("Assets/Textures/Menu/Backgrounds/exitmenuwithtrans");
-            SpriteFont spriteFont = Content.Load<SpriteFont>("Assets/Fonts/menu");
-            Vector2 btnScale = new Vector2(0.8f, 0.8f);
-
-            #region Create new menu scene
-
-            //add new main menu scene
-            var endMenuScene = new Scene2D(AppData.END_MENU_NAME);
-
-            #endregion
-
-            #region Add Background Texture
-
-            menuGameObject = new GameObject("background");
-            var scaleToWindow = _graphics.GetScaleFactorForResolution(backGroundtexture, Vector2.Zero);
-            //set transform
-            menuGameObject.Transform = new Transform(
-                new Vector3(scaleToWindow, 1), //s
-                new Vector3(0, 0, 0), //r
-                new Vector3(0, 0, 0)); //t
-
-            #region texture
-
-            //material and renderer
-            material = new TextureMaterial2D(backGroundtexture, Color.White, 1);
-            menuGameObject.AddComponent(new Renderer2D(material));
-
-            #endregion
-
-            //add to scene2D
-            endMenuScene.Add(menuGameObject);
-
-            #endregion
-
-            #region Add Play button and text
-
-            menuGameObject = new GameObject("replay");
-            menuGameObject.Transform = new Transform(
-            new Vector3(btnScale, 1), //s
-            new Vector3(0, 0, 0), //r
-            new Vector3(Application.Screen.ScreenCentre - btnScale * btnTexture.GetCenter() - new Vector2(0, 30), 0)); //t
-
-            #region texture
-
-            //material and renderer
-            material = new TextureMaterial2D(btnTexture, Color.Green, 0.9f);
-            //add renderer to draw the texture
-            renderer2D = new Renderer2D(material);
-            //add renderer as a component
-            menuGameObject.AddComponent(renderer2D);
-
-            #endregion
-
-            #region collider
-
-            //add bounding box for mouse collisions using the renderer for the texture (which will automatically correctly size the bounding box for mouse interactions)
-            var buttonCollider2D = new ButtonCollider2D(menuGameObject, renderer2D);
-            //add any events on MouseButton (e.g. Left, Right, Hover)
-            buttonCollider2D.AddEvent(MouseButton.Left, new EventData(EventCategoryType.Menu, EventActionType.OnPlay));
-            menuGameObject.AddComponent(buttonCollider2D);
-
-            #endregion
-
-            #region text
-
-            //material and renderer
-            material = new TextMaterial2D(spriteFont, "Replay", new Vector2(70, 5), Color.White, 0.8f);
-            //add renderer to draw the text
-            renderer2D = new Renderer2D(material);
-            menuGameObject.AddComponent(renderer2D);
-
-            #endregion
-
-            //add to scene2D
-            endMenuScene.Add(menuGameObject);
-
-            #endregion
-
-            #region Add Scene to Manager and Set Active
-
-            //add scene2D to menu manager
-            menuManager.Add(endMenuScene.ID, endMenuScene);
-            #endregion
+            
         }
 
         private void InitializeUI()
@@ -680,6 +607,24 @@ namespace GD.App
             litEffect.TextureEnabled = true;
             litEffect.LightingEnabled = true;
             litEffect.EnableDefaultLighting();
+
+
+            #region Exit Sign Emission Effect
+
+            exitSignEffect = new BasicEffect(_graphics.GraphicsDevice);
+            exitSignEffect.TextureEnabled = true;
+            exitSignEffect.LightingEnabled = true;
+
+            exitSignEffect.PreferPerPixelLighting = false;
+
+            exitSignEffect.AmbientLightColor = Color.AntiqueWhite.ToVector3();
+            exitSignEffect.EnableDefaultLighting();
+            //exitSignEffect.DirectionalLight0.DiffuseColor = Color.White.ToVector3();
+            //exitSignEffect.DirectionalLight0.Direction = new Vector3(0, 0, 1);
+
+            //exitSignEffect.AmbientLightColor = new Vector3(232 / 255f, 71 / 255f, 76 / 255f);
+
+            #endregion
         }
 
         public GameObject CloneModelGameObjectCamera(GameObject gameObject, string newName, Vector3 rotation, Vector3 translation)
@@ -811,36 +756,38 @@ namespace GD.App
             #region Snake Cameras
 
             //Front Camera
-            cameraGameObject = new GameObject(AppData.FRONT_CAMERA_NAME);
+            snakeCameraGameObject = new GameObject(AppData.FRONT_CAMERA_NAME);
 
-            cameraGameObject.Transform
+            snakeCameraGameObject.Transform
                 = new Transform(null,
                 AppData.DEFAULT_FRONT_CAMERA_ROTATION,
                 AppData.DEFAULT_FRONT_CAMERA_TRANSLATION);
 
             //add camera (view, projection)
-            cameraGameObject.AddComponent(new Camera(
-                MathHelper.PiOver2 / 2,
-                (float)_graphics.PreferredBackBufferWidth / _graphics.PreferredBackBufferHeight,
+           var camera = new Camera(
+                MathHelper.PiOver4,
+                (float)_graphics.PreferredBackBufferWidth/ _graphics.PreferredBackBufferHeight,
                 0.1f, 3500,
-                new Viewport(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight)));
+                new Viewport(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight));
 
-            cameraManager.Add(cameraGameObject.Name, cameraGameObject);
+            cameraManager.Add(snakeCameraGameObject.Name, snakeCameraGameObject);
+
+            snakeCameraGameObject.AddComponent(camera);
 
             //Back Camera
-            cameraManager.Add(AppData.BACK_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.BACK_CAMERA_NAME, AppData.DEFAULT_BACK_CAMERA_ROTATION, AppData.DEFAULT_BACK_CAMERA_TRANSLATION));
+            //cameraManager.Add(AppData.BACK_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.BACK_CAMERA_NAME, AppData.DEFAULT_BACK_CAMERA_ROTATION, AppData.DEFAULT_BACK_CAMERA_TRANSLATION));
 
             //Top Camera
             cameraManager.Add(AppData.TOP_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.TOP_CAMERA_NAME, AppData.DEFAULT_TOP_CAMERA_ROTATION, AppData.DEFAULT_TOP_CAMERA_TRANSLATION));
 
             //Bottom Camera
-            cameraManager.Add(AppData.BOTTOM_CAMERA_NAME,CloneModelGameObjectCamera(cameraGameObject, AppData.BOTTOM_CAMERA_NAME, AppData.DEFAULT_BOTTOM_CAMERA_ROTATION, AppData.DEFAULT_BOTTOM_CAMERA_TRANSLATION));
+            //cameraManager.Add(AppData.BOTTOM_CAMERA_NAME,CloneModelGameObjectCamera(cameraGameObject, AppData.BOTTOM_CAMERA_NAME, AppData.DEFAULT_BOTTOM_CAMERA_ROTATION, AppData.DEFAULT_BOTTOM_CAMERA_TRANSLATION));
 
             //Right Camera
             cameraManager.Add(AppData.RIGHT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.RIGHT_CAMERA_NAME, AppData.DEFAULT_RIGHT_CAMERA_ROTATION, AppData.DEFAULT_RIGHT_CAMERA_TRANSLATION));
 
             //Left Camera
-            cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
+            //cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
             #endregion Snake Cameras
 
 
@@ -902,95 +849,7 @@ namespace GD.App
             //InitializeCollidableHighDetailMonkey();
         }
 
-        private void InitializeBaseModel()
-        {
-            //game object
-            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Transparent);
-            gameObject.GameObjectType = GameObjectType.Collectible;
-
-            gameObject.Transform = new Transform(
-                new Vector3(40, 40, 40),
-                new Vector3(0, 0, 0),
-                new Vector3(0, 0, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
-            var meshBase = new CubeMesh(_graphics.GraphicsDevice);
-
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(unlitEffect),
-                new Material(texture, 0.2f),
-                meshBase));
-
- //var collider = new BaseCollider(gameObject, true);
-
- //           gameObject.AddComponent(collider);
- //           collider.AddPrimitive(
- //               new Box(
- //                   gameObject.Transform.Translation,
- //                   gameObject.Transform.Rotation,
- //                   gameObject.Transform.Scale
- //                   ),
- //               new MaterialProperties(0.8f, 0.8f, 0.7f)
- //               );
-
- //           collider.Enable(gameObject, true, 1);
-            sceneManager.ActiveScene.Add(gameObject);
-
-            //for (int x = 0; x < AppData.SNAKE_GAME_MAX_SIZE; x++)
-            //{
-            //    for (int y = 0; y < AppData.SNAKE_GAME_MAX_SIZE; y++)
-            //    {
-            //        for (int z = 0; z < AppData.SNAKE_GAME_MAX_SIZE; z++)
-            //        {
-            //            gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, 2 * new Vector3(x, y, z));
-            //            cubeBaseNumber++;
-            //            sceneManager.ActiveScene.Add(gameObject);
-            //        }
-            //    }
-            //}
-
-            //List<GameObject> baseCubeGameObjectsY = new List<GameObject>();
-
-            //baseCubeGameObjectsY.Add(gameObject);
-
-            //cubeBaseNumber++;
-            //for (int i = 0; i < 6; i++)
-            //{
-            //    gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(0, gameObject.Transform.Scale.Y, 0));
-            //    baseCubeGameObjectsY.Add(gameObject);
-            //    cubeBaseNumber++;
-            //}
-
-            //List<List<GameObject>> baseCubeGameObjectsX = new List<List<GameObject>>();
-
-            //baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
-
-            //for (int i = 0; i < 6; i++)
-            //{
-            //    baseCubeGameObjectsY = CloneModelGameObjectList(baseCubeGameObjectsY, "base ", new Vector3(gameObject.Transform.Scale.X, 0, 0));
-            //    baseCubeGameObjectsX.Add(baseCubeGameObjectsY);
-            //}
-
-            //List<List<List<GameObject>>> baseCubeGameObjectsZ = new List<List<List<GameObject>>>();
-
-            //for (int i = 0; i < 6; i++)
-            //{
-            //    baseCubeGameObjectsX = CloneModelGameObjectListZ(baseCubeGameObjectsX, "base ", new Vector3(0, 0, gameObject.Transform.Scale.Z));
-            //    baseCubeGameObjectsZ.Add(baseCubeGameObjectsX);
-            //}
-
-            //foreach(List<List<GameObject>>gameObjectsX in baseCubeGameObjectsZ)
-            //{
-            //    foreach(List<GameObject>gameObjectsY in gameObjectsX)
-            //    {
-            //        foreach (GameObject gameObjectBase in gameObjectsY)
-            //        {
-            //            sceneManager.ActiveScene.Add(gameObjectBase);
-
-            //        }
-            //    }
-            //}
-
-        }
+        
 
         private List<List<GameObject>> CloneModelGameObjectListZ(List<List<GameObject>> gameObjectList, string newName, Vector3 offset)
         {
@@ -1033,6 +892,7 @@ namespace GD.App
             Renderer renderer = gameObject.GetComponent<Renderer>();
             Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, renderer.Mesh);
             gameObjectClone.AddComponent(cloneRenderer);
+
 
             return gameObjectClone;
         }
@@ -1278,6 +1138,139 @@ namespace GD.App
             sceneManager.ActiveScene.Add(gameObject);
         }
 
+        private void InitializeBaseModel()
+        {
+            ////game object
+            //var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
+            //gameObject.GameObjectType = GameObjectType.Collectible;
+
+            //gameObject.Transform = new Transform(
+            //    AppData.SNAKE_GAMEOBJECTS_SCALE,
+            //    new Vector3(0, 0, 0),
+            //    new Vector3(AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MIN_SIZE));
+            //var texture = Content.Load<Texture2D>("Assets/transparent");
+            //var meshBase = new CubeMesh(_graphics.GraphicsDevice);
+
+            //gameObject.AddComponent(new Renderer(
+            //    new GDBasicEffect(litEffect),
+            //    new Material(texture, 1f),
+            //    meshBase));
+            ////sceneManager.ActiveScene.Add(gameObject);
+
+            //for (int x = 0; x < 15; x++)
+            //{
+            //    gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(x + gameObject.Transform.Scale.X, 0,0));
+            //    cubeBaseNumber++;
+            //    //sceneManager.ActiveScene.Add(gameObject);
+            //}
+
+
+            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Static, RenderType.Transparent);
+            gameObject.GameObjectType = GameObjectType.Collectible;
+
+            gameObject.Transform = new Transform(
+                 new Vector3(45, 45, 45),
+                Vector3.Zero,
+                new Vector3(22.5f, 22.5f, 22.5f)
+                );
+            var texture = Content.Load<Texture2D>("Assets/transparent");
+            var meshBase2 = new CubeMesh(_graphics.GraphicsDevice);
+
+            gameObject.AddComponent(new Renderer(
+                new GDBasicEffect(unlitEffect),
+                new Material(texture, 0.2f),
+                meshBase2));
+
+            sceneManager.ActiveScene.Add(gameObject);
+
+
+            int xDimension, yDimension, zDimension;
+
+            xDimension = yDimension = zDimension = 0;
+           
+            //for (int x = 0; x < 15; x++)
+            //{
+            //    for (int y = 0; y < 15; y++)
+            //    {
+            //        for (int z = 0; z < 15; z++)
+            //        { 
+            //            Vector3 newTranslate = 3 * new Vector3(x, y, z);
+
+            //            //int breakableBlock = BitwiseExtraction.extractKBitsFromNumberAtPositionP(levelMap[x,y,z], 4, 0);
+
+            //            //System.Diagnostics.Debug.WriteLine("New Translate:" + newTranslate);
+            //            //System.Diagnostics.Debug.WriteLine("Array:" +levelMap[x, y, z] * 3);
+            //            //if (breakableBlock > 0)
+            //            //{
+            //                gameObject = CloneModelGameObjectBase(gameObject, "base " + cubeBaseNumber, newTranslate, 1);
+            //                cubeBaseNumber++;
+            //                //sceneManager.ActiveScene.Add(gameObject);
+            //           // }
+
+            //            if (x > xDimension) xDimension = x;
+            //            if (y > yDimension) yDimension = y;
+            //            if (z > zDimension) zDimension = z;
+            //        }
+            //    }
+            //}
+
+
+;
+
+            cameraPosition = new Vector3((float)xDimension / 2, (float)yDimension / 2, (float)zDimension / 2);
+
+
+
+            if (xDimension >= yDimension)
+            {
+                if (xDimension >= zDimension)
+                {
+                    cameraPosition.Z += xDimension;
+                }
+                else
+                {
+                    cameraPosition.Z += zDimension;
+                }
+            }
+
+            else
+            {
+                if (yDimension >= zDimension)
+                {
+                    cameraPosition.Z += yDimension;
+                }
+                else
+                {
+                    cameraPosition.Z += zDimension;
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine(cameraPosition.Z);
+        }
+
+        public GameObject CloneModelGameObjectBase(GameObject gameObject, string newName, Vector3 translation, int opacity)
+        {
+            GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
+            gameObjectClone.GameObjectType = gameObject.GameObjectType;
+
+            gameObjectClone.Transform = new Transform(
+                gameObject.Transform.Scale,
+                gameObject.Transform.Rotation,
+                translation
+                );
+
+            Renderer renderer = gameObject.GetComponent<Renderer>();
+            Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, renderer.Mesh);
+
+            cloneRenderer.Material.DiffuseColor = Color.MintCream;
+            cloneRenderer.Material.Alpha = 1f / opacity;
+            gameObjectClone.AddComponent(cloneRenderer);
+
+
+
+            return gameObjectClone;
+        }
+
         private void InitializeSnakeHead()
         {
             //game object
@@ -1289,7 +1282,7 @@ namespace GD.App
                 Vector3.Zero,
                 AppData.SNAKE_START_POSITION);
             var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var meshBase = new OctahedronMesh(_graphics.GraphicsDevice);
+            var meshBase = new SphereMesh(_graphics.GraphicsDevice);
 
             snakeGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
@@ -1314,14 +1307,31 @@ namespace GD.App
 
             Application.SnakeMoveSpeed = AppData.SNAKE_DEFAULT_MOVE_SPEED;
 
-            
+
+            var snakeGameObjectTongue = new GameObject("snake tongue", ObjectType.Dynamic, RenderType.Opaque);
+
+            snakeGameObjectTongue.Transform = new Transform(
+                new Vector3(1.5f,1.5f,1.5f),
+                Vector3.Zero,
+                null);
+            texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+            var meshBase2 = new OctahedronMesh(_graphics.GraphicsDevice);
+
+            snakeGameObjectTongue.AddComponent(new Renderer(
+                new GDBasicEffect(unlitEffect),
+                new Material(texture, 1),
+                meshBase2));
+
+            snakeGameObjectTongue.AddComponent(new SnakeTongueController(AppData.SNAKE_HEAD_TRANSLATE_AMOUNT));
+            sceneManager.ActiveScene.Add(snakeGameObjectTongue);
+
             snakeGameObject.AddComponent(new CollidableSnakeController());
 
-            
-
             sceneManager.ActiveScene.Add(snakeGameObject);
-            var snakeBodyMesh = new OctahedronMesh(_graphics.GraphicsDevice);
+            CubeMesh snakeBodyMesh = new CubeMesh(_graphics.GraphicsDevice);
             SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh);
+
+          
         }
 
         private void InitilizeFood()

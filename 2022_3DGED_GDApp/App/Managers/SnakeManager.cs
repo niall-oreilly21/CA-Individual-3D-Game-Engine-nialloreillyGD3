@@ -26,14 +26,14 @@ namespace GD.Engine
             private List<Character> snakePartsListBodies = new List<Character>();
             private GameObject head;
             private GameObject tail;
-            private OctahedronMesh snakeBodyMesh;
+            private CubeMesh snakeBodyMesh;
             private int snakeNumber = 1;
             float timeFlag = 0f;
 
         #endregion Fields
 
         #region Constructors
-        public SnakeManager(Game game, GameObject head, OctahedronMesh snakeBodyMesh) : base(game)
+        public SnakeManager(Game game, GameObject head, CubeMesh snakeBodyMesh) : base(game)
         {
             this.head = head;
             this.tail = head;

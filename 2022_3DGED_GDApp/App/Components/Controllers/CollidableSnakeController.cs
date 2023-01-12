@@ -133,7 +133,9 @@ namespace GD.Engine
             EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
             EventActionType.OnMove, parameters));
 
-
+            object[] parametersTwo = {direction};
+            EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+            EventActionType.MoveTongue, parametersTwo));
 
         }
         #endregion Actions - Update, Input

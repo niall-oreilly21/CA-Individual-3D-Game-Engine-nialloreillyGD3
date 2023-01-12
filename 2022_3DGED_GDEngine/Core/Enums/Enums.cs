@@ -192,7 +192,8 @@
         UpdateUI,
         UpdateActiveCameraPosition,
         AddBomb,
-        InitilizeBombManager
+        InitilizeBombManager,
+        MoveTongue
     }
 
     /// <summary>

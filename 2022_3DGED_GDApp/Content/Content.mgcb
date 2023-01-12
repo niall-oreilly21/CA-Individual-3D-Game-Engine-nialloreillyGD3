@@ -217,6 +217,18 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Models/teapot.FBX
 
+#begin Assets/Textures/box_texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/box_texture.png
+
 #begin Assets/Textures/Button/button_DefaultMaterial_Base_color.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -505,18 +517,6 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Menu/Controls/snake_button_texture.png
 
-#begin Assets/Textures/Menu/Controls/snake_button_texture.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Menu/Controls/snake_button_texture.png
-
 #begin Assets/Textures/Menu/Controls/ui_progress_32_8.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -744,4 +744,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/UI/white32x32.png
+
+#begin Assets/transparent.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/transparent.png
 
