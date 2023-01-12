@@ -248,6 +248,13 @@ namespace GD.App
         public static readonly int TOTAL_LEVELS = 2;
         #endregion Snake State Manager
 
+        #region UI
+        public static readonly string LEVEL_NAME = "Level text";
+        public static readonly string SCORE_TEXT = "Score text";
+        public static readonly string DEFAULT_LEVEL_TEXT = "Level ";
+        public static readonly string DEFAULT_SCORE_TEXT = "Score ";
+        #endregion UI
+
         #endregion Snake
     }
 }

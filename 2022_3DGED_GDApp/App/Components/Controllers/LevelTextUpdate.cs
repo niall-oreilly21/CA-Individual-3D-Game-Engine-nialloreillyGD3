@@ -11,48 +11,44 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
-    public class LevelTextUpdate : PausableGameComponent
-    {
-        private TextMaterial2D oldMaterial2D;
-        private TextMaterial2D newMaterial2D;
-        private Renderer2D newRenderer2D;
-        string text;
-        GameObject gameObject;
+    /// <summary>
+    /// Class not needed anymore as UI Manager is a global variable
+    /// </summary>
+    //public class LevelTextUpdate : PausableGameComponent
+    //{
+    //    private TextMaterial2D material2D;
+    //    string text;
+    //    GameObject gameObject;
 
-        public LevelTextUpdate(Game game, GameObject gameObject) : base(game)
-        {
-            this.gameObject = gameObject;
-        }
+    //    public LevelTextUpdate(Game game, GameObject gameObject) : base(game)
+    //    {
+    //        material2D = (TextMaterial2D)gameObject.GetComponent<Renderer2D>().Material;
+    //    }
 
-        protected override void SubscribeToEvents()
-        {
-            EventDispatcher.Subscribe(EventCategoryType.UpdateUIElements, HandleGameObjectEvents);
-        }
+    //    protected override void SubscribeToEvents()
+    //    {
+    //        EventDispatcher.Subscribe(EventCategoryType.UpdateUIElements, HandleGameObjectEvents);
+    //    }
 
-        protected void HandleGameObjectEvents(EventData eventData)
-        {
-            switch (eventData.EventActionType)
-            {
-                case EventActionType.UpdateUI: //TODO
-                    this.text = (string)eventData.Parameters[0];
-                    UpdateUI();
-                    break;
+    //    protected void HandleGameObjectEvents(EventData eventData)
+    //    {
+    //        switch (eventData.EventActionType)
+    //        {
+    //            case EventActionType.UpdateUI: //TODO
+    //                this.text = (string)eventData.Parameters[0];
+    //                UpdateUI();
+    //                break;
 
-                default:
-                    break;
-                    //add more cases for each method that we want to support with events
-            }
-        }
+    //            default:
+    //                break;
+    //                //add more cases for each method that we want to support with events
+    //        }
+    //    }
 
-        private void UpdateUI()
-        {
-            oldMaterial2D = (TextMaterial2D)gameObject.GetComponent<Renderer2D>().Material;
-            newMaterial2D = new TextMaterial2D(oldMaterial2D.SpriteFont, text, oldMaterial2D.TextOffset, oldMaterial2D.Color);
-
-            newRenderer2D = new Renderer2D(newMaterial2D);
-
-            gameObject.RemoveComponent<Renderer2D>();
-            gameObject.AddComponent(newRenderer2D);
-        }
-    }
+    //    private void UpdateUI()
+    //    {
+    //        material2D.StringBuilder.Clear();
+    //        material2D.StringBuilder.Append(text);
+    //    }
+    //}
 }

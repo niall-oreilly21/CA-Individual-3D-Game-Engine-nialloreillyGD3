@@ -258,6 +258,9 @@ namespace GD.Engine
 
             Application.SnakeMoveSpeed -= AppData.SNAKE_MULTIPLIER;
             Application.StateManager.CurrentScore++;
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
+            EventActionType.UpdateScore));
         }
             
             #endregion Snake Parts Methods

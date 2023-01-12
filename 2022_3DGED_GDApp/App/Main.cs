@@ -60,6 +60,7 @@ namespace GD.App
         private int cubeBaseNumber = 1;
         private BasicEffect exitSignEffect;
         private Vector3 cameraPosition;
+        SpriteFont spriteFont;
 
 #if DEMO
 
@@ -492,38 +493,44 @@ namespace GD.App
             #endregion
 
 
-            uiGameObject = new GameObject("level text");
+            #region Current Level
+
+            uiGameObject = new GameObject(AppData.LEVEL_NAME);
 
             uiGameObject.Transform = new Transform(
-                new Vector3(1,1, 1), //s
-                new Vector3(0, 0, 0), //r
-                new Vector3(10,10,0)); //t
+                new Vector3(1,1, 1),
+                new Vector3(0, 0, 0), 
+                new Vector3(10,10,0)); 
 
-            #region text
-
-            //button material and renderer
-
-            SpriteFont spriteFont = Content.Load<SpriteFont>("Assets/Fonts/menu");
-
-            material = new TextMaterial2D(spriteFont, "Level: " + stateManager.CurrentScore, new Vector2(70, 5), Color.White, 0.8f);
+            material = new TextMaterial2D(spriteFont, AppData.DEFAULT_LEVEL_TEXT + stateManager.CurrentScore, new Vector2(30, 5), Color.White, 0.8f);
             //add renderer to draw the text
            Renderer2D renderer2D = new Renderer2D(material);
 
             uiGameObject.AddComponent(renderer2D);
-            LevelTextUpdate level = new LevelTextUpdate(this, uiGameObject);
-
-            #endregion
-
-            #region demo - color change button
-
-            //menuGameObject.AddComponent(new UIColorFlipOnTimeBehaviour(Color.Red, Color.Orange, 500));
-
-            #endregion
-
-            //add to scene2D
             mainHUD.Add(uiGameObject);
 
-            
+            #endregion Current Level
+
+
+            #region Current Score
+
+            uiGameObject = new GameObject(AppData.SCORE_TEXT);
+
+            uiGameObject.Transform = new Transform(
+                new Vector3(1, 1, 1), 
+                new Vector3(0, 0, 0), 
+                new Vector3(0, 0, 0)); 
+
+            material = new TextMaterial2D(spriteFont, AppData.DEFAULT_SCORE_TEXT + stateManager.CurrentScore, new Vector2(30, 120), Color.White, 0.8f);
+            //add renderer to draw the text
+            renderer2D = new Renderer2D(material);
+
+            uiGameObject.AddComponent(renderer2D);
+            mainHUD.Add(uiGameObject);
+
+            #endregion Current Score
+
+
 
             #region Add Scene to Manager and Set Active
 
@@ -598,6 +605,9 @@ namespace GD.App
 
         private void InitializeEffects()
         {
+
+            spriteFont = Content.Load<SpriteFont>("Assets/Fonts/snake");
+
             //only for skybox with lighting disabled
             unlitEffect = new BasicEffect(_graphics.GraphicsDevice);
             unlitEffect.TextureEnabled = true;

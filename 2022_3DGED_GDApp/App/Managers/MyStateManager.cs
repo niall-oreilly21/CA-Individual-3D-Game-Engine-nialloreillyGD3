@@ -7,6 +7,8 @@ using GD.App;
 using GD.Engine.Managers;
 using SharpDX.MediaFoundation.DirectX;
 using System;
+using static System.Net.Mime.MediaTypeNames;
+using Application = GD.Engine.Globals.Application;
 
 namespace App.Managers
 {
@@ -40,6 +42,7 @@ namespace App.Managers
         private int currentLevel;
         private int currentScore;
         private int totalLevels;
+        private string text;
 
         public MyStateManager(Game game, float maxTimeInMS, int totalLevels) : base(game)
         {
@@ -76,6 +79,25 @@ namespace App.Managers
         }
         #endregion Properties
 
+        protected override void SubscribeToEvents()
+        {
+            EventDispatcher.Subscribe(EventCategoryType.StateManager, HandleGameObjectEvents);
+        }
+
+        protected void HandleGameObjectEvents(EventData eventData)
+        {
+            switch (eventData.EventActionType)
+            { 
+                case EventActionType.UpdateScore: //TODO
+                    UpdateScore();
+                    break;
+
+                default:
+                    break;
+                    //add more cases for each method that we want to support with events
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             //System.Diagnostics.Debug.WriteLine(totalElapsedTimeMS);
@@ -95,17 +117,27 @@ namespace App.Managers
             // base.Update(gameTime);
         }
 
-        private void UpdateUI()
+        private void UpdateScore()
         {
-            string text = "Level: " + Application.StateManager.CurrentLevel;
-            object[] parameters = { text };
+            GameObject scoreGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.SCORE_TEXT);
 
-            EventDispatcher.Raise(new EventData(EventCategoryType.UpdateUIElements,
-                EventActionType.UpdateUI, parameters));
+            var material2D = (TextMaterial2D)scoreGameObject.GetComponent<Renderer2D>().Material;
+            material2D.StringBuilder.Clear();
+            material2D.StringBuilder.Append(AppData.DEFAULT_SCORE_TEXT + Application.StateManager.CurrentScore);
         }
+
+        private void UpdateLevel()
+        {
+            GameObject levelGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.DEFAULT_LEVEL_TEXT);
+
+            var material2D = (TextMaterial2D)levelGameObject.GetComponent<Renderer2D>().Material;
+            material2D.StringBuilder.Clear();
+            material2D.StringBuilder.Append(AppData.DEFAULT_LEVEL_TEXT + Application.StateManager.CurrentLevel);
+        }
+
         private void StartNewLevel()
         {
-            UpdateUI();
+
             totalElapsedTimeMS = 0;            
 
             Application.StateManager.CurrentLevel++;
