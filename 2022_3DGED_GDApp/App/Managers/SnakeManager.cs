@@ -24,25 +24,29 @@ namespace GD.Engine
     {
             #region Fields
             private List<Character> snakePartsListBodies = new List<Character>();
-            private GameObject head;
-            private GameObject tail;
+            private GameObject snakePart;
+            private Character tail;
             private CubeMesh snakeBodyMesh;
-            private int snakeNumber = 1;
+            private OctahedronMesh snakeTailMesh;
+            private int snakeNumber;
             float timeFlag = 0f;
 
         #endregion Fields
 
         #region Constructors
-        public SnakeManager(Game game, GameObject head, CubeMesh snakeBodyMesh) : base(game)
+        public SnakeManager(Game game, GameObject snakePart, CubeMesh snakeBodyMesh, OctahedronMesh snakeTailMesh) : base(game)
         {
-            this.head = head;
-            this.tail = head;
+            this.snakePart = snakePart;
+            this.tail = snakePart.GetComponent<CharacterCollider>().Body as Character;
+            snakePartsListBodies.Add(tail);
             this.snakeBodyMesh = snakeBodyMesh;
-            snakePartsListBodies.Add(head.GetComponent<CharacterCollider>().Body as Character);
+            this.snakeTailMesh = snakeTailMesh;
+
+            snakeNumber = 0;
 
             Application.SnakeParts = snakePartsListBodies;
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 2; i++)
             {
                 Grow();
             }
@@ -94,11 +98,11 @@ namespace GD.Engine
             }
         }
 
-        private bool IsTail(GameObject gameObject)
-        {
-            System.Diagnostics.Debug.WriteLine(gameObject.Name);
-            return tail.Transform.Translation.X == gameObject.Transform.Translation.X;
-        }
+        //private bool IsTail(GameObject gameObject)
+        //{
+        //    System.Diagnostics.Debug.WriteLine(gameObject.Name);
+        //    return tail.Transform.Translation.X == gameObject.Transform.Translation.X;
+        //}
 
         private void ZeroPosition(Character snake)
         {
@@ -159,21 +163,54 @@ namespace GD.Engine
             ZeroPosition(snakePartsListBodies[0]);
         }
 
-            public GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
-            {
-                GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
-                gameObjectClone.GameObjectType = gameObject.GameObjectType;
+        private GameObject CloneModelGameObjectSnake(GameObject gameObject, string newName, Vector3 translation)
+        {
+            GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
+            gameObjectClone.GameObjectType = gameObject.GameObjectType;
 
-                gameObjectClone.Transform = new Transform(
-                    AppData.SNAKE_GAMEOBJECTS_SCALE,
-                    gameObject.Transform.Rotation,
-                    translation
-                    );
+            gameObjectClone.Transform = new Transform(
+                AppData.SNAKE_GAMEOBJECTS_SCALE,
+                gameObject.Transform.Rotation,
+                translation
+                );
 
-                Renderer renderer = gameObject.GetComponent<Renderer>();
-                Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, snakeBodyMesh);
-                gameObjectClone.AddComponent(cloneRenderer);
 
+            return gameObjectClone;
+        }
+        private GameObject CloneModelGameObjectSnakeBody(GameObject gameObject, string newName, Vector3 translation)
+        {
+               
+        GameObject gameObjectClone = CloneModelGameObjectSnake(gameObject, newName, translation);
+
+        Renderer renderer = gameObject.GetComponent<Renderer>();
+        Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, snakeBodyMesh);
+        gameObjectClone.AddComponent(cloneRenderer);
+
+
+            Collider cloneCollider = new CharacterCollider(gameObjectClone, true);
+
+        cloneCollider.AddPrimitive(
+            new Box(
+                gameObjectClone.Transform.Translation,
+                gameObjectClone.Transform.Rotation,
+                AppData.SNAKE_GAMEOBJECTS_COLLIDER_SCALE
+                ),
+            new MaterialProperties(0.8f, 0.8f, 0.7f)
+            );
+
+        cloneCollider.Enable(gameObjectClone, false, 1);
+        gameObjectClone.AddComponent(cloneCollider);
+
+        return gameObjectClone;
+        }
+
+        private GameObject CreateSnakeTail(GameObject gameObject, string newName, Vector3 translation)
+        {
+            GameObject gameObjectClone = CloneModelGameObjectSnake(gameObject, newName, translation);
+
+            Renderer renderer = gameObject.GetComponent<Renderer>();
+            Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, snakeTailMesh);
+            gameObjectClone.AddComponent(cloneRenderer);
 
             Collider cloneCollider = new CharacterCollider(gameObjectClone, true);
 
@@ -190,19 +227,39 @@ namespace GD.Engine
             gameObjectClone.AddComponent(cloneCollider);
 
             return gameObjectClone;
-            }
+        }
 
-            #region Snake Parts Methods
-            public void Grow()
+        #region Snake Parts Methods
+        public void Grow()
             {
-            snakeNumber++;
-            tail = CloneModelGameObject(tail, "snake part " + snakeNumber, new Vector3(tail.Transform.Translation.X - tail.Transform.Scale.X, tail.Transform.Translation.Y, tail.Transform.Translation.Z));
-            snakePartsListBodies.Add(tail.GetComponent<CharacterCollider>().Body as Character);
-            Application.SceneManager.ActiveScene.Add(tail);
+
+            if (snakePartsListBodies.Count == 1)
+            {
+                GameObject tailGameObject = CreateSnakeTail(snakePart, "tail ", new Vector3(snakePart.Transform.Translation.X - snakePart.Transform.Scale.X, snakePart.Transform.Translation.Y, snakePart.Transform.Translation.Z));
+                tail = tailGameObject.GetComponent<CharacterCollider>().Body as Character;
+                snakePartsListBodies.Add(tail);
+                Application.SceneManager.ActiveScene.Add(tailGameObject);
+
+            }
+            else
+            {
+                    snakeNumber++;
+                    snakePart = CloneModelGameObjectSnakeBody(snakePart, "snake part " + snakeNumber, new Vector3(tail.Transform.Position.X, tail.Transform.Position.Y, tail.Transform.Position.Z));
+
+                    snakePartsListBodies.Add(snakePart.GetComponent<CharacterCollider>().Body as Character);
+
+                snakePartsListBodies.Remove(tail);
+                snakePartsListBodies.Add(tail);
+                //snakePartsListBodies[snakePartsListBodies.Count - 1].Position -= new Vector3(3,0,0); 
+
+
+                    Application.SceneManager.ActiveScene.Add(snakePart);
+                }
 
             Application.SnakeMoveSpeed -= AppData.SNAKE_MULTIPLIER;
             Application.StateManager.CurrentScore++;
-            }
+        }
+            
             #endregion Snake Parts Methods
         }
     }

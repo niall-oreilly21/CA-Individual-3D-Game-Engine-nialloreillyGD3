@@ -1329,7 +1329,8 @@ namespace GD.App
 
             sceneManager.ActiveScene.Add(snakeGameObject);
             CubeMesh snakeBodyMesh = new CubeMesh(_graphics.GraphicsDevice);
-            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh);
+            OctahedronMesh snakeTailMesh = new OctahedronMesh(_graphics.GraphicsDevice);
+            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh, snakeTailMesh);
 
           
         }
