@@ -488,7 +488,7 @@ namespace GD.App
             #endregion
 
             //add to scene2D
-            mainHUD.Add(uiGameObject);
+            //mainHUD.Add(uiGameObject);
 
             #endregion
 
@@ -496,6 +496,7 @@ namespace GD.App
             #region Current Level
 
             uiGameObject = new GameObject(AppData.LEVEL_NAME);
+            uiGameObject.GameObjectType = GameObjectType.UI_Text;
 
             uiGameObject.Transform = new Transform(
                 new Vector3(1,1, 1),
@@ -515,6 +516,7 @@ namespace GD.App
             #region Current Score
 
             uiGameObject = new GameObject(AppData.SCORE_TEXT);
+            uiGameObject.GameObjectType = GameObjectType.UI_Text;
 
             uiGameObject.Transform = new Transform(
                 new Vector3(1, 1, 1), 
@@ -530,7 +532,24 @@ namespace GD.App
 
             #endregion Current Score
 
+            #region Current Camera
 
+            uiGameObject = new GameObject(AppData.CAMERA_UI_TEXT);
+            uiGameObject.GameObjectType = GameObjectType.UI_Text;
+
+            uiGameObject.Transform = new Transform(
+                new Vector3(0.8f, 0.8f, 0.8f),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 0, 0));
+
+            material = new TextMaterial2D(spriteFont, AppData.FRONT_CAMERA_UI_TEXT, new Vector2(1040, 120), Color.White, 0.8f);
+            //add renderer to draw the text
+            renderer2D = new Renderer2D(material);
+
+            uiGameObject.AddComponent(renderer2D);
+            mainHUD.Add(uiGameObject);
+
+            #endregion Current Camera
 
             #region Add Scene to Manager and Set Active
 
@@ -625,14 +644,17 @@ namespace GD.App
             exitSignEffect.TextureEnabled = true;
             exitSignEffect.LightingEnabled = true;
 
-            exitSignEffect.PreferPerPixelLighting = false;
+            exitSignEffect.PreferPerPixelLighting = true;
 
-            exitSignEffect.AmbientLightColor = Color.AntiqueWhite.ToVector3();
+            //exitSignEffect.AmbientLightColor = Color.AntiqueWhite.ToVector3();
+            exitSignEffect.EmissiveColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
             exitSignEffect.EnableDefaultLighting();
-            //exitSignEffect.DirectionalLight0.DiffuseColor = Color.White.ToVector3();
-            //exitSignEffect.DirectionalLight0.Direction = new Vector3(0, 0, 1);
+            exitSignEffect.DirectionalLight0.DiffuseColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
+            exitSignEffect.DirectionalLight0.Direction = new Vector3(0, 0, 1);
 
             //exitSignEffect.AmbientLightColor = new Vector3(232 / 255f, 71 / 255f, 76 / 255f);
+
+            exitSignEffect.AmbientLightColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
 
             #endregion
         }
@@ -794,7 +816,7 @@ namespace GD.App
             //cameraManager.Add(AppData.BOTTOM_CAMERA_NAME,CloneModelGameObjectCamera(cameraGameObject, AppData.BOTTOM_CAMERA_NAME, AppData.DEFAULT_BOTTOM_CAMERA_ROTATION, AppData.DEFAULT_BOTTOM_CAMERA_TRANSLATION));
 
             //Right Camera
-            cameraManager.Add(AppData.RIGHT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.RIGHT_CAMERA_NAME, AppData.DEFAULT_RIGHT_CAMERA_ROTATION, AppData.DEFAULT_RIGHT_CAMERA_TRANSLATION));
+            cameraManager.Add(AppData.SIDE_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.SIDE_CAMERA_NAME, AppData.DEFAULT_SIDE_CAMERA_ROTATION, AppData.DEFAULT_SIDE_CAMERA_TRANSLATION));
 
             //Left Camera
             //cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
@@ -912,7 +934,7 @@ namespace GD.App
             //InitializeXYZ();
 
             //create sky
-            //InitializeSkyBox(worldScale);
+            InitializeSkyBox(worldScale);
 
             //quad with crate texture
             //InitializeDemoQuad();
@@ -1183,20 +1205,16 @@ namespace GD.App
                 Vector3.Zero,
                 new Vector3(22.5f, 22.5f, 22.5f)
                 );
-            var texture = Content.Load<Texture2D>("Assets/transparent");
+            var texture = Content.Load<Texture2D>("Assets/niall");
             var meshBase2 = new CubeMesh(_graphics.GraphicsDevice);
 
             gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(unlitEffect),
-                new Material(texture, 0.2f),
+                new GDBasicEffect(exitSignEffect),
+                new Material(texture, 1f),
                 meshBase2));
 
             sceneManager.ActiveScene.Add(gameObject);
 
-
-            int xDimension, yDimension, zDimension;
-
-            xDimension = yDimension = zDimension = 0;
            
             //for (int x = 0; x < 15; x++)
             //{
@@ -1216,46 +1234,9 @@ namespace GD.App
             //                cubeBaseNumber++;
             //                //sceneManager.ActiveScene.Add(gameObject);
             //           // }
-
-            //            if (x > xDimension) xDimension = x;
-            //            if (y > yDimension) yDimension = y;
-            //            if (z > zDimension) zDimension = z;
             //        }
             //    }
             //}
-
-
-;
-
-            cameraPosition = new Vector3((float)xDimension / 2, (float)yDimension / 2, (float)zDimension / 2);
-
-
-
-            if (xDimension >= yDimension)
-            {
-                if (xDimension >= zDimension)
-                {
-                    cameraPosition.Z += xDimension;
-                }
-                else
-                {
-                    cameraPosition.Z += zDimension;
-                }
-            }
-
-            else
-            {
-                if (yDimension >= zDimension)
-                {
-                    cameraPosition.Z += yDimension;
-                }
-                else
-                {
-                    cameraPosition.Z += zDimension;
-                }
-            }
-
-            System.Diagnostics.Debug.WriteLine(cameraPosition.Z);
         }
 
         public GameObject CloneModelGameObjectBase(GameObject gameObject, string newName, Vector3 translation, int opacity)
@@ -1328,14 +1309,14 @@ namespace GD.App
             var meshBase2 = new OctahedronMesh(_graphics.GraphicsDevice);
 
             snakeGameObjectTongue.AddComponent(new Renderer(
-                new GDBasicEffect(unlitEffect),
+                new GDBasicEffect(litEffect),
                 new Material(texture, 1),
                 meshBase2));
 
             snakeGameObjectTongue.AddComponent(new SnakeTongueController(AppData.SNAKE_HEAD_TRANSLATE_AMOUNT));
             sceneManager.ActiveScene.Add(snakeGameObjectTongue);
 
-            snakeGameObject.AddComponent(new CollidableSnakeController());
+            
 
             sceneManager.ActiveScene.Add(snakeGameObject);
 
@@ -1346,7 +1327,10 @@ namespace GD.App
             OctahedronMesh snakeTailMesh = new OctahedronMesh(_graphics.GraphicsDevice);
             SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh, snakeTailMesh, snakeSkin);
 
-          
+
+            snakeGameObject.Transform.SetRotation(0, 90, 0);
+            snakeGameObject.AddComponent(new CollidableSnakeController());
+
         }
 
         private void InitilizeFood()
@@ -1425,44 +1409,49 @@ namespace GD.App
             GameObject quad = null;
             var gdBasicEffect = new GDBasicEffect(unlitEffect);
             var quadMesh = new QuadMesh(_graphics.GraphicsDevice);
+            var texture = Content.Load<Texture2D>(AppData.BACKGROUND_TEXTURE_PATH);
 
             //skybox - back face
             quad = new GameObject("skybox back face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1), null, new Vector3(0, 0, -halfWorldScale));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Skybox/back");
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1), quadMesh));
+            
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1,Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
 
             //skybox - left face
             quad = new GameObject("skybox left face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
                 new Vector3(0, 90, 0), new Vector3(-halfWorldScale, 0, 0));
-            texture = Content.Load<Texture2D>("Assets/Textures/Skybox/left");
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
 
             //skybox - right face
             quad = new GameObject("skybox right face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
                 new Vector3(0, -90, 0), new Vector3(halfWorldScale, 0, 0));
-            texture = Content.Load<Texture2D>("Assets/Textures/Skybox/right");
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
 
             //skybox - top face
             quad = new GameObject("skybox top face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
                 new Vector3(90, -90, 0), new Vector3(0, halfWorldScale, 0));
-            texture = Content.Load<Texture2D>("Assets/Textures/Skybox/sky");
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
+            sceneManager.ActiveScene.Add(quad);
+
+
+            //skybox - bottom face
+            quad = new GameObject("skybox bottom face");
+            quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
+                new Vector3(-90, 90, 0), new Vector3(0, -halfWorldScale, 0));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
 
             //skybox - front face
             quad = new GameObject("skybox front face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
                 new Vector3(0, -180, 0), new Vector3(0, 0, halfWorldScale));
-            texture = Content.Load<Texture2D>("Assets/Textures/Skybox/front");
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
         }
 
@@ -1754,7 +1743,7 @@ namespace GD.App
 
             #endregion
 
-            #region Demo - Camera switching
+            #region Camera switching
 
             //if (Input.Keys.IsPressed(Keys.F1))
             //    cameraManager.SetActiveCamera(AppData.FIRST_PERSON_CAMERA_NAME);
@@ -1770,99 +1759,45 @@ namespace GD.App
             {
                 if  (
                         cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
-                        cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME ||
-                        cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME  ||
-                        cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME
+                        cameraManager.ActiveCameraName == AppData.SIDE_CAMERA_NAME
                     )
                 {
                     cameraManager.SetActiveCamera(AppData.TOP_CAMERA_NAME);
+                    UpdateCameraUI(AppData.TOP_CAMERA_UI_TEXT);
                 }
-                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
-                }
+              
             }
             else if (Input.Keys.WasJustPressed(Keys.Right))
             {
-                if (cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
+                if (
+                     cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
+                     cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME
+
+                   )
                 {
-                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                    Application.CameraManager.SetActiveCamera(AppData.SIDE_CAMERA_NAME);
+                    UpdateCameraUI(AppData.SIDE_CAMERA_UI_TEXT);
                 }
             }
             else if (Input.Keys.WasJustPressed(Keys.Left))
             {
-                if (cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME)
+                if (cameraManager.ActiveCameraName == AppData.SIDE_CAMERA_NAME)
                 {
                     cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                    UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
                 }
             }
             else if (Input.Keys.WasJustPressed(Keys.Down))
             {
-                if (
-                        cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME ||
-                        cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME ||
-                        cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME ||
-                        cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME
-                   )
-                {
-                    cameraManager.SetActiveCamera(AppData.BOTTOM_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
                 {
                     cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
-                }
-                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
-                {
-                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                    UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
                 }
             }
 
 
-            #endregion Demo - Camera switching
+            #endregion Camera switching
 
             #region Demo - Gamepad
 
@@ -1886,6 +1821,15 @@ namespace GD.App
 #endif
             //fixed a bug with components not getting Update called
             base.Update(gameTime);
+        }
+
+        private void UpdateCameraUI(string uiText)
+        {
+            GameObject cameraUIGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.CAMERA_UI_TEXT);
+
+            var material2D = (TextMaterial2D)cameraUIGameObject.GetComponent<Renderer2D>().Material;
+            material2D.StringBuilder.Clear();
+            material2D.StringBuilder.Append(uiText);
         }
 
         protected override void Draw(GameTime gameTime)

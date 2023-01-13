@@ -154,42 +154,25 @@ namespace GD.App
         #region Cameras
         private static readonly int CAMERA_POSITION = 100;
         private static readonly int CAMERA_ROTATION = 90;
+        private static readonly float CAMERA_HEIGHT = 22.5f;
 
         #region Front Camera
         public static readonly string FRONT_CAMERA_NAME = "front camera";
-        public static readonly Vector3 DEFAULT_FRONT_CAMERA_TRANSLATION = new Vector3(22.5f, 22.5f, 100f);
+        public static readonly Vector3 DEFAULT_FRONT_CAMERA_TRANSLATION = new Vector3(CAMERA_HEIGHT, CAMERA_HEIGHT, CAMERA_POSITION);
         public static readonly Vector3 DEFAULT_FRONT_CAMERA_ROTATION = Vector3.Zero;
         #endregion Front Camera
 
-        #region Back Camera
-        public static readonly string BACK_CAMERA_NAME = "back camera";
-        public static readonly Vector3 DEFAULT_BACK_CAMERA_TRANSLATION = new Vector3(22.5f, 22.5f, -CAMERA_POSITION);
-        public static readonly Vector3 DEFAULT_BACK_CAMERA_ROTATION = new Vector3(0, CAMERA_ROTATION * 2, 0);
-        #endregion Back Camera
-
         #region Top Camera
         public static readonly string TOP_CAMERA_NAME = "top camera";
-        public static readonly Vector3 DEFAULT_TOP_CAMERA_TRANSLATION = new Vector3(22.5f, CAMERA_POSITION, 22.5f);
+        public static readonly Vector3 DEFAULT_TOP_CAMERA_TRANSLATION = new Vector3(CAMERA_HEIGHT, CAMERA_POSITION, CAMERA_HEIGHT);
         public static readonly Vector3 DEFAULT_TOP_CAMERA_ROTATION = new Vector3(-CAMERA_ROTATION, 0, 0);
         #endregion Top Camera
 
-        #region Bottom Camera
-        public static readonly string BOTTOM_CAMERA_NAME = "bottom camera";
-        public static readonly Vector3 DEFAULT_BOTTOM_CAMERA_TRANSLATION = new Vector3(22.5f, -CAMERA_POSITION, 22.5f);
-        public static readonly Vector3 DEFAULT_BOTTOM_CAMERA_ROTATION = new Vector3(CAMERA_ROTATION, 0, 0);
-        #endregion Bottom Camera
-
-        #region Right Camera
-        public static readonly string RIGHT_CAMERA_NAME = "right camera";
-        public static readonly Vector3 DEFAULT_RIGHT_CAMERA_TRANSLATION = new Vector3(CAMERA_POSITION, 22.5f, 22.5f);
-        public static readonly Vector3 DEFAULT_RIGHT_CAMERA_ROTATION = new Vector3(0, CAMERA_ROTATION, 0);
-        #endregion Right Camera
-
-        #region Left Camera
-        public static readonly string LEFT_CAMERA_NAME = "left camera";
-        public static readonly Vector3 DEFAULT_LEFT_CAMERA_TRANSLATION = new Vector3(-CAMERA_POSITION, 22.5f, 22.5f);
-        public static readonly Vector3 DEFAULT_LEFT_CAMERA_ROTATION = new Vector3(0, -CAMERA_ROTATION, 0);
-        #endregion Left Camera
+        #region Side Camera
+        public static readonly string SIDE_CAMERA_NAME = "side camera";
+        public static readonly Vector3 DEFAULT_SIDE_CAMERA_TRANSLATION = new Vector3(CAMERA_POSITION, CAMERA_HEIGHT, CAMERA_HEIGHT);
+        public static readonly Vector3 DEFAULT_SIDE_CAMERA_ROTATION = new Vector3(0, CAMERA_ROTATION, 0);
+        #endregion Side Camera
 
         #endregion Cameras
 
@@ -251,8 +234,12 @@ namespace GD.App
         #region UI
         public static readonly string LEVEL_NAME = "Level text";
         public static readonly string SCORE_TEXT = "Score text";
+        public static readonly string CAMERA_UI_TEXT = "Camera UI";
         public static readonly string DEFAULT_LEVEL_TEXT = "Level ";
         public static readonly string DEFAULT_SCORE_TEXT = "Score ";
+        public static readonly string FRONT_CAMERA_UI_TEXT = "FRONT";
+        public static readonly string SIDE_CAMERA_UI_TEXT = "SIDE";
+        public static readonly string TOP_CAMERA_UI_TEXT = "TOP";
         #endregion UI
 
         #region Textures
@@ -269,6 +256,10 @@ namespace GD.App
         public static readonly string SNAKE_SKIN_TEXTURE_PATH = SNAKE_BODY_BASE_TEXTURE_PATH + "snake_skin";
         public static readonly string SNAKE_HEAD_TEXTURE_PATH = SNAKE_BODY_BASE_TEXTURE_PATH + "snake_head";
         #endregion Snake Textures
+
+        #region Background Texture
+        public static readonly string BACKGROUND_TEXTURE_PATH = "Assets/black";
+        #endregion Background Texture
 
         #endregion Textures
 

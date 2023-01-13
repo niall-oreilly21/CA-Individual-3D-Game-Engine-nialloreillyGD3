@@ -176,49 +176,49 @@ namespace App.Managers
         private float targetRotation = 90f;
         private float rotateSpeed = 0.1f;
        
-        private void UpdateCameraRotataion(GameTime gameTime)
-        {
-            totalElapsedTimeCameraRotationMS += gameTime.ElapsedGameTime.Milliseconds;
+        //private void UpdateCameraRotataion(GameTime gameTime)
+        //{
+        //    totalElapsedTimeCameraRotationMS += gameTime.ElapsedGameTime.Milliseconds;
 
 
-            if (totalElapsedTimeCameraRotationMS >= 5000f)
-            {
+        //    if (totalElapsedTimeCameraRotationMS >= 5000f)
+        //    {
 
-                    float rotationAmt = (float)(rotateSpeed * gameTime.ElapsedGameTime.TotalMilliseconds);
+        //            float rotationAmt = (float)(rotateSpeed * gameTime.ElapsedGameTime.TotalMilliseconds);
 
-                    if (rotation < targetRotation)
-                    {
+        //            if (rotation < targetRotation)
+        //            {
 
-                    if (Application.CameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
-                    {
-                        Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, 0, rotationAmt);
-                    }
-                    else if (Application.CameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
-                    {
-                        Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, 0, -rotationAmt);
-                    }
+        //            if (Application.CameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
+        //            {
+        //                Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, 0, rotationAmt);
+        //            }
+        //            else if (Application.CameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
+        //            {
+        //                Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, 0, -rotationAmt);
+        //            }
 
-                    else if (Application.CameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
-                    {
-                        Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, rotationAmt, 0);
+        //            else if (Application.CameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+        //            {
+        //                Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, rotationAmt, 0);
 
-                    }
-                    else if (Application.CameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
-                    {
-                        Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, -rotationAmt, 0);
+        //            }
+        //            else if (Application.CameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+        //            {
+        //                Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, -rotationAmt, 0);
 
-                    }
+        //            }
 
-                    rotation += rotationAmt;
-                }
-                else
-                {
-                    rotation = 0f;
-                    totalElapsedTimeCameraRotationMS = 0;
-                }
+        //            rotation += rotationAmt;
+        //        }
+        //        else
+        //        {
+        //            rotation = 0f;
+        //            totalElapsedTimeCameraRotationMS = 0;
+        //        }
 
-            }
+        //    }
             
-        }
+        //}
     }
 }

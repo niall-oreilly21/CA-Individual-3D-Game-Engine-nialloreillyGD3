@@ -265,6 +265,18 @@
 /processorParam:TextureFormat=Color
 /build:Assets/new.png
 
+#begin Assets/niall.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/niall.png
+
 #begin Assets/test.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -780,6 +792,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Skybox/sky.bmp
+
+#begin Assets/Textures/Snake Game/Background/black_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Snake Game/Background/black_background.png
 
 #begin Assets/Textures/Snake Game/Consumables/apple_texture.png
 /importer:TextureImporter
