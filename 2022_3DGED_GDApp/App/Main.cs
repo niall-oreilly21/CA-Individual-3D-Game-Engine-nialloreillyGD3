@@ -912,7 +912,7 @@ namespace GD.App
             //InitializeXYZ();
 
             //create sky
-            InitializeSkyBox(worldScale);
+            //InitializeSkyBox(worldScale);
 
             //quad with crate texture
             //InitializeDemoQuad();
@@ -1284,14 +1284,14 @@ namespace GD.App
         private void InitializeSnakeHead()
         {
             //game object
-            var snakeGameObject = new GameObject("snake part 1", ObjectType.Dynamic, RenderType.Opaque);
+            var snakeGameObject = new GameObject("Snake head", ObjectType.Dynamic, RenderType.Opaque);
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
                 AppData.SNAKE_GAMEOBJECTS_SCALE,
                 Vector3.Zero,
                 AppData.SNAKE_START_POSITION);
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+            var texture = Content.Load<Texture2D>(AppData.SNAKE_HEAD_TEXTURE_PATH);
             var meshBase = new SphereMesh(_graphics.GraphicsDevice);
 
             snakeGameObject.AddComponent(new Renderer(
@@ -1321,10 +1321,10 @@ namespace GD.App
             var snakeGameObjectTongue = new GameObject("snake tongue", ObjectType.Dynamic, RenderType.Opaque);
 
             snakeGameObjectTongue.Transform = new Transform(
-                new Vector3(1.5f,1.5f,1.5f),
+                new Vector3(2.5f,0.6f,0.6f),
                 Vector3.Zero,
                 null);
-            texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+            texture = Content.Load<Texture2D>(AppData.SNAKE_TONGUE_TEXTURE_PATH);
             var meshBase2 = new OctahedronMesh(_graphics.GraphicsDevice);
 
             snakeGameObjectTongue.AddComponent(new Renderer(
@@ -1338,9 +1338,13 @@ namespace GD.App
             snakeGameObject.AddComponent(new CollidableSnakeController());
 
             sceneManager.ActiveScene.Add(snakeGameObject);
+
+
+            texture = Content.Load<Texture2D>(AppData.SNAKE_SKIN_TEXTURE_PATH);
+            var snakeSkin = new Material(texture, 1);
             CubeMesh snakeBodyMesh = new CubeMesh(_graphics.GraphicsDevice);
             OctahedronMesh snakeTailMesh = new OctahedronMesh(_graphics.GraphicsDevice);
-            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh, snakeTailMesh);
+            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh, snakeTailMesh, snakeSkin);
 
           
         }
@@ -1356,12 +1360,12 @@ namespace GD.App
                 AppData.SNAKE_GAMEOBJECTS_SCALE,
                 Vector3.Zero,
                 Vector3.Zero);
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+            var texture = Content.Load<Texture2D>(AppData.FOOD_TEXTURE_PATH);
             var meshBase = new SphereMesh(_graphics.GraphicsDevice);
 
             foodGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 1, Color.Green),
+                new Material(texture, 1),
                 meshBase));
 
             Collider collider = new FoodCollider(foodGameObject, true,true);

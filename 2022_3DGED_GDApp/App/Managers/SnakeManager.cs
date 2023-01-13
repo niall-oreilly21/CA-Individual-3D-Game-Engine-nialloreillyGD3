@@ -25,22 +25,26 @@ namespace GD.Engine
             #region Fields
             private List<Character> snakePartsListBodies = new List<Character>();
             private GameObject snakePart;
+            private GameObject head;
             private Character tail;
             private CubeMesh snakeBodyMesh;
             private OctahedronMesh snakeTailMesh;
+        private Material snakeMaterial;
             private int snakeNumber;
             float timeFlag = 0f;
 
         #endregion Fields
 
         #region Constructors
-        public SnakeManager(Game game, GameObject snakePart, CubeMesh snakeBodyMesh, OctahedronMesh snakeTailMesh) : base(game)
+        public SnakeManager(Game game, GameObject snakePart, CubeMesh snakeBodyMesh, OctahedronMesh snakeTailMesh, Material snakeMaterial) : base(game)
         {
+            this.head = snakePart;
             this.snakePart = snakePart;
             this.tail = snakePart.GetComponent<CharacterCollider>().Body as Character;
             snakePartsListBodies.Add(tail);
             this.snakeBodyMesh = snakeBodyMesh;
             this.snakeTailMesh = snakeTailMesh;
+            this.snakeMaterial = snakeMaterial;
 
             snakeNumber = 0;
 
@@ -67,10 +71,9 @@ namespace GD.Engine
             {
                 case EventActionType.OnMove: //TODO
                     Vector3 direction = (Vector3)eventData.Parameters[0];
-                    float moveSpeed = (float)eventData.Parameters[1];
-                    GameTime gameTime = (GameTime)eventData.Parameters[2];
+                    GameTime gameTime = (GameTime)eventData.Parameters[1];
 
-                    Move(direction, moveSpeed, gameTime);
+                    Move(direction, gameTime);
                     break;
 
                 case EventActionType.Grow: //TODO
@@ -133,7 +136,7 @@ namespace GD.Engine
         }
 
         private float totalTime = 0f;
-        private void Move(Vector3 newTranslation, float moveSpeed, GameTime gameTime)
+        private void Move(Vector3 newTranslation, GameTime gameTime)
         {
 
             Vector3 newTranslate;
@@ -144,8 +147,9 @@ namespace GD.Engine
                 timeFlag = gameTime.TotalGameTime.Milliseconds;
             }
 
+            System.Diagnostics.Debug.WriteLine(Application.SnakeMoveSpeed);
 
-            if (totalTime - timeFlag < moveSpeed)
+            if (totalTime - timeFlag < Application.SnakeMoveSpeed)
             {
                 return;
             }
@@ -183,7 +187,7 @@ namespace GD.Engine
         GameObject gameObjectClone = CloneModelGameObjectSnake(gameObject, newName, translation);
 
         Renderer renderer = gameObject.GetComponent<Renderer>();
-        Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, snakeBodyMesh);
+        Renderer cloneRenderer = new Renderer(renderer.Effect, snakeMaterial, snakeBodyMesh);
         gameObjectClone.AddComponent(cloneRenderer);
 
 
@@ -209,7 +213,7 @@ namespace GD.Engine
             GameObject gameObjectClone = CloneModelGameObjectSnake(gameObject, newName, translation);
 
             Renderer renderer = gameObject.GetComponent<Renderer>();
-            Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, snakeTailMesh);
+            Renderer cloneRenderer = new Renderer(renderer.Effect, snakeMaterial, snakeTailMesh);
             gameObjectClone.AddComponent(cloneRenderer);
 
             Collider cloneCollider = new CharacterCollider(gameObjectClone, true);

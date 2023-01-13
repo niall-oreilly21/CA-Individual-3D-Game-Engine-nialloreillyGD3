@@ -128,7 +128,7 @@ namespace GD.App
         #region Snake Attributes
         public static readonly Vector3 SNAKE_START_POSITION = new Vector3(0, 0, 0);
         public static readonly float SNAKE_DEFAULT_MOVE_SPEED = 600f;
-        private static readonly float SNAKE_MULTIPLIER_SPEED = 0.02f;
+        private static readonly float SNAKE_MULTIPLIER_SPEED = 0.04f;
         public static readonly float SNAKE_MULTIPLIER = SNAKE_DEFAULT_MOVE_SPEED * SNAKE_MULTIPLIER_SPEED;
         public static readonly float SNAKE_HEAD_TRANSLATE_AMOUNT = 0.7f;
         #endregion Snake Attributes
@@ -254,6 +254,23 @@ namespace GD.App
         public static readonly string DEFAULT_LEVEL_TEXT = "Level ";
         public static readonly string DEFAULT_SCORE_TEXT = "Score ";
         #endregion UI
+
+        #region Textures
+        private static readonly string TEXTURES_BASE_PATH = "Assets/Textures/Snake Game/";
+
+        #region Consumables Textures
+        private static readonly string CONSUMABLES_BASE_TEXTURE_PATH = TEXTURES_BASE_PATH + "Consumables/";
+        public static readonly string FOOD_TEXTURE_PATH = CONSUMABLES_BASE_TEXTURE_PATH + "apple_texture";
+        #endregion Consumables Textures
+
+        #region Snake Textures
+        private static readonly string SNAKE_BODY_BASE_TEXTURE_PATH = TEXTURES_BASE_PATH + "Snake Body/";
+        public static readonly string SNAKE_TONGUE_TEXTURE_PATH = SNAKE_BODY_BASE_TEXTURE_PATH + "snake_tongue";
+        public static readonly string SNAKE_SKIN_TEXTURE_PATH = SNAKE_BODY_BASE_TEXTURE_PATH + "snake_skin";
+        public static readonly string SNAKE_HEAD_TEXTURE_PATH = SNAKE_BODY_BASE_TEXTURE_PATH + "snake_head";
+        #endregion Snake Textures
+
+        #endregion Textures
 
         #endregion Snake
     }
