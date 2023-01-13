@@ -131,6 +131,7 @@ namespace GD.App
         private static readonly float SNAKE_MULTIPLIER_SPEED = 0.04f;
         public static readonly float SNAKE_MULTIPLIER = SNAKE_DEFAULT_MOVE_SPEED * SNAKE_MULTIPLIER_SPEED;
         public static readonly float SNAKE_HEAD_TRANSLATE_AMOUNT = 0.7f;
+        public static readonly string SNAKE_HEAD_NAME = "Snake head";
         #endregion Snake Attributes
 
         #region Snake World
@@ -138,8 +139,8 @@ namespace GD.App
         #region Cube Dimensions
         private static readonly int SNAKE_GAME_SIZE = 21;
 
-        public static readonly int SNAKE_GAME_MIN_SIZE = 0;
-        public static readonly int SNAKE_GAME_MAX_SIZE = 45;
+        public static readonly float SNAKE_GAME_MIN_BOUNDARY = -22.5f;
+        public static readonly float SNAKE_GAME_MAX_BOUNDARY = 22.5f;
         #endregion Cube Dimensions
 
         #region GameObjects Scale
@@ -152,9 +153,9 @@ namespace GD.App
         #endregion Snake World
 
         #region Cameras
-        private static readonly int CAMERA_POSITION = 100;
-        private static readonly int CAMERA_ROTATION = 90;
-        private static readonly float CAMERA_HEIGHT = 22.5f;
+        private static readonly float CAMERA_POSITION = 77.5f;
+        private static readonly float CAMERA_ROTATION = 90f;
+        private static readonly float CAMERA_HEIGHT = 0f;
 
         #region Front Camera
         public static readonly string FRONT_CAMERA_NAME = "front camera";
@@ -162,17 +163,35 @@ namespace GD.App
         public static readonly Vector3 DEFAULT_FRONT_CAMERA_ROTATION = Vector3.Zero;
         #endregion Front Camera
 
+        #region Back Camera
+        public static readonly string BACK_CAMERA_NAME = "back camera";
+        public static readonly Vector3 DEFAULT_BACK_CAMERA_TRANSLATION = new Vector3(CAMERA_HEIGHT, CAMERA_HEIGHT, -CAMERA_POSITION);
+        public static readonly Vector3 DEFAULT_BACK_CAMERA_ROTATION = new Vector3(0, CAMERA_ROTATION * 2, 0);
+        #endregion Back Camera
+
         #region Top Camera
         public static readonly string TOP_CAMERA_NAME = "top camera";
         public static readonly Vector3 DEFAULT_TOP_CAMERA_TRANSLATION = new Vector3(CAMERA_HEIGHT, CAMERA_POSITION, CAMERA_HEIGHT);
         public static readonly Vector3 DEFAULT_TOP_CAMERA_ROTATION = new Vector3(-CAMERA_ROTATION, 0, 0);
         #endregion Top Camera
 
-        #region Side Camera
-        public static readonly string SIDE_CAMERA_NAME = "side camera";
-        public static readonly Vector3 DEFAULT_SIDE_CAMERA_TRANSLATION = new Vector3(CAMERA_POSITION, CAMERA_HEIGHT, CAMERA_HEIGHT);
-        public static readonly Vector3 DEFAULT_SIDE_CAMERA_ROTATION = new Vector3(0, CAMERA_ROTATION, 0);
-        #endregion Side Camera
+        #region Bottom Camera
+        public static readonly string BOTTOM_CAMERA_NAME = "bottom camera";
+        public static readonly Vector3 DEFAULT_BOTTOM_CAMERA_TRANSLATION = new Vector3(CAMERA_HEIGHT, -CAMERA_POSITION, CAMERA_HEIGHT);
+        public static readonly Vector3 DEFAULT_BOTTOM_CAMERA_ROTATION = new Vector3(CAMERA_ROTATION, 0, 0);
+        #endregion Bottom Camera
+
+        #region Right Camera
+        public static readonly string RIGHT_CAMERA_NAME = "right camera";
+        public static readonly Vector3 DEFAULT_RIGHT_CAMERA_TRANSLATION = new Vector3(CAMERA_POSITION, CAMERA_HEIGHT, CAMERA_HEIGHT);
+        public static readonly Vector3 DEFAULT_RIGHT_CAMERA_ROTATION = new Vector3(0, CAMERA_ROTATION, 0);
+        #endregion Right Camera
+
+        #region Left Camera
+        public static readonly string LEFT_CAMERA_NAME = "left camera";
+        public static readonly Vector3 DEFAULT_LEFT_CAMERA_TRANSLATION = new Vector3(-CAMERA_POSITION, CAMERA_HEIGHT, CAMERA_HEIGHT);
+        public static readonly Vector3 DEFAULT_LEFT_CAMERA_ROTATION = new Vector3(0, -CAMERA_ROTATION, 0);
+        #endregion Left Camera
 
         #endregion Cameras
 
@@ -238,8 +257,11 @@ namespace GD.App
         public static readonly string DEFAULT_LEVEL_TEXT = "Level ";
         public static readonly string DEFAULT_SCORE_TEXT = "Score ";
         public static readonly string FRONT_CAMERA_UI_TEXT = "FRONT";
-        public static readonly string SIDE_CAMERA_UI_TEXT = "SIDE";
+        public static readonly string BACK_CAMERA_UI_TEXT = "BACK";
         public static readonly string TOP_CAMERA_UI_TEXT = "TOP";
+        public static readonly string BOTTOM_CAMERA_UI_TEXT = "BOTTOM";
+        public static readonly string RIGHT_CAMERA_UI_TEXT = "RIGHT";
+        public static readonly string LEFT_CAMERA_UI_TEXT = "LEFT";
         #endregion UI
 
         #region Textures

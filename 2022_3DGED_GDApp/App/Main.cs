@@ -807,43 +807,35 @@ namespace GD.App
             snakeCameraGameObject.AddComponent(camera);
 
             //Back Camera
-            //cameraManager.Add(AppData.BACK_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.BACK_CAMERA_NAME, AppData.DEFAULT_BACK_CAMERA_ROTATION, AppData.DEFAULT_BACK_CAMERA_TRANSLATION));
+            cameraManager.Add(AppData.BACK_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.BACK_CAMERA_NAME, AppData.DEFAULT_BACK_CAMERA_ROTATION, AppData.DEFAULT_BACK_CAMERA_TRANSLATION));
 
             //Top Camera
             cameraManager.Add(AppData.TOP_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.TOP_CAMERA_NAME, AppData.DEFAULT_TOP_CAMERA_ROTATION, AppData.DEFAULT_TOP_CAMERA_TRANSLATION));
 
             //Bottom Camera
-            //cameraManager.Add(AppData.BOTTOM_CAMERA_NAME,CloneModelGameObjectCamera(cameraGameObject, AppData.BOTTOM_CAMERA_NAME, AppData.DEFAULT_BOTTOM_CAMERA_ROTATION, AppData.DEFAULT_BOTTOM_CAMERA_TRANSLATION));
+            cameraManager.Add(AppData.BOTTOM_CAMERA_NAME,CloneModelGameObjectCamera(cameraGameObject, AppData.BOTTOM_CAMERA_NAME, AppData.DEFAULT_BOTTOM_CAMERA_ROTATION, AppData.DEFAULT_BOTTOM_CAMERA_TRANSLATION));
 
             //Right Camera
-            cameraManager.Add(AppData.SIDE_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.SIDE_CAMERA_NAME, AppData.DEFAULT_SIDE_CAMERA_ROTATION, AppData.DEFAULT_SIDE_CAMERA_TRANSLATION));
+            cameraManager.Add(AppData.RIGHT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.RIGHT_CAMERA_NAME, AppData.DEFAULT_RIGHT_CAMERA_ROTATION, AppData.DEFAULT_RIGHT_CAMERA_TRANSLATION));
 
             //Left Camera
-            //cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
+            cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
             #endregion Snake Cameras
 
 
             #region Curve
 
             Curve3D curve3D = new Curve3D(CurveLoopType.Oscillate);
-            int x = 0;
-            int y = 10;
-            int z = 50;
-            curve3D.Add(new Vector3(10, y, z), 0);
-            curve3D.Add(new Vector3(10, y, z), 1000);
-            curve3D.Add(new Vector3(20, y, z), 2000);
+            float heigth = 22.5f;
+            float position = 100f;
+            curve3D.Add(new Vector3(heigth, heigth, position), 0);
+            curve3D.Add(new Vector3(position, heigth, heigth), 2000);
+            curve3D.Add(new Vector3(heigth, heigth, -position), 3000);
+            curve3D.Add(new Vector3(-position, heigth, heigth), 4000);
+            //curve3D.Add(new Vector3(x, y, z), 2000);
             //curve3D.Add(new Vector3(30, y, 10), 3000);
             //curve3D.Add(new Vector3(30, y, 13), 3000);
             //curve3D.Add(new Vector3(50, y, z), 5000);
-
-
-            Curve3D curve3D2 = new Curve3D(CurveLoopType.Oscillate);
-            curve3D2.Add(new Vector3(20, y, z), 0);
-            curve3D2.Add(new Vector3(10, y, z), 1000);
-            curve3D2.Add(new Vector3(10, y, z), 2000);
-            //curve3D2.Add(new Vector3(30, y, 10), 3000);
-            //curve3D2.Add(new Vector3(30, y, 13), 3000);
-            //curve3D2.Add(new Vector3(50, y, z), 5000);
 
             cameraGameObject = new GameObject(AppData.CURVE_CAMERA_NAME);
             cameraGameObject.Transform =
@@ -860,8 +852,7 @@ namespace GD.App
                 target.Transform.SetTranslation(curve.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
             };
 
-            Curve3D[] curve3DArray = { curve3D, curve3D2};
-            cameraGameObject.AddComponent(new CurveBehaviourManager(curve3DArray, curveAction));
+            cameraGameObject.AddComponent(new CurveBehaviour(curve3D,curveAction));
 
             cameraManager.Add(cameraGameObject.Name, cameraGameObject);
 
@@ -1203,7 +1194,7 @@ namespace GD.App
             gameObject.Transform = new Transform(
                  new Vector3(45, 45, 45),
                 Vector3.Zero,
-                new Vector3(22.5f, 22.5f, 22.5f)
+                new Vector3(0, 0, 0)
                 );
             var texture = Content.Load<Texture2D>("Assets/niall");
             var meshBase2 = new CubeMesh(_graphics.GraphicsDevice);
@@ -1265,7 +1256,7 @@ namespace GD.App
         private void InitializeSnakeHead()
         {
             //game object
-            var snakeGameObject = new GameObject("Snake head", ObjectType.Dynamic, RenderType.Opaque);
+            var snakeGameObject = new GameObject(AppData.SNAKE_HEAD_NAME, ObjectType.Dynamic, RenderType.Opaque);
             snakeGameObject.GameObjectType = GameObjectType.Player;
 
             snakeGameObject.Transform = new Transform(
@@ -1744,57 +1735,152 @@ namespace GD.App
             #endregion
 
             #region Camera switching
-
-            //if (Input.Keys.IsPressed(Keys.F1))
-            //    cameraManager.SetActiveCamera(AppData.FIRST_PERSON_CAMERA_NAME);
-            //else if (Input.Keys.IsPressed(Keys.F2))
-            //    cameraManager.SetActiveCamera(AppData.SECURITY_CAMERA_NAME);
-            //else if (Input.Keys.IsPressed(Keys.F3))
-            //    cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
-            //else if (Input.Keys.IsPressed(Keys.F4))
-            //    cameraManager.SetActiveCamera(AppData.THIRD_PERSON_CAMERA_NAME);
-
-
             if (Input.Keys.WasJustPressed(Keys.Up))
             {
-                if  (
-                        cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
-                        cameraManager.ActiveCameraName == AppData.SIDE_CAMERA_NAME
+                if (
+                    cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME ||
+                    cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME ||
+                    cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME ||
+                    cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME
                     )
                 {
                     cameraManager.SetActiveCamera(AppData.TOP_CAMERA_NAME);
                     UpdateCameraUI(AppData.TOP_CAMERA_UI_TEXT);
                 }
-              
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                    UpdateCameraUI(AppData.BACK_CAMERA_UI_TEXT);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                    UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
+                }
             }
             else if (Input.Keys.WasJustPressed(Keys.Right))
             {
                 if (
-                     cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
-                     cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME
-
-                   )
+                    cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME ||
+                    cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME ||
+                    cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME
+                    )
                 {
-                    Application.CameraManager.SetActiveCamera(AppData.SIDE_CAMERA_NAME);
-                    UpdateCameraUI(AppData.SIDE_CAMERA_UI_TEXT);
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                    UpdateCameraUI(AppData.RIGHT_CAMERA_UI_TEXT);
                 }
+                else if (cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                    UpdateCameraUI(AppData.BACK_CAMERA_UI_TEXT);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                    UpdateCameraUI(AppData.LEFT_CAMERA_UI_TEXT);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+                    UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
+                }
+
             }
             else if (Input.Keys.WasJustPressed(Keys.Left))
             {
-                if (cameraManager.ActiveCameraName == AppData.SIDE_CAMERA_NAME)
+                if (
+                    cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME ||
+                    cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME ||
+                    cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME
+                   )
+                {
+                    cameraManager.SetActiveCamera(AppData.LEFT_CAMERA_NAME);
+                    UpdateCameraUI(AppData.LEFT_CAMERA_UI_TEXT);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                    UpdateCameraUI(AppData.BACK_CAMERA_UI_TEXT);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.RIGHT_CAMERA_NAME);
+                    UpdateCameraUI(AppData.RIGHT_CAMERA_UI_TEXT);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME)
                 {
                     cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
                     UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
                 }
+               
+
             }
             else if (Input.Keys.WasJustPressed(Keys.Down))
             {
-                if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+                if (
+                        cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.RIGHT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.LEFT_CAMERA_NAME ||
+                        cameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME
+                   )
+                {
+                    cameraManager.SetActiveCamera(AppData.BOTTOM_CAMERA_NAME);
+                    UpdateCameraUI(AppData.BOTTOM_CAMERA_UI_TEXT);
+                }
+                else if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
                 {
                     cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
                     UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
                 }
+                else if (cameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
+                {
+                    cameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+                    UpdateCameraUI(AppData.BACK_CAMERA_UI_TEXT);
+                }
             }
+
+
+
+            //if (Input.Keys.WasJustPressed(Keys.Up))
+            //{
+            //    if  (
+            //            cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
+            //            cameraManager.ActiveCameraName == AppData.SIDE_CAMERA_NAME
+            //        )
+            //    {
+            //        cameraManager.SetActiveCamera(AppData.TOP_CAMERA_NAME);
+            //        UpdateCameraUI(AppData.TOP_CAMERA_UI_TEXT);
+            //    }
+
+            //}
+            //else if (Input.Keys.WasJustPressed(Keys.Right))
+            //{
+            //    if (
+            //         cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
+            //         cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME
+
+            //       )
+            //    {
+            //        Application.CameraManager.SetActiveCamera(AppData.SIDE_CAMERA_NAME);
+            //        UpdateCameraUI(AppData.SIDE_CAMERA_UI_TEXT);
+            //    }
+            //}
+            //else if (Input.Keys.WasJustPressed(Keys.Left))
+            //{
+            //    if (cameraManager.ActiveCameraName == AppData.SIDE_CAMERA_NAME)
+            //    {
+            //        cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+            //        UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
+            //    }
+            //}
+            //else if (Input.Keys.WasJustPressed(Keys.Down))
+            //{
+            //    if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
+            //    {
+            //        cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+            //        UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
+            //    }
+            //}
 
 
             #endregion Camera switching

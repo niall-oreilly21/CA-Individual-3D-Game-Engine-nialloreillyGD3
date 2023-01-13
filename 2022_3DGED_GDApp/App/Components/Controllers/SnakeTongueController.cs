@@ -54,12 +54,8 @@ namespace GD.Engine
 
         if (target != null)
         {
-                System.Diagnostics.Debug.WriteLine(target.Transform.Rotation);
-                System.Diagnostics.Debug.WriteLine(direction);
                 if (direction.X == 0 && direction.Y == 0)
                 {
-                    //target.Transform.SetRotation(0, 0, 0);
-                    //target.Transform.SetRotation(0, 0, 90);
                     direction.Z = direction.Z * translateAmount;
 
                     transform.SetRotation(0, 0, 0);
@@ -69,13 +65,10 @@ namespace GD.Engine
                 {
                     direction.X = direction.X * translateAmount;
                     transform.SetRotation(0, 0, 0);
-                    //Application.Player.Transform.SetRotation(90, 0, 0);
 
                 }
                 else if (direction.X == 0 && direction.Z == 0)
                 {
-                    //target.Transform.SetRotation(0, 0, 0);
-                    //target.Transform.SetRotation(0, 90, 0);
                     direction.Y = direction.Y * translateAmount;
 
                     transform.SetRotation(0, 0, 0);
@@ -88,9 +81,6 @@ namespace GD.Engine
                
             transform.SetTranslation(newPosition);
         }
-
-        //since parent Update does nothing then dont bother calling it
-        //base.Update(gameTime);
     }
 }
 }

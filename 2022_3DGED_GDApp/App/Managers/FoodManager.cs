@@ -20,7 +20,7 @@ namespace GD.Engine
     {
         public FoodManager(Game game, GameObject consumable) : base(game, consumable)
         {
-            for (int i = 0; i < AppData.DEFAULT_INITIAL_FOOD; i++)
+            for (int i = 0; i <  20; i++)
             {
                 InitializeConsumableItem();
             }
@@ -77,7 +77,7 @@ namespace GD.Engine
                 snakePart = Application.SnakeParts[i].Parent as GameObject;
                 snakePartCollider = snakePart.GetComponent<CharacterCollider>();
 
-                if (snakePartCollider.IsColliding)
+                while (snakePartCollider.IsColliding)
                 {
                     Consumable = CloneModelGameObject(AppData.FOOD_BASE_NAME + ConsumableID);
                     snakePartCollider.IsColliding = false;

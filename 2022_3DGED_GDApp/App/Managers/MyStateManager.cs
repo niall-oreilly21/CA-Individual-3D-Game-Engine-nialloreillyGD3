@@ -107,7 +107,7 @@ namespace App.Managers
             //object[] parameters = { text };
             totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
 
-            if (totalElapsedTimeMS >= maxTimeInMS)
+            if (totalElapsedTimeMS >= 4000f)
             {
                 StartNewLevel();       
             }

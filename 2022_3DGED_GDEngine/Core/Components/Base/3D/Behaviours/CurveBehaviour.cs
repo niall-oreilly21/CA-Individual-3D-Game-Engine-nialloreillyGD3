@@ -30,6 +30,7 @@ namespace GD.App
 
         public override void Update(GameTime gameTime)
         {
+            transform.Rotate(0, 1, 0);
             action(curve, gameObject, gameTime);
             //transform.SetTranslation(curve.Evaluate(time, 4));
             // transform.SetRotation(rotationCurve.Evaluate(time, 4));

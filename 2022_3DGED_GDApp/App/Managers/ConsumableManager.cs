@@ -84,9 +84,9 @@ namespace GD.Engine
         private Vector3 GetRandomTranslation()
         {
             Random random = new Random();
-            int x = random.Next(AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MAX_SIZE);
-            int y = random.Next(AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MAX_SIZE);
-            int z = random.Next(AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MAX_SIZE);
+            float x = random.Next((int)AppData.SNAKE_GAME_MIN_BOUNDARY, (int)AppData.SNAKE_GAME_MAX_BOUNDARY);
+            float y = random.Next((int)AppData.SNAKE_GAME_MIN_BOUNDARY, (int)AppData.SNAKE_GAME_MAX_BOUNDARY);
+            float z = random.Next((int)AppData.SNAKE_GAME_MIN_BOUNDARY, (int)AppData.SNAKE_GAME_MAX_BOUNDARY);
 
             Vector3 newTranslation = new Vector3(x, y, z);
             return newTranslation;

@@ -121,8 +121,6 @@ namespace GD.Engine
                         transform.SetRotation(0, 0, 0);
                         direction = transform.World.Down;
                         transform.SetRotation(0, 90, 0);
-
-                        System.Diagnostics.Debug.WriteLine(transform.Rotation);
                     }
                 }
             }

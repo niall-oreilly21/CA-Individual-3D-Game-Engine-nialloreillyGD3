@@ -65,7 +65,7 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.W;
                 pressed = true;
-                if (transform.Translation.Z > AppData.SNAKE_GAME_MAX_SIZE)
+                if (transform.Translation.Z > AppData.SNAKE_GAME_MAX_BOUNDARY)
                 {
                     transform.SetTranslation(transform.Translation.X, transform.Translation.Y, 0);
                 }
@@ -89,7 +89,7 @@ namespace GD.Engine
 
                 if (transform.Translation.Z < 0)
                 {
-                    transform.SetTranslation(transform.Translation.X, transform.Translation.Y, AppData.SNAKE_GAME_MAX_SIZE);
+                    transform.SetTranslation(transform.Translation.X, transform.Translation.Y, AppData.SNAKE_GAME_MAX_BOUNDARY);
                 }
                 else
                 {
@@ -110,7 +110,7 @@ namespace GD.Engine
                 pressed = true;
                 if (transform.Translation.X < 0)
                 {
-                    transform.SetTranslation(AppData.SNAKE_GAME_MAX_SIZE, transform.Translation.Y, transform.Translation.Z);
+                    transform.SetTranslation(AppData.SNAKE_GAME_MAX_BOUNDARY, transform.Translation.Y, transform.Translation.Z);
                 }
                 else
                 {
@@ -130,7 +130,7 @@ namespace GD.Engine
                 pressedKey = Keys.D;
                 pressed = true;
 
-                if (transform.Translation.X > AppData.SNAKE_GAME_MAX_SIZE)
+                if (transform.Translation.X > AppData.SNAKE_GAME_MAX_BOUNDARY)
                 {
                     transform.SetTranslation(0, transform.Translation.Y, transform.Translation.Z);
                 }
@@ -154,7 +154,7 @@ namespace GD.Engine
                 pressed = true;
                 if (transform.Translation.Y < 0)
                 {
-                    transform.SetTranslation(transform.Translation.X, AppData.SNAKE_GAME_MAX_SIZE, transform.Translation.Z);
+                    transform.SetTranslation(transform.Translation.X, AppData.SNAKE_GAME_MAX_BOUNDARY, transform.Translation.Z);
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace GD.Engine
                 }
                 pressedKey = Keys.Right;
                 pressed = true;
-                if (transform.Translation.Y > AppData.SNAKE_GAME_MAX_SIZE)
+                if (transform.Translation.Y > AppData.SNAKE_GAME_MAX_BOUNDARY)
                 {
                     transform.SetTranslation(transform.Translation.X, 0, transform.Translation.Z);
                 }

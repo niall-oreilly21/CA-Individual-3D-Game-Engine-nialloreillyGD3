@@ -15,11 +15,12 @@ namespace GD.Engine
 
         protected override void HandleResponse(GameObject parentGameObject)
         {
-            EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
-                  EventActionType.OnPause));
+            //System.Diagnostics.Debug.WriteLine("Here");
+            //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+            //      EventActionType.OnPause));
 
-            EventDispatcher.Raise(new EventData(EventCategoryType.Player,
-            EventActionType.OnLose));
+            //EventDispatcher.Raise(new EventData(EventCategoryType.Player,
+            //EventActionType.OnLose));
         }
       
     }

@@ -1,4 +1,5 @@
 ﻿using GD.Engine.Events;
+using GD.Engine.Globals;
 using JigLibX.Collision;
 using JigLibX.Math;
 using JigLibX.Physics;
@@ -82,12 +83,11 @@ namespace GD.Engine
                 isColliding = true;
             }
 
-            if(parentGameObject.GameObjectType == GameObjectType.Player && parentGameObject.Name == "snake part 1")
+            if(parentGameObject.GameObjectType == GameObjectType.Player && parentGameObject.Name == Application.Player.Name)
             {
                 //System.Diagnostics.Debug.WriteLine("Here");
                 //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                 //EventActionType.OnPause));
-
                 EventDispatcher.Raise(new EventData(EventCategoryType.Player,
                 EventActionType.OnLose));
             }

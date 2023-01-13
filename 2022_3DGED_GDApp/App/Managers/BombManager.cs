@@ -17,7 +17,7 @@ namespace GD.Engine
     {
         public BombManager(Game game, GameObject consumable) : base(game, consumable)
         {
-            for (int i = 0; i < AppData.DEFAULT_INITIAL_BOMBS; i++)
+            for (int i = 0; i < 10; i++)
             {
                 InitializeConsumableItem();
             }
@@ -51,17 +51,30 @@ namespace GD.Engine
             GameObject snakePart;
             CharacterCollider snakePartCollider;
 
-            for (int i = 0; i < Application.SnakeParts.Count; i++)
-            {
-                snakePart = Application.SnakeParts[i].Parent as GameObject;
-                snakePartCollider = snakePart.GetComponent<CharacterCollider>();
+            bool isOkay = false;
 
-                if (snakePartCollider.IsColliding)
+            while (!isOkay)
+            {
+                isOkay = true;
+                for (int i = 0; i < Application.SnakeParts.Count; i++)
                 {
-                    Consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
-                    snakePartCollider.IsColliding = false;
+                    snakePart = Application.SnakeParts[i].Parent as GameObject;
+                    snakePartCollider = snakePart.GetComponent<CharacterCollider>();
+
+                    if (snakePartCollider.IsColliding)
+                    {
+                        System.Diagnostics.Debug.WriteLine(snakePartCollider.IsColliding);
+                        Consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
+                        snakePartCollider.IsColliding = false;
+                        isOkay = false;
+                        break;
+                    }
                 }
+
+               
+
             }
+                
 
             Application.SceneManager.ActiveScene.Add(Consumable);
             ConsumableID++;

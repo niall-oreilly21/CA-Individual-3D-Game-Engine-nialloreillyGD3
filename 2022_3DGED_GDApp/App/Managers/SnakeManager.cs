@@ -109,29 +109,29 @@ namespace GD.Engine
 
         private void ZeroPosition(Character snake)
         {
-            if (snake.Position.X > AppData.SNAKE_GAME_MAX_SIZE)
+            if (snake.Position.X > AppData.SNAKE_GAME_MAX_BOUNDARY)
             {
-                snake.transform.Position.X = AppData.SNAKE_GAME_MIN_SIZE;
+                snake.transform.Position.X = AppData.SNAKE_GAME_MIN_BOUNDARY;
             }
-            else if (snake.Position.X < AppData.SNAKE_GAME_MIN_SIZE)
+            else if (snake.Position.X < AppData.SNAKE_GAME_MIN_BOUNDARY)
             {
-                snake.transform.Position.X = AppData.SNAKE_GAME_MAX_SIZE;
+                snake.transform.Position.X = AppData.SNAKE_GAME_MAX_BOUNDARY;
             }
-            else if (snake.Position.Y > AppData.SNAKE_GAME_MAX_SIZE)
+            else if (snake.Position.Y > AppData.SNAKE_GAME_MAX_BOUNDARY)
             {
-                snake.transform.Position.Y = AppData.SNAKE_GAME_MIN_SIZE;
+                snake.transform.Position.Y = AppData.SNAKE_GAME_MIN_BOUNDARY;
             }
-            else if (snake.Position.Y < AppData.SNAKE_GAME_MIN_SIZE)
+            else if (snake.Position.Y < AppData.SNAKE_GAME_MIN_BOUNDARY)
             {
-                snake.transform.Position.Y = AppData.SNAKE_GAME_MAX_SIZE;
+                snake.transform.Position.Y = AppData.SNAKE_GAME_MAX_BOUNDARY;
             }
-            else if (snake.Position.Z < AppData.SNAKE_GAME_MIN_SIZE)
+            else if (snake.Position.Z < AppData.SNAKE_GAME_MIN_BOUNDARY)
             {
-                snake.transform.Position.Z = AppData.SNAKE_GAME_MAX_SIZE;
+                snake.transform.Position.Z = AppData.SNAKE_GAME_MAX_BOUNDARY;
             }
-            else if (snake.Position.Z > AppData.SNAKE_GAME_MAX_SIZE)
+            else if (snake.Position.Z > AppData.SNAKE_GAME_MAX_BOUNDARY)
             {
-                snake.transform.Position.Z = AppData.SNAKE_GAME_MIN_SIZE;
+                snake.transform.Position.Z = AppData.SNAKE_GAME_MIN_BOUNDARY;
             }
         }
 
@@ -146,8 +146,6 @@ namespace GD.Engine
             {
                 timeFlag = gameTime.TotalGameTime.Milliseconds;
             }
-
-            System.Diagnostics.Debug.WriteLine(Application.SnakeMoveSpeed);
 
             if (totalTime - timeFlag < Application.SnakeMoveSpeed)
             {
