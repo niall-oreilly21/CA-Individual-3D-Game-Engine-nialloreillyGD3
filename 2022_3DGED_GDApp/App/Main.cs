@@ -825,17 +825,19 @@ namespace GD.App
 
             #region Curve
 
-            Curve3D curve3D = new Curve3D(CurveLoopType.Oscillate);
-            float heigth = 22.5f;
-            float position = 100f;
-            curve3D.Add(new Vector3(heigth, heigth, position), 0);
-            curve3D.Add(new Vector3(position, heigth, heigth), 2000);
-            curve3D.Add(new Vector3(heigth, heigth, -position), 3000);
-            curve3D.Add(new Vector3(-position, heigth, heigth), 4000);
-            //curve3D.Add(new Vector3(x, y, z), 2000);
-            //curve3D.Add(new Vector3(30, y, 10), 3000);
-            //curve3D.Add(new Vector3(30, y, 13), 3000);
-            //curve3D.Add(new Vector3(50, y, z), 5000);
+            Curve3D curve3DTranslation = new Curve3D(CurveLoopType.Oscillate);
+
+            for(int i = 0; i < AppData.CURVE_TRANSLATIONS.Length; i++)
+            {
+                curve3DTranslation.Add(AppData.CURVE_TRANSLATIONS[i], AppData.CURVE_TIME_SPAN * i);
+            }
+
+            Curve3D curve3DRotation = new Curve3D(CurveLoopType.Oscillate);
+
+            for (int i = 0; i < AppData.CURVE_ROTATIONS.Length; i++)
+            {
+                curve3DRotation.Add(AppData.CURVE_ROTATIONS[i], AppData.CURVE_TIME_SPAN * i);
+            }
 
             cameraGameObject = new GameObject(AppData.CURVE_CAMERA_NAME);
             cameraGameObject.Transform =
@@ -849,16 +851,17 @@ namespace GD.App
             //define what action the curve will apply to the target game object
             var curveAction = (Curve3D curve, GameObject target, GameTime gameTime) =>
             {
-                target.Transform.SetTranslation(curve.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
+                target.Transform.SetTranslation(curve3DTranslation.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
+                target.Transform.SetRotation(curve3DRotation.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
             };
 
-            cameraGameObject.AddComponent(new CurveBehaviour(curve3D,curveAction));
+            cameraGameObject.AddComponent(new CurveBehaviour(curve3DTranslation, curveAction));
 
             cameraManager.Add(cameraGameObject.Name, cameraGameObject);
 
             #endregion Curve
 
-            cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+            cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
         }
 
         private void InitializeCollidableContent(float worldScale)

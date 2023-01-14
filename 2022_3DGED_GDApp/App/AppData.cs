@@ -153,9 +153,9 @@ namespace GD.App
         #endregion Snake World
 
         #region Cameras
-        private static readonly float CAMERA_POSITION = 77.5f;
-        private static readonly float CAMERA_ROTATION = 90f;
-        private static readonly float CAMERA_HEIGHT = 0f;
+        public static readonly float CAMERA_POSITION = 77.5f;
+        public static readonly float CAMERA_ROTATION = 90f;
+        public static readonly float CAMERA_HEIGHT = 0f;
 
         #region Front Camera
         public static readonly string FRONT_CAMERA_NAME = "front camera";
@@ -193,6 +193,23 @@ namespace GD.App
         public static readonly Vector3 DEFAULT_LEFT_CAMERA_ROTATION = new Vector3(0, -CAMERA_ROTATION, 0);
         #endregion Left Camera
 
+
+        #region Intro Camera
+
+        #region Curve Translations
+        public static readonly Vector3[] CURVE_TRANSLATIONS = {DEFAULT_FRONT_CAMERA_TRANSLATION, DEFAULT_RIGHT_CAMERA_TRANSLATION, DEFAULT_BACK_CAMERA_TRANSLATION, DEFAULT_LEFT_CAMERA_TRANSLATION,DEFAULT_FRONT_CAMERA_TRANSLATION };
+        #endregion Curve Translations
+
+        #region Curve Rotations
+        //Last two rotation can't be a minus as Curve Behaviour will track to the wrong location
+        public static readonly Vector3[] CURVE_ROTATIONS = { DEFAULT_FRONT_CAMERA_ROTATION, DEFAULT_RIGHT_CAMERA_ROTATION, DEFAULT_BACK_CAMERA_ROTATION, new Vector3(0, 270, 0), new Vector3(0, 360, 0) };
+        #endregion Curve Rotations
+
+        #region Curve Rotations
+        public static readonly int CURVE_TIME_SPAN = 4000;
+        #endregion Curve Rotations
+
+        #endregion Intro Camera
         #endregion Cameras
 
         #region Consumables

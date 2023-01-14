@@ -19,7 +19,6 @@ namespace GD.Engine
         {
             // send event to game state to check time remaining. If time is still left,
             // change state to win state
-            System.Diagnostics.Debug.WriteLine("HELLO");
             EventDispatcher.Raise(new EventData(EventCategoryType.Player, EventActionType.RemoveFood));
 
         }
