@@ -158,7 +158,7 @@ namespace GD.Engine.Managers
             listInstances2D = new List<KeyValuePair<string, SoundEffectInstance>>();
 
             //Register for certain events - see Main demo
-            EventDispatcher.Subscribe(EventCategoryType.Player, HandlePlayerEvent);
+            EventDispatcher.Subscribe(EventCategoryType.Game, HandlePlayerEvent);
             EventDispatcher.Subscribe(EventCategoryType.Menu, HandleMenuEvent);
             EventDispatcher.Subscribe(EventCategoryType.Sound, HandleSoundEvent);
         }

@@ -61,8 +61,7 @@ namespace GD.App
                     // Switch main camera
                     Application.CameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
 
-                    // Start player movement
-                    //EventDispatcher.Raise(new EventData(EventCategoryType.Player, EventActionType.OnStartMovement));
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Game, EventActionType.InitializeLevelUITimerStart));
                 }
             }
            

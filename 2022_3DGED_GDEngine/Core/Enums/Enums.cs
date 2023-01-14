@@ -80,7 +80,7 @@
         /// <summary>
         /// Used when something happens to a PC e.g. win,lose,respawn
         /// </summary>
-        Player,
+        Game,
 
         /// <summary>
         /// Used when something happens to a NPC e.g. win,lose,respawn
@@ -193,7 +193,10 @@
         AddBomb,
         InitilizeBombManager,
         MoveTongue,
-        UpdateScore
+        UpdateScore,
+        RemoveUILevelStart,
+        InitializeLevelUITimerStart,
+        InitializeUI
     }
 
     /// <summary>

@@ -50,10 +50,7 @@ namespace GD.Engine
 
             Application.SnakeParts = snakePartsListBodies;
 
-            for (int i = 0; i < 2; i++)
-            {
                 Grow();
-            }
         }
         #endregion Constructors
 
@@ -73,7 +70,10 @@ namespace GD.Engine
                     Vector3 direction = (Vector3)eventData.Parameters[0];
                     GameTime gameTime = (GameTime)eventData.Parameters[1];
 
-                    Move(direction, gameTime);
+                    if(Application.StateManager.GameStarted)
+                    {
+                        Move(direction, gameTime);
+                    }                  
                     break;
 
                 case EventActionType.Grow: //TODO
@@ -261,8 +261,12 @@ namespace GD.Engine
             Application.SnakeMoveSpeed -= AppData.SNAKE_MULTIPLIER;
             Application.StateManager.CurrentScore++;
 
-            EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
-            EventActionType.UpdateScore));
+            if(snakePartsListBodies.Count > 3 && Application.StateManager.GameStarted)
+            {
+                EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
+                EventActionType.UpdateScore));
+            }
+
         }
             
             #endregion Snake Parts Methods

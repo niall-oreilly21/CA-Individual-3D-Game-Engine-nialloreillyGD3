@@ -38,31 +38,41 @@ namespace App.Managers
     {
         private float maxTimeInMS;
         private float totalElapsedTimeMS;
-        private float totalElapsedTimeCameraRotationMS;
+        private double totalSeconds;
+        private double minutes;
+        private double seconds;
         private int currentLevel;
         private int currentScore;
         private int totalLevels;
+        private bool gameStarted;
         private string text;
 
         public MyStateManager(Game game, float maxTimeInMS, int totalLevels) : base(game)
         {
             this.maxTimeInMS = maxTimeInMS;
             this.totalElapsedTimeMS = 0;
-            this.totalElapsedTimeCameraRotationMS = 0;
+            this.totalSeconds = 0;
+            this.minutes = 0;
+            this.seconds = 0;
             this.currentLevel = 1;
             this.totalLevels = totalLevels;
+            this.gameStarted = false;
         }
 
         #region Properties
-        public int CurrentLevel
+        public double Minutes
         {
             get
             {
-                return currentLevel;
+                return minutes;
             }
-            set
+        }
+
+        public double Seconds
+        {
+            get
             {
-                currentLevel = value;
+                return seconds;
             }
         }
 
@@ -77,6 +87,30 @@ namespace App.Managers
                 currentScore = value;
             }
         }
+
+        public int CurrentLevel
+        {
+            get
+            {
+                return currentScore;
+            }
+            set
+            {
+                currentLevel = value;
+            }
+        }
+
+        public bool GameStarted
+        {
+            get
+            {
+                return gameStarted;
+            }
+            set
+            {
+                gameStarted = value;
+            }
+        }
         #endregion Properties
 
         protected override void SubscribeToEvents()
@@ -88,30 +122,26 @@ namespace App.Managers
         {
             switch (eventData.EventActionType)
             { 
-                case EventActionType.UpdateScore: //TODO
+                case EventActionType.UpdateScore:
                     UpdateScore();
+                    break;
+
+                case EventActionType.RemoveUILevelStart:                   
+                    GameObject removeGameObject = (GameObject)eventData.Parameters[0];
+                    StartNewLevel(removeGameObject);
                     break;
 
                 default:
                     break;
-                    //add more cases for each method that we want to support with events
             }
         }
 
         public override void Update(GameTime gameTime)
         {
-            //System.Diagnostics.Debug.WriteLine(totalElapsedTimeMS);
-            //totalElapsedTimeMS = 0;
-            //currentLevel++;
-            //string text = "Level: " + Application.StateManager.CurrentLevel;
-            //object[] parameters = { text };
             totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
-
-            if (totalElapsedTimeMS >= 4000f)
-            {
-                StartNewLevel();       
-            }
-
+            totalSeconds = Math.Abs(maxTimeInMS - totalElapsedTimeMS / 1000d);
+            minutes = Math.Floor(totalSeconds / 60);
+            seconds = Math.Round(totalSeconds % 60);
 
             //CheckCurrentLevel();
             // base.Update(gameTime);
@@ -119,7 +149,7 @@ namespace App.Managers
 
         private void UpdateScore()
         {
-            GameObject scoreGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.SCORE_TEXT);
+            GameObject scoreGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.SCORE_UI_NAME);
 
             var material2D = (TextMaterial2D)scoreGameObject.GetComponent<Renderer2D>().Material;
             material2D.StringBuilder.Clear();
@@ -135,16 +165,22 @@ namespace App.Managers
             material2D.StringBuilder.Append(AppData.DEFAULT_LEVEL_TEXT + Application.StateManager.CurrentLevel);
         }
 
-        private void StartNewLevel()
+        private void StartNewLevel(GameObject removeGameObject)
         {
+            Application.UISceneManager.ActiveScene.Remove((uiElement) => uiElement.Name == removeGameObject.Name);           
+            
+            totalElapsedTimeMS = 0;
+            currentScore = 0;
+            currentLevel = Application.StateManager.CurrentLevel;
+            gameStarted = true;
 
-            totalElapsedTimeMS = 0;            
+            EventDispatcher.Raise(new EventData(EventCategoryType.Game,
+                 EventActionType.InitializeUI));
 
-            Application.StateManager.CurrentLevel++;
 
-            if(currentLevel == 2)
+            if (currentLevel == 2)
             {
-                EventDispatcher.Raise(new EventData(EventCategoryType.Player,
+                EventDispatcher.Raise(new EventData(EventCategoryType.Game,
                   EventActionType.InitilizeBombManager));
             }
            
@@ -158,7 +194,7 @@ namespace App.Managers
                 EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                 EventActionType.OnPause));
 
-                EventDispatcher.Raise(new EventData(EventCategoryType.Player,
+                EventDispatcher.Raise(new EventData(EventCategoryType.Game,
                 EventActionType.OnLose));
             }
         }

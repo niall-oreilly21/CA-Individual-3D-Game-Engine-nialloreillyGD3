@@ -229,7 +229,7 @@ namespace GD.App
         #endregion Consumables
 
         #region Game State Manager Data
-        public static readonly float MAX_SNAKE_LEVEL_TIME = 10000f;
+        public static readonly float MAX_SNAKE_LEVEL_TIME = 70f;
         #endregion Game State Manager Data
 
         #region Menus
@@ -268,8 +268,8 @@ namespace GD.App
         #endregion Snake State Manager
 
         #region UI
-        public static readonly string LEVEL_NAME = "Level text";
-        public static readonly string SCORE_TEXT = "Score text";
+        public static readonly string LEVEL_UI_NAME = "Level text ui";
+        public static readonly string SCORE_UI_NAME = "Score text ui";
         public static readonly string CAMERA_UI_TEXT = "Camera UI";
         public static readonly string DEFAULT_LEVEL_TEXT = "Level ";
         public static readonly string DEFAULT_SCORE_TEXT = "Score ";
@@ -279,6 +279,9 @@ namespace GD.App
         public static readonly string BOTTOM_CAMERA_UI_TEXT = "BOTTOM";
         public static readonly string RIGHT_CAMERA_UI_TEXT = "RIGHT";
         public static readonly string LEFT_CAMERA_UI_TEXT = "LEFT";
+        public static readonly string LEVEL_START_TIME_UI_NAME = "Level start timer ui";
+        public static readonly float LEVEL_START_TIME_UI = 3000f;
+        public static readonly string TIMER_UI_NAME = "Timer ui";
         #endregion UI
 
         #region Textures
@@ -301,6 +304,10 @@ namespace GD.App
         #endregion Background Texture
 
         #endregion Textures
+
+        #region Scene Manager
+        public static readonly string GAME_SCENE_NAME = "snake 3D game";
+        #endregion Scene Manager
 
         #endregion Snake
     }

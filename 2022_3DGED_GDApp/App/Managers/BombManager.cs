@@ -51,11 +51,11 @@ namespace GD.Engine
             GameObject snakePart;
             CharacterCollider snakePartCollider;
 
-            bool isOkay = false;
+            bool noCollision = false;
 
-            while (!isOkay)
+            while (!noCollision)
             {
-                isOkay = true;
+                noCollision = true;
                 for (int i = 0; i < Application.SnakeParts.Count; i++)
                 {
                     snakePart = Application.SnakeParts[i].Parent as GameObject;
@@ -66,7 +66,7 @@ namespace GD.Engine
                         System.Diagnostics.Debug.WriteLine(snakePartCollider.IsColliding);
                         Consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
                         snakePartCollider.IsColliding = false;
-                        isOkay = false;
+                        noCollision = false;
                         break;
                     }
                 }

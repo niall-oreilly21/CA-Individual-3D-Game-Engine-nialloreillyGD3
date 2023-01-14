@@ -20,14 +20,17 @@ using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using static GD.Engine.Camera;
 using Application = GD.Engine.Globals.Application;
+using Box = JigLibX.Geometry.Box;
 using Cue = GD.Engine.Managers.Cue;
 using Keys = Microsoft.Xna.Framework.Input.Keys;
+using Material = GD.Engine.Material;
 
 namespace GD.App
 {
@@ -46,7 +49,6 @@ namespace GD.App
         private PhysicsManager physicsManager;
         private RenderManager renderManager;
         private EventDispatcher eventDispatcher;
-        private GameObject playerGameObject;
         private PickingManager pickingManager;
         private MyStateManager stateManager;
         private SceneManager<Scene2D> uiManager;
@@ -59,8 +61,8 @@ namespace GD.App
         private GameObject snakeCameraGameObject;
         private int cubeBaseNumber = 1;
         private BasicEffect exitSignEffect;
-        private Vector3 cameraPosition;
-        SpriteFont spriteFont;
+        SpriteFont spriteFontMenu;
+        SpriteFont spriteFontUI;
 
 #if DEMO
 
@@ -110,7 +112,7 @@ namespace GD.App
 
         private void DemoStateManagerEvent()
         {
-            EventDispatcher.Subscribe(EventCategoryType.Player, HandleEvent);
+            EventDispatcher.Subscribe(EventCategoryType.Game, HandleEvent);
         }
 
         private void HandleEvent(EventData eventData)
@@ -122,12 +124,20 @@ namespace GD.App
                     break;
 
                 case EventActionType.OnLose:
-
                     menuManager.SetActiveScene(AppData.END_MENU_NAME);
                     break;
 
                 case EventActionType.InitilizeBombManager:
                     bombManager = new BombManager(this, bombGameObject);
+                    break;
+
+                case EventActionType.InitializeLevelUITimerStart:
+                    InitializeLevelUITimerStart();
+                    break;
+
+                case EventActionType.InitializeUI:
+                    InitializeUI();
+                    
                     break;
             }
         }
@@ -204,9 +214,12 @@ namespace GD.App
             InitializeSnakeHead();
             InitilizeConsumableManagers();
 
-            //add UI and menu
-            InitializeUI();
+            //add menus
             InitializeMenus();
+
+            //set UI scene
+            InitilizeUIScene();
+            InitializeUI();
 
             //send all initial events
 
@@ -222,6 +235,22 @@ namespace GD.App
         {
             foodManager = new FoodManager(this, foodGameObject);
         }
+
+        private void InitilizeUIScene()
+        {
+            var mainHUD = new Scene2D("game HUD");
+
+            #region Add Scene to Manager and Set Active
+
+            //add scene2D to manager
+            uiManager.Add(mainHUD.ID, mainHUD);
+
+            //what ui do i see first?
+            uiManager.SetActiveScene(mainHUD.ID);
+
+            #endregion
+        }
+
 
         private void InitializeMenus()
         {
@@ -258,7 +287,6 @@ namespace GD.App
             Renderer2D renderer2D = null;
             ButtonCollider2D buttonCollider2D = null;
             Texture2D btnTexture = Content.Load<Texture2D>(AppData.SNAKE_MENU_BUTTON_TEXTURE_PATH);
-            SpriteFont spriteFont = Content.Load<SpriteFont>("Assets/Fonts/snake");
             Vector2 btnScale = new Vector2(1f, 1f);
             
             #region Create new menu scene
@@ -275,7 +303,7 @@ namespace GD.App
             new Vector3(titleScale, 1), //s
             new Vector3(0, 0, 0), //r
             new Vector3(Application.Screen.ScreenCentre - titleScale * btnTexture.GetCenter() - new Vector2(0, 300), 0)); //t
-            material = new TextMaterial2D(spriteFont, "SNAKE 3D", new Vector2(20, 5), Color.Black, 0.8f);
+            material = new TextMaterial2D(spriteFontMenu, "SNAKE 3D", new Vector2(20, 5), Color.Black, 0.8f);
             //add renderer to draw the text
             renderer2D = new Renderer2D(material);
             menuGameObject.AddComponent(renderer2D);
@@ -310,7 +338,7 @@ namespace GD.App
             #region Text
 
             //material and renderer
-            material = new TextMaterial2D(spriteFont, "Start", new Vector2(70, 5), Color.White, 0.8f);
+            material = new TextMaterial2D(spriteFontMenu, "Start", new Vector2(70, 5), Color.White, 0.8f);
             //add renderer to draw the text
             renderer2D = new Renderer2D(material);
             menuGameObject.AddComponent(renderer2D);
@@ -349,7 +377,7 @@ namespace GD.App
             #region Text
 
             //material and renderer
-            material = new TextMaterial2D(spriteFont, "Audio", new Vector2(70, 5), Color.White, 0.8f);
+            material = new TextMaterial2D(spriteFontMenu, "Audio", new Vector2(70, 5), Color.White, 0.8f);
             //add renderer to draw the text
             renderer2D = new Renderer2D(material);
             menuGameObject.AddComponent(renderer2D);
@@ -385,7 +413,7 @@ namespace GD.App
             #region Text
 
             //material and renderer
-            material = new TextMaterial2D(spriteFont, "Controls", new Vector2(15, 5), Color.White, 0.8f);
+            material = new TextMaterial2D(spriteFontMenu, "Controls", new Vector2(15, 5), Color.White, 0.8f);
             //add renderer to draw the text
             renderer2D = new Renderer2D(material);
             menuGameObject.AddComponent(renderer2D);
@@ -423,7 +451,7 @@ namespace GD.App
             #region Text
 
             //material and renderer
-            material = new TextMaterial2D(spriteFont, "Exit", new Vector2(90, 5), Color.White, 0.8f);
+            material = new TextMaterial2D(spriteFontMenu, "Exit", new Vector2(90, 5), Color.White, 0.8f);
             //add renderer to draw the text
             renderer2D = new Renderer2D(material);
             menuGameObject.AddComponent(renderer2D);
@@ -450,13 +478,35 @@ namespace GD.App
             
         }
 
+        private void InitializeLevelUITimerStart()
+        {
+            #region Level Start Time UI
+
+            var uiGameObject = new GameObject(AppData.LEVEL_START_TIME_UI_NAME);
+            uiGameObject.GameObjectType = GameObjectType.UI_Text;
+
+            uiGameObject.Transform = new Transform(
+                new Vector3(4, 4, 4),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 0, 0));
+
+            var material = new TextMaterial2D(spriteFontMenu, "3", Application.Screen.ScreenCentre - new Vector2(100,120), Color.White, 0.8f);
+            //add renderer to draw the text
+            Renderer2D renderer2D = new Renderer2D(material);
+
+            uiGameObject.AddComponent(renderer2D);
+            uiManager.ActiveScene.Add(uiGameObject);
+
+            uiGameObject.AddComponent(new UIStartLevelTimerController(AppData.LEVEL_START_TIME_UI));
+
+            #endregion Level Start Time UI
+        }
+
         private void InitializeUI()
         {
             GameObject uiGameObject = null;
             Material2D material = null;
-            Texture2D texture = Content.Load<Texture2D>("Assets/Textures/Menu/Controls/progress_white");
-
-            var mainHUD = new Scene2D("game HUD");
+            Texture2D texture = Content.Load<Texture2D>("Assets/Textures/Menu/Controls/progress_white");          
 
             #region Add UI Element
 
@@ -495,7 +545,7 @@ namespace GD.App
 
             #region Current Level
 
-            uiGameObject = new GameObject(AppData.LEVEL_NAME);
+            uiGameObject = new GameObject(AppData.LEVEL_UI_NAME);
             uiGameObject.GameObjectType = GameObjectType.UI_Text;
 
             uiGameObject.Transform = new Transform(
@@ -503,19 +553,19 @@ namespace GD.App
                 new Vector3(0, 0, 0), 
                 new Vector3(10,10,0)); 
 
-            material = new TextMaterial2D(spriteFont, AppData.DEFAULT_LEVEL_TEXT + stateManager.CurrentScore, new Vector2(30, 5), Color.White, 0.8f);
+            material = new TextMaterial2D(spriteFontMenu, AppData.DEFAULT_LEVEL_TEXT + stateManager.CurrentScore, new Vector2(30, 5), Color.White, 0.8f);
             //add renderer to draw the text
            Renderer2D renderer2D = new Renderer2D(material);
 
             uiGameObject.AddComponent(renderer2D);
-            mainHUD.Add(uiGameObject);
+            uiManager.ActiveScene.Add(uiGameObject);
 
             #endregion Current Level
 
 
             #region Current Score
 
-            uiGameObject = new GameObject(AppData.SCORE_TEXT);
+            uiGameObject = new GameObject(AppData.SCORE_UI_NAME);
             uiGameObject.GameObjectType = GameObjectType.UI_Text;
 
             uiGameObject.Transform = new Transform(
@@ -523,12 +573,12 @@ namespace GD.App
                 new Vector3(0, 0, 0), 
                 new Vector3(0, 0, 0)); 
 
-            material = new TextMaterial2D(spriteFont, AppData.DEFAULT_SCORE_TEXT + stateManager.CurrentScore, new Vector2(30, 120), Color.White, 0.8f);
+            material = new TextMaterial2D(spriteFontMenu, AppData.DEFAULT_SCORE_TEXT + stateManager.CurrentScore, new Vector2(30, 120), Color.White, 0.8f);
             //add renderer to draw the text
             renderer2D = new Renderer2D(material);
 
             uiGameObject.AddComponent(renderer2D);
-            mainHUD.Add(uiGameObject);
+            uiManager.ActiveScene.Add(uiGameObject);
 
             #endregion Current Score
 
@@ -542,24 +592,36 @@ namespace GD.App
                 new Vector3(0, 0, 0),
                 new Vector3(0, 0, 0));
 
-            material = new TextMaterial2D(spriteFont, AppData.FRONT_CAMERA_UI_TEXT, new Vector2(1040, 120), Color.White, 0.8f);
+            material = new TextMaterial2D(spriteFontMenu, AppData.FRONT_CAMERA_UI_TEXT, new Vector2(1040, 120), Color.White, 0.8f);
             //add renderer to draw the text
             renderer2D = new Renderer2D(material);
 
             uiGameObject.AddComponent(renderer2D);
-            mainHUD.Add(uiGameObject);
+            uiManager.ActiveScene.Add(uiGameObject);
 
             #endregion Current Camera
 
-            #region Add Scene to Manager and Set Active
+            #region Timer
 
-            //add scene2D to manager
-            uiManager.Add(mainHUD.ID, mainHUD);
+            uiGameObject = new GameObject(AppData.TIMER_UI_NAME);
+            uiGameObject.GameObjectType = GameObjectType.UI_Text;
 
-            //what ui do i see first?
-            uiManager.SetActiveScene(mainHUD.ID);
+            uiGameObject.Transform = new Transform(
+                new Vector3(1.5f, 1.5f, 1.5f),
+                new Vector3(0, 0, 0),
+                new Vector3(0, 0, 0));
 
-            #endregion
+            material = new TextMaterial2D(spriteFontUI, "1:30", new Vector2(30, 300), Color.Cyan, 0.8f);
+            //add renderer to draw the text
+            renderer2D = new Renderer2D(material);
+
+            uiGameObject.AddComponent(new UITimerController());
+
+            uiGameObject.AddComponent(renderer2D);
+            uiManager.ActiveScene.Add(uiGameObject);
+
+            #endregion Timer
+
         }
 
         private void SetTitle(string title)
@@ -613,19 +675,20 @@ namespace GD.App
         private void InitializeScenes()
         {
             //initialize a scene
-            var scene = new Scene("labyrinth");
+            var scene = new Scene(AppData.GAME_SCENE_NAME);
 
             //add scene to the scene manager
             sceneManager.Add(scene.ID, scene);
 
             //don't forget to set active scene
-            sceneManager.SetActiveScene("labyrinth");
+            sceneManager.SetActiveScene(AppData.GAME_SCENE_NAME);
         }
 
         private void InitializeEffects()
         {
 
-            spriteFont = Content.Load<SpriteFont>("Assets/Fonts/snake");
+            spriteFontMenu = Content.Load<SpriteFont>("Assets/Fonts/menu_font");
+            spriteFontUI = Content.Load<SpriteFont>("Assets/Fonts/ui_font");
 
             //only for skybox with lighting disabled
             unlitEffect = new BasicEffect(_graphics.GraphicsDevice);
@@ -861,49 +924,18 @@ namespace GD.App
 
             #endregion Curve
 
-            cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
+            Application.StateManager.GameStarted = true;
+            cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
         }
 
         private void InitializeCollidableContent(float worldScale)
-        {
-            //InitializeCollidableGround(worldScale);
-            //InitializeCollidableBox();
+        {;
             InitializeBaseModel();
             InitilizeFood();
             InitilizeBomb();
-            //InitializeSnake();
-            //InitializeCollidableHighDetailMonkey();
         }
 
-        
-
-        private List<List<GameObject>> CloneModelGameObjectListZ(List<List<GameObject>> gameObjectList, string newName, Vector3 offset)
-        {
-            List<GameObject> cloneGameObjectList = new List<GameObject>();
-            List<List<GameObject>> cloneGameObjectListOfList = new List<List<GameObject>>();
-
-            for (int i = 0; i < gameObjectList.Count; i++)
-            {
-                cloneGameObjectList = CloneModelGameObjectList(gameObjectList[i], newName, offset);
-                cloneGameObjectListOfList.Add(cloneGameObjectList);
-            }
-           
-            return cloneGameObjectListOfList;
-        }
-        private List<GameObject> CloneModelGameObjectList(List<GameObject> gameObjectList, string newName, Vector3 offset)
-        {
-            List<GameObject> cloneGameObjectList = new List<GameObject>();
-
-            foreach(GameObject gameObject in gameObjectList)
-            {
-                GameObject gameObjectClone = CloneModelGameObject(gameObject, newName + cubeBaseNumber, offset);
-                cloneGameObjectList.Add(gameObjectClone);
-                cubeBaseNumber++;
-            }
-           
-
-            return cloneGameObjectList;
-        }
+       
         public GameObject CloneModelGameObject(GameObject gameObject, string newName, Vector3 translation)
         {
             GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
@@ -925,271 +957,14 @@ namespace GD.App
 
         private void InitializeNonCollidableContent(float worldScale)
         {
-            //InitializeXYZ();
-
             //create sky
             InitializeSkyBox(worldScale);
 
-            //quad with crate texture
-            //InitializeDemoQuad();
-
-            //load an FBX and draw
-            //InitializeDemoModel();
-
-            //TODO - remove these test methods later
-            //test for one team
-            //InitializeRadarModel();
-            //test for another team
-            //InitializeDemoButton();
-
-            //quad with a tree texture
-            //InitializeTreeQuad();
-        }
-
-        private void InitializeXYZ()
-        {
-            //  throw new NotImplementedException();
-        }
-
-        private void InitializeCollidableGround(float worldScale)
-        {
-            var gdBasicEffect = new GDBasicEffect(unlitEffect);
-            var quadMesh = new QuadMesh(_graphics.GraphicsDevice);
-
-            //ground
-            var ground = new GameObject("ground");
-            ground.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
-                new Vector3(-90, 0, 0), new Vector3(0, 0, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Foliage/Ground/grass1");
-            ground.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1), quadMesh));
-
-            //add Collision Surface(s)
-            var collider = new Collider(ground);
-            collider.AddPrimitive(new Box(
-                    ground.Transform.Translation,
-                    ground.Transform.Rotation,
-                    ground.Transform.Scale),
-                    new MaterialProperties(0.8f, 0.8f, 0.7f));
-            collider.Enable(ground, true, 1);
-            ground.AddComponent(collider);
-
-            sceneManager.ActiveScene.Add(ground);
-        }
-
-        private void InitializeCollidableBox()
-        {
-            //game object
-            var gameObject = new GameObject("my first collidable box!", ObjectType.Dynamic, RenderType.Opaque);
-            gameObject.GameObjectType = GameObjectType.Collectible;
-
-            gameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
-                new Vector3(45, 45, 0),
-                new Vector3(0, 15, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var model = Content.Load<Model>("Assets/Models/cube");
-            var mesh = new Engine.ModelMesh(_graphics.GraphicsDevice, model);
-
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(litEffect),
-                new Material(texture, 1, Color.White),
-                mesh));
-
-            var collider = new Collider(gameObject, true);
-            collider.AddPrimitive(new Box(
-                gameObject.Transform.Translation,
-                gameObject.Transform.Rotation,
-                gameObject.Transform.Scale), //make the colliders a fraction larger so that transparent boxes dont sit exactly on the ground and we end up with flicker or z-fighting
-                new MaterialProperties(0.8f, 0.8f, 0.7f));
-            collider.Enable(gameObject, false, 10);
-            gameObject.AddComponent(collider);
-
-            //var collider = new Collider(gameObject);
-            //collider.AddPrimitive(new Sphere(
-            //    gameObject.Transform.Translation, 1), //make the colliders a fraction larger so that transparent boxes dont sit exactly on the ground and we end up with flicker or z-fighting
-            //    new MaterialProperties(0.2f, 0.8f, 0.7f));
-            //collider.Enable(gameObject, true, 10);
-            //gameObject.AddComponent(collider);
-
-            sceneManager.ActiveScene.Add(gameObject);
-
-
-
-            //game object
-            gameObject = new GameObject("tetrahedron", ObjectType.Dynamic, RenderType.Opaque);
-            gameObject.GameObjectType = GameObjectType.Collectible;
-
-            gameObject.Transform = new Transform(
-                new Vector3(20, 20, 20),
-                new Vector3(0, 90, 0),
-                new Vector3(0, 16, 0));
-            texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            TetrahedronMesh meshTriangle = new TetrahedronMesh(_graphics.GraphicsDevice);
-
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(unlitEffect),
-                new Material(texture, 1, Color.Red),
-                meshTriangle));
-
-
-            sceneManager.ActiveScene.Add(gameObject);
-        }
-
-        private void InitializeCollidableHighDetailMonkey()
-        {
-            //game object
-            var gameObject = new GameObject("my first collidable high detail monkey!", ObjectType.Static, RenderType.Opaque);
-            gameObject.GameObjectType = GameObjectType.Consumable;
-
-            //TODO - rotation on triangle mesh not working
-            gameObject.Transform = new Transform(
-                new Vector3(1, 1, 1),
-                new Vector3(0, 0, 0),
-                new Vector3(4, 4, 4));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-            var model = Content.Load<Model>("Assets/Models/monkey");
-            var mesh = new Engine.ModelMesh(_graphics.GraphicsDevice, model);
-
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(litEffect),
-                new Material(texture, 1f, Color.Yellow),
-                mesh));
-
-            var model_medium = Content.Load<Model>("Assets/Models/monkey_medium");
-            var collider = new Collider(gameObject);
-            collider.AddPrimitive(CollisionUtility.GetTriangleMesh(model_medium,
-                gameObject.Transform), new MaterialProperties(0.8f, 0.8f, 0.7f));
-
-            //NOTE - TriangleMesh colliders MUST be marked as IMMOVABLE=TRUE
-            collider.Enable(gameObject, true, 1);
-            gameObject.AddComponent(collider);
-
-            sceneManager.ActiveScene.Add(gameObject);
-        }
-
-        private void InitializeDemoModel()
-        {
-            //game object
-            var gameObject = new GameObject("my first bottle!",
-                ObjectType.Static, RenderType.Opaque);
-
-            gameObject.Transform = new Transform(0.0005f * Vector3.One,
-                new Vector3(-90, 0, 0), new Vector3(2, 0, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-
-            var model = Content.Load<Model>("Assets/Models/bottle2");
-
-            var mesh = new Engine.ModelMesh(_graphics.GraphicsDevice, model);
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(litEffect),
-                new Material(texture, 1f, Color.White),
-                mesh));
-
-            sceneManager.ActiveScene.Add(gameObject);
-        }
-
-        private void InitializeRadarModel()
-        {
-            //game object
-            var gameObject = new GameObject("radar",
-                ObjectType.Static, RenderType.Opaque);
-
-            gameObject.Transform = new Transform(0.005f * Vector3.One,
-                new Vector3(0, 0, 0), new Vector3(8, 0, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
-
-            var model = Content.Load<Model>("Assets/Models/radar-display");
-
-            var mesh = new Engine.ModelMesh(_graphics.GraphicsDevice, model);
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(litEffect),
-                new Material(texture, 1f, Color.White),
-                mesh));
-
-            sceneManager.ActiveScene.Add(gameObject);
-        }
-
-        private void InitializeDemoButton()
-        {
-            //game object
-            var gameObject = new GameObject("my first button!",
-                ObjectType.Static, RenderType.Opaque);
-
-            gameObject.Transform = new Transform(6 * Vector3.One,
-                new Vector3(0, 0, 0), new Vector3(-10, -5, 0));
-            var texture = Content.Load<Texture2D>("Assets/Textures/Button/button_DefaultMaterial_Base_color");
-
-            var model = Content.Load<Model>("Assets/Models/button");
-
-            var mesh = new Engine.ModelMesh(_graphics.GraphicsDevice, model);
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(litEffect),
-                new Material(texture, 1f, Color.White),
-                mesh));
-
-            sceneManager.ActiveScene.Add(gameObject);
-        }
-
-        private void InitializeDemoQuad()
-        {
-            //game object
-            var gameObject = new GameObject("my first quad",
-                ObjectType.Static, RenderType.Opaque);
-            gameObject.Transform = new Transform(null, null,
-                new Vector3(-2, 1, 0));  //World
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate1");
-            gameObject.AddComponent(new Renderer(new GDBasicEffect(litEffect),
-                new Material(texture, 1), new QuadMesh(_graphics.GraphicsDevice)));
-
-            gameObject.AddComponent(new SimpleRotationBehaviour(new Vector3(1, 0, 0), 5 / 60.0f));
-
-            sceneManager.ActiveScene.Add(gameObject);
-        }
-
-        private void InitializeTreeQuad()
-        {
-            //game object
-            var gameObject = new GameObject("my first tree", ObjectType.Static,
-                RenderType.Transparent);
-            gameObject.Transform = new Transform(new Vector3(3, 3, 1), null, new Vector3(-6, 1.5f, 1));  //World
-            var texture = Content.Load<Texture2D>("Assets/Textures/Foliage/Trees/tree1");
-            gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(unlitEffect),
-                new Material(texture, 1),
-                new QuadMesh(_graphics.GraphicsDevice)));
-
-            //a weird tree that makes sounds
-            gameObject.AddComponent(new AudioEmitterBehaviour());
-
-            sceneManager.ActiveScene.Add(gameObject);
+            InitializeBaseModel();
         }
 
         private void InitializeBaseModel()
         {
-            ////game object
-            //var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Dynamic, RenderType.Opaque);
-            //gameObject.GameObjectType = GameObjectType.Collectible;
-
-            //gameObject.Transform = new Transform(
-            //    AppData.SNAKE_GAMEOBJECTS_SCALE,
-            //    new Vector3(0, 0, 0),
-            //    new Vector3(AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MIN_SIZE));
-            //var texture = Content.Load<Texture2D>("Assets/transparent");
-            //var meshBase = new CubeMesh(_graphics.GraphicsDevice);
-
-            //gameObject.AddComponent(new Renderer(
-            //    new GDBasicEffect(litEffect),
-            //    new Material(texture, 1f),
-            //    meshBase));
-            ////sceneManager.ActiveScene.Add(gameObject);
-
-            //for (int x = 0; x < 15; x++)
-            //{
-            //    gameObject = CloneModelGameObject(gameObject, "base " + cubeBaseNumber, new Vector3(x + gameObject.Transform.Scale.X, 0,0));
-            //    cubeBaseNumber++;
-            //    //sceneManager.ActiveScene.Add(gameObject);
-            //}
-
 
             var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Static, RenderType.Transparent);
             gameObject.GameObjectType = GameObjectType.Collectible;
@@ -1728,7 +1503,7 @@ namespace GD.App
             {
                 object[] parameters = { "boom1" };
                 EventDispatcher.Raise(
-                    new EventData(EventCategoryType.Player,
+                    new EventData(EventCategoryType.Game,
                     EventActionType.OnWin,
                     parameters));
 

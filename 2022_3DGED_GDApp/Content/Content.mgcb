@@ -49,12 +49,12 @@
 /processorParam:TextureFormat=Color
 /build:Assets/copy.png
 
-#begin Assets/Fonts/menu.spritefont
+#begin Assets/Fonts/menu_font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Assets/Fonts/menu.spritefont
+/build:Assets/Fonts/menu_font.spritefont
 
 #begin Assets/Fonts/Perf.spritefont
 /importer:FontDescriptionImporter
@@ -63,12 +63,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Assets/Fonts/Perf.spritefont
 
-#begin Assets/Fonts/snake.spritefont
+#begin Assets/Fonts/ui_font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:Assets/Fonts/snake.spritefont
+/build:Assets/Fonts/ui_font.spritefont
 
 #begin Assets/luana.png
 /importer:TextureImporter

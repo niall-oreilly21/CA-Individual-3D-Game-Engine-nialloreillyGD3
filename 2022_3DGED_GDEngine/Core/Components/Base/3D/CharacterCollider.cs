@@ -88,7 +88,7 @@ namespace GD.Engine
                 //System.Diagnostics.Debug.WriteLine("Here");
                 //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                 //EventActionType.OnPause));
-                EventDispatcher.Raise(new EventData(EventCategoryType.Player,
+                EventDispatcher.Raise(new EventData(EventCategoryType.Game,
                 EventActionType.OnLose));
             }
            
