@@ -251,35 +251,35 @@ namespace GD.App
         #region Main Menu
 
         #region Start Game Button
-        public static readonly string START_GAME_BUTTON_NAME = "Start Game Button";
-        public static readonly Vector2 START_GAME_BUTTON_TRANSLATION = new Vector2(0f, 150f);
-        public static readonly Vector2 START_GAME_BUTTON_TEXT_OFFSET = new Vector2(65f, 5f);
-        public static readonly Color START_GAME_BUTTON_COLOR = Color.MediumPurple;
-        public static readonly string START_GAME_BUTTON_TEXT = "START";
+        public static readonly string START_BUTTON_NAME = "Start Button";
+        public static readonly Vector2 START_BUTTON_TRANSLATION = new Vector2(0f, 150f);
+        public static readonly Vector2 START_BUTTON_TEXT_OFFSET = new Vector2(65f, 5f);
+        public static readonly Color START_BUTTON_COLOR = Color.MediumPurple;
+        public static readonly string START_BUTTON_TEXT = "START";
         #endregion Start Game Button
 
         #region Audio Game Button
-        public static readonly string AUDIO_GAME_BUTTON_NAME = "Audio Game Button";
-        public static readonly Vector2 AUDIO_GAME_BUTTON_TRANSLATION = new Vector2(0f, 50f);
-        public static readonly Vector2 AUDIO_GAME_BUTTON_TEXT_OFFSET = new Vector2(70f, 5f);
-        public static readonly Color AUDIO_GAME_BUTTON_COLOR = Color.Gold;
-        public static readonly string AUDIO_GAME_BUTTON_TEXT = "AUDIO";
+        public static readonly string AUDIO_BUTTON_NAME = "Audio Button";
+        public static readonly Vector2 AUDIO_BUTTON_TRANSLATION = new Vector2(0f, 50f);
+        public static readonly Vector2 AUDIO_BUTTON_TEXT_OFFSET = new Vector2(70f, 5f);
+        public static readonly Color AUDIO_BUTTON_COLOR = Color.Gold;
+        public static readonly string AUDIO_BUTTON_TEXT = "AUDIO";
         #endregion Audio Game Button
 
         #region Controls Game Button
-        public static readonly string CONTROLS_GAME_BUTTON_NAME = "Controls Game Button";
-        public static readonly Vector2 CONTROLS_GAME_BUTTON_TRANSLATION = new Vector2(0f, -50f);
-        public static readonly Vector2 CONTROLS_GAME_BUTTON_TEXT_OFFSET = new Vector2(5f, 5f);
-        public static readonly Color CONTROLS_GAME_BUTTON_COLOR = Color.Green;
-        public static readonly string CONTROLS_GAME_BUTTON_TEXT = "CONTROLS";
+        public static readonly string CONTROLS_BUTTON_NAME = "Controls Button";
+        public static readonly Vector2 CONTROLS_BUTTON_TRANSLATION = new Vector2(0f, -50f);
+        public static readonly Vector2 CONTROLS_BUTTON_TEXT_OFFSET = new Vector2(5f, 5f);
+        public static readonly Color CONTROLS_BUTTON_COLOR = Color.Green;
+        public static readonly string CONTROLS_BUTTON_TEXT = "CONTROLS";
         #endregion Controls Game Button
 
         #region Exit Game Button
-        public static readonly string EXIT_GAME_BUTTON_NAME = "Exit Game Button";
-        public static readonly Vector2 EXIT_GAME_BUTTON_TRANSLATION = new Vector2(0f, -150f);
-        public static readonly Vector2 EXIT_GAME_BUTTON_TEXT_OFFSET = new Vector2(90f, 5f);
-        public static readonly Color EXIT_GAME_BUTTON_COLOR = Color.Red;
-        public static readonly string EXIT_GAME_BUTTON_TEXT = "EXIT";
+        public static readonly string EXIT_BUTTON_NAME = "Exit Button";
+        public static readonly Vector2 EXIT_BUTTON_TRANSLATION = new Vector2(0f, -150f);
+        public static readonly Vector2 EXIT_BUTTON_TEXT_OFFSET = new Vector2(90f, 5f);
+        public static readonly Color EXIT_BUTTON_COLOR = Color.Red;
+        public static readonly string EXIT_BUTTON_TEXT = "EXIT";
         #endregion Controls Game Button
 
         #endregion Main Menu
@@ -288,24 +288,42 @@ namespace GD.App
         public static readonly Vector2 LEVEL_GAME_BUTTON_TEXT_OFFSET = new Vector2(30f, 5f);
 
         #region Level One Game Button
-        public static readonly string LEVEL_ONE_GAME_BUTTON_NAME = "Level One Button";
-        public static readonly Vector2 LEVEL_ONE_GAME_BUTTON_TRANSLATION = new Vector2(0f, 150f);
-        public static readonly string LEVEL_ONE_GAME_BUTTON_TEXT = "LEVEL 1";
+        public static readonly string LEVEL_ONE_BUTTON_NAME = "Level One Button";
+        public static readonly Vector2 LEVEL_ONE_BUTTON_TRANSLATION = new Vector2(0f, 150f);
+        public static readonly string LEVEL_ONE_BUTTON_TEXT = "LEVEL 1";
         #endregion Level One Game Button
 
         #region Level Two Game Button
-        public static readonly string LEVEL_TWO_GAME_BUTTON_NAME = "Level Two Button";
-        public static readonly Vector2 LEVEL_TWO_GAME_BUTTON_TRANSLATION = new Vector2(0f, 0f);
-        public static readonly string LEVEL_TWO_GAME_BUTTON_TEXT = "LEVEL 2";
+        public static readonly string LEVEL_TWO_BUTTON_NAME = "Level Two Button";
+        public static readonly Vector2 LEVEL_TWO_BUTTON_TRANSLATION = new Vector2(0f, 0f);
+        public static readonly string LEVEL_TWO_BUTTON_TEXT = "LEVEL 2";
         #endregion Level Two Game Button
 
         #region Level Two Game Button
-        public static readonly string LEVEL_THREE_GAME_BUTTON_NAME = "Level Three Button";
-        public static readonly Vector2 LEVEL_THREE_GAME_BUTTON_TRANSLATION = new Vector2(0f, -150f);
-        public static readonly string LEVEL_THREE_GAME_BUTTON_TEXT = "LEVEL 3";
+        public static readonly string LEVEL_THREE_BUTTON_NAME = "Level Three Button";
+        public static readonly Vector2 LEVEL_THREE_BUTTON_TRANSLATION = new Vector2(0f, -150f);
+        public static readonly string LEVEL_THREE_BUTTON_TEXT = "LEVEL 3";
         #endregion Level Two Game Button
 
         #endregion Levels Menu
+
+        #region Pause Menu
+
+        #region Resume Button
+        public static readonly string RESUME_BUTTON_NAME = "Resume Button";
+        public static readonly Vector2 RESUME_BUTTON_TRANSLATION = new Vector2(0f, 150f);
+        public static readonly Vector2 RESUME_BUTTON_TEXT_OFFSET = new Vector2(35f, 5f);
+        public static readonly string RESUME_BUTTON_TEXT = "RESUME";
+        #endregion Resume Game Button
+
+        #region Main Menu Button
+        public static readonly string MAIN_MENU_BUTTON_NAME = "Main Menu Button";
+        public static readonly Vector2 MAIN_MENU_BUTTON_TRANSLATION = new Vector2(0f, -20f);
+        public static readonly Vector2 MAIN_MENU_BUTTON_TEXT_OFFSET = new Vector2(90f, 5f);
+        public static readonly string MAIN_MENU_BUTTON_TEXT = "QUIT";
+        #endregion Main Menu Button
+
+        #endregion Pause Menu
 
 
         #region End Menu
@@ -387,6 +405,7 @@ namespace GD.App
         public static readonly string GAME_SCENE_NAME = "snake 3D Game Scene";
         public static readonly string MAIN_MENU_SCENE_NAME = "Main Menu Scene";
         public static readonly string LEVELS_SCENE_NAME = "Levels Scene";
+        public static readonly string PAUSE_SCENE_NAME = "Pause Menu Scene";
         #endregion Scene Manager
 
         #region Fonts

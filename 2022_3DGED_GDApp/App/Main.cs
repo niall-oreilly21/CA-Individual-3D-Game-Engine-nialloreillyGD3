@@ -261,6 +261,7 @@ namespace GD.App
             InitializeMenuTitle();
             InitializeMainMenu();
             InitializeLevelsMenu();
+            InitializePauseMenu();
             InitializeEndGameMenu();
         }
 
@@ -332,7 +333,7 @@ namespace GD.App
             #endregion Collider
 
             #region Text
-            Material2D cloneTextMaterial2D = new TextMaterial2D(spriteFontMenu, new StringBuilder(menuButtonDictionary[newName].ButtonText), menuButtonDictionary[newName].ButtonTextOffSet, Color.White, 0.8f);
+            Material2D cloneTextMaterial2D = new TextMaterial2D(fontDictionary[AppData.MENU_FONT_NAME], new StringBuilder(menuButtonDictionary[newName].ButtonText), menuButtonDictionary[newName].ButtonTextOffSet, Color.White, 0.8f);
             cloneRenderer2D = new Renderer2D(cloneTextMaterial2D);
             gameObjectClone.AddComponent(cloneRenderer2D);
             #endregion Text
@@ -350,27 +351,22 @@ namespace GD.App
 
             GameObject menuGameObject = null;
 
-            menuGameObject = CloneModelGameObjectButton(AppData.START_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton(AppData.START_BUTTON_NAME);
             mainMenuScene.Add(menuGameObject);
             
-            menuGameObject = CloneModelGameObjectButton(AppData.AUDIO_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton(AppData.AUDIO_BUTTON_NAME);
             mainMenuScene.Add(menuGameObject);
 
-            menuGameObject = CloneModelGameObjectButton(AppData.CONTROLS_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton(AppData.CONTROLS_BUTTON_NAME);
             mainMenuScene.Add(menuGameObject);
 
-            menuGameObject = CloneModelGameObjectButton( AppData.EXIT_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton( AppData.EXIT_BUTTON_NAME);
             mainMenuScene.Add(menuGameObject);
 
 
-            #region Add Scene to Manager and Set Active
-
-            //add scene2D to menu manager
+            #region Add Scene to Manager
             menuManager.Add(mainMenuScene.ID, mainMenuScene);
-
-            //what menu do i see first?
-            menuManager.SetActiveScene(mainMenuScene.ID);
-            #endregion
+            #endregion Add Scene to Manager
         }
 
         private void InitializeLevelsMenu()
@@ -383,23 +379,42 @@ namespace GD.App
 
             GameObject menuGameObject = null;
 
-            menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_ONE_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_ONE_BUTTON_NAME);
             levelsMenuScene.Add(menuGameObject);
 
-            menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_TWO_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_TWO_BUTTON_NAME);
             levelsMenuScene.Add(menuGameObject);
 
-            menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_THREE_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_THREE_BUTTON_NAME);
             levelsMenuScene.Add(menuGameObject);
 
-            #region Add Scene to Manager and Set Active
+            #region Add Scene to Manager
 
-            //add scene2D to menu manager
             menuManager.Add(levelsMenuScene.ID, levelsMenuScene);
 
-            //what menu do i see first?
-            menuManager.SetActiveScene(levelsMenuScene.ID);
+            #endregion Add Scene to Manager
+        }
+
+        private void InitializePauseMenu()
+        {
+            #region Create new menu scene
+            var pauseMenuScene = new Scene2D(AppData.PAUSE_SCENE_NAME);
+            pauseMenuScene.Add(menuBackgroundTextureGameObject);
+            pauseMenuScene.Add(menuGameObjectTitle);
             #endregion
+
+            GameObject menuGameObject = null;
+
+            menuGameObject = CloneModelGameObjectButton(AppData.RESUME_BUTTON_NAME);
+            pauseMenuScene.Add(menuGameObject);
+
+            menuGameObject = CloneModelGameObjectButton(AppData.MAIN_MENU_BUTTON_NAME);
+            pauseMenuScene.Add(menuGameObject);
+
+            #region Add Scene to Manager
+            menuManager.Add(pauseMenuScene.ID, pauseMenuScene);
+            menuManager.SetActiveScene(pauseMenuScene.ID);
+            #endregion Add Scene to Manager
         }
 
         private void InitializeEndGameMenu()
@@ -1333,17 +1348,22 @@ namespace GD.App
 
             #region Main Menu Button
             menuButtonDictionary = new Dictionary<string, MenuButton>();
-            menuButtonDictionary.Add(AppData.START_GAME_BUTTON_NAME, new MenuButton(AppData.START_GAME_BUTTON_TRANSLATION, AppData.START_GAME_BUTTON_TEXT_OFFSET, AppData.START_GAME_BUTTON_COLOR, AppData.START_GAME_BUTTON_TEXT));
-            menuButtonDictionary.Add(AppData.AUDIO_GAME_BUTTON_NAME, new MenuButton(AppData.AUDIO_GAME_BUTTON_TRANSLATION, AppData.AUDIO_GAME_BUTTON_TEXT_OFFSET, AppData.AUDIO_GAME_BUTTON_COLOR, AppData.AUDIO_GAME_BUTTON_TEXT));
-            menuButtonDictionary.Add(AppData.CONTROLS_GAME_BUTTON_NAME, new MenuButton(AppData.CONTROLS_GAME_BUTTON_TRANSLATION, AppData.CONTROLS_GAME_BUTTON_TEXT_OFFSET, AppData.CONTROLS_GAME_BUTTON_COLOR, AppData.CONTROLS_GAME_BUTTON_TEXT));
-            menuButtonDictionary.Add(AppData.EXIT_GAME_BUTTON_NAME, new MenuButton(AppData.EXIT_GAME_BUTTON_TRANSLATION, AppData.EXIT_GAME_BUTTON_TEXT_OFFSET, AppData.EXIT_GAME_BUTTON_COLOR, AppData.EXIT_GAME_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.START_BUTTON_NAME, new MenuButton(AppData.START_BUTTON_TRANSLATION, AppData.START_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.START_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.AUDIO_BUTTON_NAME, new MenuButton(AppData.AUDIO_BUTTON_TRANSLATION, AppData.AUDIO_BUTTON_TEXT_OFFSET, AppData.AUDIO_BUTTON_COLOR, AppData.AUDIO_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.CONTROLS_BUTTON_NAME, new MenuButton(AppData.CONTROLS_BUTTON_TRANSLATION, AppData.CONTROLS_BUTTON_TEXT_OFFSET, AppData.CONTROLS_BUTTON_COLOR, AppData.CONTROLS_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.EXIT_BUTTON_NAME, new MenuButton(AppData.EXIT_BUTTON_TRANSLATION, AppData.EXIT_BUTTON_TEXT_OFFSET, AppData.EXIT_BUTTON_COLOR, AppData.EXIT_BUTTON_TEXT));
             #endregion Main Menu Button
 
             #region Levels Menu Button
-            menuButtonDictionary.Add(AppData.LEVEL_ONE_GAME_BUTTON_NAME, new MenuButton(AppData.LEVEL_ONE_GAME_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_GAME_BUTTON_COLOR, AppData.LEVEL_ONE_GAME_BUTTON_TEXT));
-            menuButtonDictionary.Add(AppData.LEVEL_TWO_GAME_BUTTON_NAME, new MenuButton(AppData.LEVEL_TWO_GAME_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_GAME_BUTTON_COLOR, AppData.LEVEL_TWO_GAME_BUTTON_TEXT));
-            menuButtonDictionary.Add(AppData.LEVEL_THREE_GAME_BUTTON_NAME, new MenuButton(AppData.LEVEL_THREE_GAME_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_GAME_BUTTON_COLOR, AppData.LEVEL_THREE_GAME_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.LEVEL_ONE_BUTTON_NAME, new MenuButton(AppData.LEVEL_ONE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_ONE_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.LEVEL_TWO_BUTTON_NAME, new MenuButton(AppData.LEVEL_TWO_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_TWO_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.LEVEL_THREE_BUTTON_NAME, new MenuButton(AppData.LEVEL_THREE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_THREE_BUTTON_TEXT));
             #endregion Levels Menu Button
+
+            #region Pause Menu Button
+            menuButtonDictionary.Add(AppData.RESUME_BUTTON_NAME, new MenuButton(AppData.RESUME_BUTTON_TRANSLATION, AppData.RESUME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.RESUME_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.MAIN_MENU_BUTTON_NAME, new MenuButton(AppData.MAIN_MENU_BUTTON_TRANSLATION, AppData.MAIN_MENU_BUTTON_TEXT_OFFSET, AppData.EXIT_BUTTON_COLOR, AppData.MAIN_MENU_BUTTON_TEXT));
+            #endregion Pause Menu Button
         }
 
         private void InitializeDebug(bool showCollisionSkins = true)

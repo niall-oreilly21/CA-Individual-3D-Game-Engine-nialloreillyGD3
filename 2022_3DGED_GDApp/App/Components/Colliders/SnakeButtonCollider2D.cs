@@ -86,7 +86,7 @@ namespace GD.Engine
 
             if(mouseButton == MouseButton.Left)
             {
-                if(gameObject.Name == App.AppData.START_GAME_BUTTON_NAME)
+                if(gameObject.Name == App.AppData.START_BUTTON_NAME)
                 {
                     EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
                     EventActionType.StartOfLevel));
