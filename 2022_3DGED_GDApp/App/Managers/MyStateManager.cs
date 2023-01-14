@@ -45,18 +45,21 @@ namespace App.Managers
         private int currentScore;
         private int totalLevels;
         private bool gameStarted;
-        private string text;
+        private int[] defaultFoodEachLevel;
+        private int[] defaultBombsEachLevel;
 
-        public MyStateManager(Game game, float maxTimeInMS, int totalLevels) : base(game)
+        public MyStateManager(Game game, float maxTimeInMS, int totalLevels, int[] defaultFoodEachLevel, int[] defaultBombsEachLevel) : base(game)
         {
             this.maxTimeInMS = maxTimeInMS;
             this.totalElapsedTimeMS = 0;
             this.totalSeconds = 0;
             this.minutes = 0;
             this.seconds = 0;
-            this.currentLevel = 1;
+            this.currentLevel = AppData.LEVEL_ONE;
             this.totalLevels = totalLevels;
             this.gameStarted = false;
+            this.defaultFoodEachLevel = defaultFoodEachLevel;
+            this.defaultBombsEachLevel = defaultBombsEachLevel;
         }
 
         #region Properties
@@ -131,6 +134,10 @@ namespace App.Managers
                     StartNewLevel(removeGameObject);
                     break;
 
+                case EventActionType.StartOfLevel:
+                    StartOfLevel();
+                    break; ;
+
                 default:
                     break;
             }
@@ -165,26 +172,55 @@ namespace App.Managers
             material2D.StringBuilder.Append(AppData.DEFAULT_LEVEL_TEXT + Application.StateManager.CurrentLevel);
         }
 
+        private void StartOfLevel()
+        {
+            
+            int defaultFoodNumber = 0;
+            int defaultBombNumber = 0;
+
+            switch (this.currentLevel)
+                {
+                case (int)Level.LevelOne:
+                    defaultFoodNumber = defaultFoodEachLevel[0];
+                    break;
+
+                case (int)Level.LevelTwo:
+                    defaultFoodNumber = defaultFoodEachLevel[1];
+                    defaultBombNumber = defaultBombsEachLevel[1];
+                    break;
+
+                case (int)Level.LevelThree:
+                    defaultFoodNumber = defaultFoodEachLevel[2];
+                    defaultBombNumber = defaultBombsEachLevel[2];
+                    break;
+
+                default:
+                        break;
+                }
+
+            object[] parametersFood = { defaultFoodNumber };
+            EventDispatcher.Raise(new EventData(EventCategoryType.Food,
+            EventActionType.InitilizeFoodStartOfLevel, parametersFood));
+
+            if (currentLevel > AppData.LEVEL_ONE)
+            {
+                object[] parametersBombs = {defaultBombNumber};
+                EventDispatcher.Raise(new EventData(EventCategoryType.Bomb,
+                EventActionType.InitilizeBombsStartOfLevel, parametersBombs));
+            }
+        }
+
         private void StartNewLevel(GameObject removeGameObject)
         {
             Application.UISceneManager.ActiveScene.Remove((uiElement) => uiElement.Name == removeGameObject.Name);           
             
             totalElapsedTimeMS = 0;
             currentScore = 0;
-            currentLevel = Application.StateManager.CurrentLevel;
             gameStarted = true;
 
             EventDispatcher.Raise(new EventData(EventCategoryType.Game,
                  EventActionType.InitializeUI));
-
-
-            if (currentLevel == 2)
-            {
-                EventDispatcher.Raise(new EventData(EventCategoryType.Game,
-                  EventActionType.InitilizeBombManager));
-            }
            
-
         }
 
         private void CheckCurrentLevel()

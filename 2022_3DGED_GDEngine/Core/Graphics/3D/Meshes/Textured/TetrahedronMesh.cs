@@ -68,7 +68,6 @@ namespace GD.Engine
             Vector3 leftNormal = new Triangle(buttomLeft, top, back).Normal;
             Vector3 rightNormal = new Triangle(bottomRight, back, top).Normal;
 
-            System.Diagnostics.Debug.WriteLine(frontNormal);
             #endregion Normals
 
             vertices = new VertexPositionNormalTexture[]

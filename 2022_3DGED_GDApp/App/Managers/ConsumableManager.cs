@@ -65,9 +65,45 @@ namespace GD.Engine
             return Application.SceneManager.ActiveScene.Remove(ObjectType.Static, RenderType.Opaque, (consumable) => consumable.Transform == consumableToRemove.Transform);
         }
 
-        protected virtual void InitializeConsumableItem()
+        protected void InitializeConsumableItem()
         {
+            ResetSnakeHeadColliding();
 
+            consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
+
+            GameObject snakePart;
+            CharacterCollider snakePartCollider;
+
+            bool noCollision = false;
+
+            while (!noCollision)
+            {
+                noCollision = true;
+                for (int i = 0; i < Application.SnakeParts.Count; i++)
+                {
+                    snakePart = Application.SnakeParts[i].Parent as GameObject;
+                    snakePartCollider = snakePart.GetComponent<CharacterCollider>();
+
+                    if (snakePartCollider.IsColliding)
+                    {
+                        consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
+                        snakePartCollider.IsColliding = false;
+                        noCollision = false;
+                        break;
+                    }
+                }
+
+            }
+            Application.SceneManager.ActiveScene.Add(Consumable);
+            ConsumableID++;
+        }
+
+        protected virtual void InitializeConsumableItemsStart(int consumableNumber)
+        {
+            for(int i = 0; i < consumableNumber; i++)
+            {
+                InitializeConsumableItem();
+            }
         }
 
         protected void ResetSnakeHeadColliding()

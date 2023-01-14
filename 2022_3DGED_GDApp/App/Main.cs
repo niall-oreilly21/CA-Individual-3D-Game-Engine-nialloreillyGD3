@@ -127,10 +127,6 @@ namespace GD.App
                     menuManager.SetActiveScene(AppData.END_MENU_NAME);
                     break;
 
-                case EventActionType.InitilizeBombManager:
-                    bombManager = new BombManager(this, bombGameObject);
-                    break;
-
                 case EventActionType.InitializeLevelUITimerStart:
                     InitializeLevelUITimerStart();
                     break;
@@ -234,6 +230,7 @@ namespace GD.App
         private void InitilizeConsumableManagers()
         {
             foodManager = new FoodManager(this, foodGameObject);
+            bombManager = new BombManager(this, bombGameObject);
         }
 
         private void InitilizeUIScene()
@@ -333,6 +330,8 @@ namespace GD.App
             //add any events on MouseButton (e.g. Left, Right, Hover)
             buttonCollider2D.AddEvent(MouseButton.Left, new EventData(EventCategoryType.Menu, EventActionType.OnPlay));
             menuGameObject.AddComponent(buttonCollider2D);
+
+
             #endregion Collider
 
             #region Text
@@ -1365,7 +1364,7 @@ namespace GD.App
             #region Game State
 
             //add state manager for inventory and countdown
-            stateManager = new MyStateManager(this, AppData.MAX_SNAKE_LEVEL_TIME, AppData.TOTAL_LEVELS);
+            stateManager = new MyStateManager(this, AppData.MAX_SNAKE_LEVEL_TIME, AppData.TOTAL_LEVELS, AppData.DEFAULT_FOOD_EACH_LEVEL, AppData.DEFAULT_BOMB_EACH_LEVEL);
             Components.Add(stateManager);
 
             #endregion

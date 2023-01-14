@@ -47,7 +47,6 @@ namespace GD.Engine
             List<GameObject> removeList = gameObjects.FindAll(predicate);
             foreach (GameObject gameObject in removeList)
             {
-                System.Diagnostics.Debug.WriteLine(gameObject.Name);
                 Remove(gameObject);
             }
 

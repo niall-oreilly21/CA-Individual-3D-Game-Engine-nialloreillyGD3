@@ -36,48 +36,15 @@ namespace GD.Engine
                     InitializeConsumableItem();
                     break;
 
+                case EventActionType.InitilizeBombsStartOfLevel:
+                    int bombStartNumber = (int)eventData.Parameters[0];
+                    InitializeConsumableItemsStart(bombStartNumber);
+                    break;
+
                 default:
                     break;
             }
 
-        }
-
-        protected override void InitializeConsumableItem()
-        {
-            base.ResetSnakeHeadColliding();
-
-            Consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
-
-            GameObject snakePart;
-            CharacterCollider snakePartCollider;
-
-            bool noCollision = false;
-
-            while (!noCollision)
-            {
-                noCollision = true;
-                for (int i = 0; i < Application.SnakeParts.Count; i++)
-                {
-                    snakePart = Application.SnakeParts[i].Parent as GameObject;
-                    snakePartCollider = snakePart.GetComponent<CharacterCollider>();
-
-                    if (snakePartCollider.IsColliding)
-                    {
-                        System.Diagnostics.Debug.WriteLine(snakePartCollider.IsColliding);
-                        Consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
-                        snakePartCollider.IsColliding = false;
-                        noCollision = false;
-                        break;
-                    }
-                }
-
-               
-
-            }
-                
-
-            Application.SceneManager.ActiveScene.Add(Consumable);
-            ConsumableID++;
         }
 
         protected override GameObject CloneModelGameObject(string newName)

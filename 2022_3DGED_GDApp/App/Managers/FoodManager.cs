@@ -20,10 +20,6 @@ namespace GD.Engine
     {
         public FoodManager(Game game, GameObject consumable) : base(game, consumable)
         {
-            for (int i = 0; i <  20; i++)
-            {
-                InitializeConsumableItem();
-            }
         }
 
         protected override void SubscribeToEvents()
@@ -44,6 +40,11 @@ namespace GD.Engine
                     InitializeConsumableItem();
                     break;
 
+                case EventActionType.InitilizeFoodStartOfLevel:
+                    int foodStartNumber = (int)eventData.Parameters[0];
+                    InitializeConsumableItemsStart(foodStartNumber);
+                    break;
+
                 default:
                     break;
             }
@@ -62,30 +63,6 @@ namespace GD.Engine
                 InitializeConsumableItem();
             }
 
-        }
-        protected override void InitializeConsumableItem()
-        {
-            base.ResetSnakeHeadColliding();
-
-            Consumable = CloneModelGameObject(AppData.FOOD_BASE_NAME + ConsumableID);
-
-            GameObject snakePart;
-            CharacterCollider snakePartCollider;
-
-            for (int i = 0; i < Application.SnakeParts.Count; i++)
-            {
-                snakePart = Application.SnakeParts[i].Parent as GameObject;
-                snakePartCollider = snakePart.GetComponent<CharacterCollider>();
-
-                while (snakePartCollider.IsColliding)
-                {
-                    Consumable = CloneModelGameObject(AppData.FOOD_BASE_NAME + ConsumableID);
-                    snakePartCollider.IsColliding = false;
-                }
-            }
-
-            Application.SceneManager.ActiveScene.Add(Consumable);
-            ConsumableID++;
         }
 
         protected override GameObject CloneModelGameObject(string newName)

@@ -264,7 +264,28 @@ namespace GD.App
         #endregion Menus
 
         #region Snake State Manager
-        public static readonly int TOTAL_LEVELS = 2;
+        public static readonly int TOTAL_LEVELS = 3;
+
+        public static readonly int LEVEL_ONE = 1;
+        public static readonly int LEVEL_TWO = 2;
+        public static readonly int LEVEL_THREE = 3;
+
+        #region Food Level Default Figures
+        private static readonly int DEFAULT_FOOD_LEVEL_ONE = 20;
+        private static readonly int DEFAULT_FOOD_LEVEL_TWO = 15;
+        private static readonly int DEFAULT_FOOD_LEVEL_THREE = 5;
+
+        public static readonly int[] DEFAULT_FOOD_EACH_LEVEL = { DEFAULT_FOOD_LEVEL_ONE, DEFAULT_FOOD_LEVEL_TWO, DEFAULT_FOOD_LEVEL_THREE };
+        #endregion Food Level Default Figures
+
+        #region Bomb Level Default Figures
+        private static readonly int DEFAULT_BOMB_LEVEL_ONE = 0;
+        private static readonly int DEFAULT_BOMB_LEVEL_TWO = 15;
+        private static readonly int DEFAULT_BOMB_LEVEL_THREE = 5;
+
+        public static readonly int[] DEFAULT_BOMB_EACH_LEVEL = { DEFAULT_BOMB_LEVEL_ONE, DEFAULT_BOMB_LEVEL_TWO, DEFAULT_BOMB_LEVEL_THREE };
+        #endregion Bomb Level Default Figures
+
         #endregion Snake State Manager
 
         #region UI

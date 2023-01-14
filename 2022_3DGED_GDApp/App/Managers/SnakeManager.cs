@@ -66,7 +66,7 @@ namespace GD.Engine
         {
             switch (eventData.EventActionType)
             {
-                case EventActionType.OnMove: //TODO
+                case EventActionType.OnMove: 
                     Vector3 direction = (Vector3)eventData.Parameters[0];
                     GameTime gameTime = (GameTime)eventData.Parameters[1];
 
@@ -76,7 +76,7 @@ namespace GD.Engine
                     }                  
                     break;
 
-                case EventActionType.Grow: //TODO
+                case EventActionType.Grow: 
                     Grow();
                     break;
 

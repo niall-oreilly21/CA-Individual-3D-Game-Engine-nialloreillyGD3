@@ -61,5 +61,19 @@ namespace GD.Engine
             gameObject.Transform.SetScale(newScale);
             gameObject.Transform.SetTranslation(xOriginalPosition - offset, yOriginalPosition - offset / 2, zOriginalPosition);
         }
+
+        protected override void HandleMouseClick(MouseButton mouseButton)
+        {
+            base.HandleMouseClick(mouseButton);
+
+            if(mouseButton == MouseButton.Left)
+            {
+                if(gameObject.Name == App.AppData.START_GAME_BUTTON_NAME)
+                {
+                    EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
+                    EventActionType.StartOfLevel));
+                }
+            }
+        }
     }
 }
