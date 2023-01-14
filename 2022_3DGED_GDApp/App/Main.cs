@@ -9,6 +9,7 @@ using App.Managers;
 using GD.App;
 using GD.Core;
 using GD.Engine;
+using GD.Engine.Collections;
 using GD.Engine.Events;
 using GD.Engine.Globals;
 using GD.Engine.Inputs;
@@ -60,13 +61,14 @@ namespace GD.App
         private GameObject foodGameObject;
         private GameObject bombGameObject;
         private GameObject menuBackgroundTextureGameObject;
+        private GameObject menuGameObjectTitle;
         private GameObject snakeCameraGameObject;
-        private int cubeBaseNumber = 1;
         private BasicEffect exitSignEffect;
         SpriteFont spriteFontMenu;
         SpriteFont spriteFontUI;
         private Dictionary<string, MenuButton> menuButtonDictionary;
-        private Dictionary<string, Texture2D> textureDictionary;
+        private ContentDictionary<Texture2D> textureDictionary;
+        private ContentDictionary<SpriteFont> fontDictionary;
 
 #if DEMO
 
@@ -256,8 +258,30 @@ namespace GD.App
         private void InitializeMenus()
         {
             InitializeMenusBackgroundTexture();
+            InitializeMenuTitle();
             InitializeMainMenu();
+            InitializeLevelsMenu();
             InitializeEndGameMenu();
+        }
+
+        private void InitializeMenuTitle()
+        {
+            menuGameObjectTitle = null;
+            Material2D material = null;
+            Renderer2D renderer2D = null;
+
+            #region Main Menu Title
+            Vector2 titleScale = new Vector2(1.5f, 1.5f);
+            menuGameObjectTitle = new GameObject("menu title");
+            menuGameObjectTitle.Transform = new Transform(
+            new Vector3(titleScale, 1), //s
+            new Vector3(0, 0, 0), //r
+            new Vector3(Application.Screen.ScreenCentre - titleScale * textureDictionary[AppData.SNAKE_MENU_BUTTON_TEXTURE_NAME].GetCenter() - new Vector2(0, 300), 0)); //t
+            material = new TextMaterial2D(spriteFontMenu, "SNAKE 3D", new Vector2(20, 5), Color.Black, 0.8f);
+            //add renderer to draw the text
+            renderer2D = new Renderer2D(material);
+            menuGameObjectTitle.AddComponent(renderer2D);
+            #endregion Main Menu Title
         }
 
         private void InitializeMenusBackgroundTexture()
@@ -282,7 +306,7 @@ namespace GD.App
             #endregion Menus Background Texture
         }
 
-        public GameObject CloneModelGameObjectButton(Texture2D buttonTexture, string newName)
+        public GameObject CloneModelGameObjectButton(string newName)
         {
             GameObject gameObjectClone = new GameObject(newName);
             Renderer2D cloneRenderer2D = null;
@@ -291,12 +315,12 @@ namespace GD.App
             gameObjectClone.Transform = new Transform(
                 new Vector3(AppData.BUTTON_SCALE, 1),
                 Vector3.Zero,
-                new Vector3(Application.Screen.ScreenCentre - AppData.BUTTON_SCALE * buttonTexture.GetCenter() - menuButtonDictionary[newName].ButtonTranslation, 0)
+                new Vector3(Application.Screen.ScreenCentre - AppData.BUTTON_SCALE * textureDictionary[AppData.SNAKE_MENU_BUTTON_TEXTURE_NAME].GetCenter() - menuButtonDictionary[newName].ButtonTranslation, 0)
                 );
             #endregion Transform
 
             #region Texture
-            Material2D cloneTextureMaterial2D = new TextureMaterial2D(buttonTexture, menuButtonDictionary[newName].ButtonColor, 0.9f);
+            Material2D cloneTextureMaterial2D = new TextureMaterial2D(textureDictionary[AppData.SNAKE_MENU_BUTTON_TEXTURE_NAME], menuButtonDictionary[newName].ButtonColor, 0.9f);
             cloneRenderer2D = new Renderer2D(cloneTextureMaterial2D);
             gameObjectClone.AddComponent(cloneRenderer2D);
             #endregion Texture
@@ -317,44 +341,25 @@ namespace GD.App
         }
 
         private void InitializeMainMenu()
-        {
-            GameObject menuGameObject = null;
-            Material2D material = null;
-            Renderer2D renderer2D = null;
-            Texture2D btnTexture = Content.Load<Texture2D>(AppData.SNAKE_MENU_BUTTON_TEXTURE_PATH);          
-
+        {                
             #region Create new menu scene
-
-            //add new main menu scene
-            var mainMenuScene = new Scene2D("main menu");
+            var mainMenuScene = new Scene2D(AppData.MAIN_MENU_SCENE_NAME);
             mainMenuScene.Add(menuBackgroundTextureGameObject);
+            mainMenuScene.Add(menuGameObjectTitle);
             #endregion
 
-            #region Main Menu Title
-            Vector2 titleScale = new Vector2(1.5f, 1.5f);
-            menuGameObject = new GameObject("menu title");
-            menuGameObject.Transform = new Transform(
-            new Vector3(titleScale, 1), //s
-            new Vector3(0, 0, 0), //r
-            new Vector3(Application.Screen.ScreenCentre - titleScale * btnTexture.GetCenter() - new Vector2(0, 300), 0)); //t
-            material = new TextMaterial2D(spriteFontMenu, "SNAKE 3D", new Vector2(20, 5), Color.Black, 0.8f);
-            //add renderer to draw the text
-            renderer2D = new Renderer2D(material);
-            menuGameObject.AddComponent(renderer2D);
+            GameObject menuGameObject = null;
 
-            mainMenuScene.Add(menuGameObject);
-            #endregion Main Menu Title
-
-            menuGameObject = CloneModelGameObjectButton(btnTexture, AppData.START_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton(AppData.START_GAME_BUTTON_NAME);
             mainMenuScene.Add(menuGameObject);
             
-            menuGameObject = CloneModelGameObjectButton(btnTexture, AppData.AUDIO_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton(AppData.AUDIO_GAME_BUTTON_NAME);
             mainMenuScene.Add(menuGameObject);
 
-            menuGameObject = CloneModelGameObjectButton(btnTexture, AppData.CONTROLS_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton(AppData.CONTROLS_GAME_BUTTON_NAME);
             mainMenuScene.Add(menuGameObject);
 
-            menuGameObject = CloneModelGameObjectButton(btnTexture, AppData.EXIT_GAME_BUTTON_NAME);
+            menuGameObject = CloneModelGameObjectButton( AppData.EXIT_GAME_BUTTON_NAME);
             mainMenuScene.Add(menuGameObject);
 
 
@@ -365,7 +370,35 @@ namespace GD.App
 
             //what menu do i see first?
             menuManager.SetActiveScene(mainMenuScene.ID);
+            #endregion
+        }
 
+        private void InitializeLevelsMenu()
+        {
+            #region Create new menu scene
+            var levelsMenuScene = new Scene2D(AppData.LEVELS_SCENE_NAME);
+            levelsMenuScene.Add(menuBackgroundTextureGameObject);
+            levelsMenuScene.Add(menuGameObjectTitle);
+            #endregion
+
+            GameObject menuGameObject = null;
+
+            menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_ONE_GAME_BUTTON_NAME);
+            levelsMenuScene.Add(menuGameObject);
+
+            menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_TWO_GAME_BUTTON_NAME);
+            levelsMenuScene.Add(menuGameObject);
+
+            menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_THREE_GAME_BUTTON_NAME);
+            levelsMenuScene.Add(menuGameObject);
+
+            #region Add Scene to Manager and Set Active
+
+            //add scene2D to menu manager
+            menuManager.Add(levelsMenuScene.ID, levelsMenuScene);
+
+            //what menu do i see first?
+            menuManager.SetActiveScene(levelsMenuScene.ID);
             #endregion
         }
 
@@ -531,6 +564,7 @@ namespace GD.App
             LoadSounds();
             LoadTextures();
             LoadModels();
+            LoadFonts();
         }
 
         private void LoadSounds()
@@ -547,10 +581,20 @@ namespace GD.App
                 false));
         }
 
-        private void LoadTextures()
+        private void LoadFonts()
         {
-            //load and add to dictionary
-            //Content.Load<Texture>
+            fontDictionary.Add(AppData.MENU_FONT_NAME, AppData.MENU_FONT_PATH);
+            fontDictionary.Add(AppData.UI_FONT_NAME, AppData.UI_FONT_PATH);
+        }
+        private void LoadTextures()
+        {         
+            textureDictionary.Add(AppData.FOOD_TEXTURE_NAME, AppData.FOOD_TEXTURE_PATH);
+            textureDictionary.Add(AppData.BACKGROUND_TEXTURE_NAME, AppData.BACKGROUND_TEXTURE_PATH);
+            textureDictionary.Add(AppData.BACKGROUND_TEXTURE_NAME, AppData.BACKGROUND_TEXTURE_PATH);
+            textureDictionary.Add(AppData.SNAKE_TONGUE_TEXTURE_NAME, AppData.SNAKE_TONGUE_TEXTURE_PATH);
+            textureDictionary.Add(AppData.SNAKE_SKIN_TEXTURE_NAME, AppData.SNAKE_SKIN_TEXTURE_PATH);
+            textureDictionary.Add(AppData.SNAKE_HEAD_TEXTURE_NAME, AppData.SNAKE_HEAD_TEXTURE_PATH);
+            textureDictionary.Add(AppData.SNAKE_MENU_BUTTON_TEXTURE_NAME, AppData.SNAKE_MENU_BUTTON_TEXTURE_PATH);
         }
 
         private void LoadModels()
@@ -862,7 +906,7 @@ namespace GD.App
         private void InitializeBaseModel()
         {
 
-            var gameObject = new GameObject("base " + cubeBaseNumber, ObjectType.Static, RenderType.Transparent);
+            var gameObject = new GameObject("base ", ObjectType.Static, RenderType.Transparent);
             gameObject.GameObjectType = GameObjectType.Collectible;
 
             gameObject.Transform = new Transform(
@@ -986,7 +1030,7 @@ namespace GD.App
                 AppData.SNAKE_GAMEOBJECTS_SCALE,
                 Vector3.Zero,
                 Vector3.Zero);
-            var texture = Content.Load<Texture2D>(AppData.FOOD_TEXTURE_PATH);
+            var texture = textureDictionary[AppData.FOOD_TEXTURE_NAME];
             var meshBase = new SphereMesh(_graphics.GraphicsDevice);
 
             foodGameObject.AddComponent(new Renderer(
@@ -1279,15 +1323,27 @@ namespace GD.App
             //TODO - add texture dictionary, soundeffect dictionary, model dictionary
             InitilizeButtonTextTranslationsDictionary();
 
+            textureDictionary = new ContentDictionary<Texture2D>();
+            fontDictionary = new ContentDictionary<SpriteFont>();
+
         }
 
         private void InitilizeButtonTextTranslationsDictionary()
         {
+
+            #region Main Menu Button
             menuButtonDictionary = new Dictionary<string, MenuButton>();
             menuButtonDictionary.Add(AppData.START_GAME_BUTTON_NAME, new MenuButton(AppData.START_GAME_BUTTON_TRANSLATION, AppData.START_GAME_BUTTON_TEXT_OFFSET, AppData.START_GAME_BUTTON_COLOR, AppData.START_GAME_BUTTON_TEXT));
             menuButtonDictionary.Add(AppData.AUDIO_GAME_BUTTON_NAME, new MenuButton(AppData.AUDIO_GAME_BUTTON_TRANSLATION, AppData.AUDIO_GAME_BUTTON_TEXT_OFFSET, AppData.AUDIO_GAME_BUTTON_COLOR, AppData.AUDIO_GAME_BUTTON_TEXT));
             menuButtonDictionary.Add(AppData.CONTROLS_GAME_BUTTON_NAME, new MenuButton(AppData.CONTROLS_GAME_BUTTON_TRANSLATION, AppData.CONTROLS_GAME_BUTTON_TEXT_OFFSET, AppData.CONTROLS_GAME_BUTTON_COLOR, AppData.CONTROLS_GAME_BUTTON_TEXT));
             menuButtonDictionary.Add(AppData.EXIT_GAME_BUTTON_NAME, new MenuButton(AppData.EXIT_GAME_BUTTON_TRANSLATION, AppData.EXIT_GAME_BUTTON_TEXT_OFFSET, AppData.EXIT_GAME_BUTTON_COLOR, AppData.EXIT_GAME_BUTTON_TEXT));
+            #endregion Main Menu Button
+
+            #region Levels Menu Button
+            menuButtonDictionary.Add(AppData.LEVEL_ONE_GAME_BUTTON_NAME, new MenuButton(AppData.LEVEL_ONE_GAME_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_GAME_BUTTON_COLOR, AppData.LEVEL_ONE_GAME_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.LEVEL_TWO_GAME_BUTTON_NAME, new MenuButton(AppData.LEVEL_TWO_GAME_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_GAME_BUTTON_COLOR, AppData.LEVEL_TWO_GAME_BUTTON_TEXT));
+            menuButtonDictionary.Add(AppData.LEVEL_THREE_GAME_BUTTON_NAME, new MenuButton(AppData.LEVEL_THREE_GAME_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_GAME_BUTTON_COLOR, AppData.LEVEL_THREE_GAME_BUTTON_TEXT));
+            #endregion Levels Menu Button
         }
 
         private void InitializeDebug(bool showCollisionSkins = true)

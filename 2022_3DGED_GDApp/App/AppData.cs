@@ -239,16 +239,14 @@ namespace GD.App
         public static readonly float BUTTON_HOVER_OFFSET = 12f;
         public static readonly Vector2 BUTTON_SCALE = new Vector2(1f, 1f);
         public static readonly Vector2 BUTTON_TEXT_TRANSLATION = new Vector2(70f, 5f);
+        public static readonly string SNAKE_MENU_BUTTON_TEXTURE_PATH = "Assets/Textures/Menu/Controls/snake_button_texture";
+        public static readonly string SNAKE_MENU_BUTTON_TEXTURE_NAME = "Snake Button Texture";
         #endregion button Attributes
 
         #region Menu Background
         public static readonly string SNAKE_MENU_BACKGROUND_TEXTURE_PATH = "Assets/Textures/Menu/Backgrounds/snake_background";
         public static readonly string BACKGROUND_NAME = "background";
         #endregion Menu Background
-
-        #region Controls
-        public static readonly string SNAKE_MENU_BUTTON_TEXTURE_PATH = "Assets/Textures/Menu/Controls/snake_button_texture";
-        #endregion Controls
 
         #region Main Menu
 
@@ -285,6 +283,29 @@ namespace GD.App
         #endregion Controls Game Button
 
         #endregion Main Menu
+
+        #region Levels Menu
+        public static readonly Vector2 LEVEL_GAME_BUTTON_TEXT_OFFSET = new Vector2(30f, 5f);
+
+        #region Level One Game Button
+        public static readonly string LEVEL_ONE_GAME_BUTTON_NAME = "Level One Button";
+        public static readonly Vector2 LEVEL_ONE_GAME_BUTTON_TRANSLATION = new Vector2(0f, 150f);
+        public static readonly string LEVEL_ONE_GAME_BUTTON_TEXT = "LEVEL 1";
+        #endregion Level One Game Button
+
+        #region Level Two Game Button
+        public static readonly string LEVEL_TWO_GAME_BUTTON_NAME = "Level Two Button";
+        public static readonly Vector2 LEVEL_TWO_GAME_BUTTON_TRANSLATION = new Vector2(0f, 0f);
+        public static readonly string LEVEL_TWO_GAME_BUTTON_TEXT = "LEVEL 2";
+        #endregion Level Two Game Button
+
+        #region Level Two Game Button
+        public static readonly string LEVEL_THREE_GAME_BUTTON_NAME = "Level Three Button";
+        public static readonly Vector2 LEVEL_THREE_GAME_BUTTON_TRANSLATION = new Vector2(0f, -150f);
+        public static readonly string LEVEL_THREE_GAME_BUTTON_TEXT = "LEVEL 3";
+        #endregion Level Two Game Button
+
+        #endregion Levels Menu
 
 
         #region End Menu
@@ -341,6 +362,7 @@ namespace GD.App
         #region Consumables Textures
         private static readonly string CONSUMABLES_BASE_TEXTURE_PATH = TEXTURES_BASE_PATH + "Consumables/";
         public static readonly string FOOD_TEXTURE_PATH = CONSUMABLES_BASE_TEXTURE_PATH + "apple_texture";
+        public static readonly string FOOD_TEXTURE_NAME = "Apple Texture";
         #endregion Consumables Textures
 
         #region Snake Textures
@@ -348,17 +370,34 @@ namespace GD.App
         public static readonly string SNAKE_TONGUE_TEXTURE_PATH = SNAKE_BODY_BASE_TEXTURE_PATH + "snake_tongue";
         public static readonly string SNAKE_SKIN_TEXTURE_PATH = SNAKE_BODY_BASE_TEXTURE_PATH + "snake_skin";
         public static readonly string SNAKE_HEAD_TEXTURE_PATH = SNAKE_BODY_BASE_TEXTURE_PATH + "snake_head";
+
+        public static readonly string SNAKE_TONGUE_TEXTURE_NAME = "Snake Tongue Texture";
+        public static readonly string SNAKE_SKIN_TEXTURE_NAME = "Snake Skin Texture";
+        public static readonly string SNAKE_HEAD_TEXTURE_NAME = "Snake Head Texture";
         #endregion Snake Textures
 
         #region Background Texture
         public static readonly string BACKGROUND_TEXTURE_PATH = "Assets/black";
+        public static readonly string BACKGROUND_TEXTURE_NAME = "Background Black Sky Texture";
         #endregion Background Texture
 
         #endregion Textures
 
         #region Scene Manager
-        public static readonly string GAME_SCENE_NAME = "snake 3D game";
+        public static readonly string GAME_SCENE_NAME = "snake 3D Game Scene";
+        public static readonly string MAIN_MENU_SCENE_NAME = "Main Menu Scene";
+        public static readonly string LEVELS_SCENE_NAME = "Levels Scene";
         #endregion Scene Manager
+
+        #region Fonts
+        private static readonly string FONT_BASE_PATH = "Assets/Fonts/";
+
+        public static readonly string MENU_FONT_PATH = FONT_BASE_PATH + "menu_font";
+        public static readonly string UI_FONT_PATH = FONT_BASE_PATH + "ui_font";
+
+        public static readonly string MENU_FONT_NAME = "Menu Font";
+        public static readonly string UI_FONT_NAME = "UI Font";
+        #endregion Fonts
 
         #endregion Snake
     }
