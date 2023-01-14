@@ -28,6 +28,24 @@ namespace GD.Engine
 
         #endregion Fields
 
+        #region Properties
+        public float ScaleFacor
+        {
+            get
+            {
+                return scaleFacor;
+            }
+        }
+
+        public float Offset
+        {
+            get
+            {
+                return offset;
+            }
+        }
+        #endregion Properties
+
         public SnakeButtonCollider2D(GameObject gameObject, Renderer2D spriteRenderer, float scaleFactor, float offset) : base(gameObject, spriteRenderer)
         {
             this.xOriginalPosition = gameObject.Transform.Translation.X;

@@ -237,6 +237,8 @@ namespace GD.App
         #region Button Attributes
         public static readonly float BUTTON_HOVER_SCALE_BY = 0.1f;
         public static readonly float BUTTON_HOVER_OFFSET = 12f;
+        public static readonly Vector2 BUTTON_SCALE = new Vector2(1f, 1f);
+        public static readonly Vector2 BUTTON_TEXT_TRANSLATION = new Vector2(70f, 5f);
         #endregion button Attributes
 
         #region Menu Background
@@ -251,8 +253,36 @@ namespace GD.App
         #region Main Menu
 
         #region Start Game Button
-        public static readonly string START_GAME_BUTTON_NAME = "start game button";
+        public static readonly string START_GAME_BUTTON_NAME = "Start Game Button";
+        public static readonly Vector2 START_GAME_BUTTON_TRANSLATION = new Vector2(0f, 150f);
+        public static readonly Vector2 START_GAME_BUTTON_TEXT_OFFSET = new Vector2(65f, 5f);
+        public static readonly Color START_GAME_BUTTON_COLOR = Color.MediumPurple;
+        public static readonly string START_GAME_BUTTON_TEXT = "START";
         #endregion Start Game Button
+
+        #region Audio Game Button
+        public static readonly string AUDIO_GAME_BUTTON_NAME = "Audio Game Button";
+        public static readonly Vector2 AUDIO_GAME_BUTTON_TRANSLATION = new Vector2(0f, 50f);
+        public static readonly Vector2 AUDIO_GAME_BUTTON_TEXT_OFFSET = new Vector2(70f, 5f);
+        public static readonly Color AUDIO_GAME_BUTTON_COLOR = Color.Gold;
+        public static readonly string AUDIO_GAME_BUTTON_TEXT = "AUDIO";
+        #endregion Audio Game Button
+
+        #region Controls Game Button
+        public static readonly string CONTROLS_GAME_BUTTON_NAME = "Controls Game Button";
+        public static readonly Vector2 CONTROLS_GAME_BUTTON_TRANSLATION = new Vector2(0f, -50f);
+        public static readonly Vector2 CONTROLS_GAME_BUTTON_TEXT_OFFSET = new Vector2(5f, 5f);
+        public static readonly Color CONTROLS_GAME_BUTTON_COLOR = Color.Green;
+        public static readonly string CONTROLS_GAME_BUTTON_TEXT = "CONTROLS";
+        #endregion Controls Game Button
+
+        #region Exit Game Button
+        public static readonly string EXIT_GAME_BUTTON_NAME = "Exit Game Button";
+        public static readonly Vector2 EXIT_GAME_BUTTON_TRANSLATION = new Vector2(0f, -150f);
+        public static readonly Vector2 EXIT_GAME_BUTTON_TEXT_OFFSET = new Vector2(90f, 5f);
+        public static readonly Color EXIT_GAME_BUTTON_COLOR = Color.Red;
+        public static readonly string EXIT_GAME_BUTTON_TEXT = "EXIT";
+        #endregion Controls Game Button
 
         #endregion Main Menu
 
