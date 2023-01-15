@@ -55,11 +55,7 @@ namespace GD.Engine
         {
             if(base.RemoveConsumable(consumableToRemove))
             {
-                for(int i = 0; i <= Application.StateManager.CurrentLevel; i++)
-                {
-                    EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager, EventActionType.Grow));
-                }
-
+                EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager, EventActionType.Grow));
                 InitializeConsumableItem();
             }
 

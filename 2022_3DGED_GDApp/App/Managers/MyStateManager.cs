@@ -43,23 +43,20 @@ namespace App.Managers
         private double seconds;
         private int currentLevel;
         private int currentScore;
-        private int totalLevels;
+        private SnakeLevelsData snakeLevelsData;
         private bool gameStarted;
-        private int[] defaultFoodEachLevel;
-        private int[] defaultBombsEachLevel;
 
-        public MyStateManager(Game game, float maxTimeInMS, int totalLevels, int[] defaultFoodEachLevel, int[] defaultBombsEachLevel) : base(game)
+
+        public MyStateManager(Game game, SnakeLevelsData snakeLevelsData) : base(game)
         {
-            this.maxTimeInMS = maxTimeInMS;
+            this.maxTimeInMS = snakeLevelsData.TimesEachLevel[0];
             this.totalElapsedTimeMS = 0;
             this.totalSeconds = 0;
             this.minutes = 0;
             this.seconds = 0;
             this.currentLevel = AppData.LEVEL_ONE;
-            this.totalLevels = totalLevels;
             this.gameStarted = false;
-            this.defaultFoodEachLevel = defaultFoodEachLevel;
-            this.defaultBombsEachLevel = defaultBombsEachLevel;
+            this.snakeLevelsData = snakeLevelsData;
         }
 
         #region Properties
@@ -95,7 +92,7 @@ namespace App.Managers
         {
             get
             {
-                return currentScore;
+                return currentLevel;
             }
             set
             {
@@ -124,17 +121,19 @@ namespace App.Managers
         protected void HandleGameObjectEvents(EventData eventData)
         {
             switch (eventData.EventActionType)
-            { 
+            {
                 case EventActionType.UpdateScore:
                     UpdateScore();
                     break;
 
-                case EventActionType.RemoveUILevelStart:                   
+                case EventActionType.RemoveUILevelStart:
                     GameObject removeGameObject = (GameObject)eventData.Parameters[0];
                     StartNewLevel(removeGameObject);
                     break;
 
                 case EventActionType.StartOfLevel:
+                    int newLevel = (int)eventData.Parameters[0];
+                    currentLevel = newLevel;
                     StartOfLevel();
                     break;
 
@@ -163,7 +162,7 @@ namespace App.Managers
 
         private void UpdateLevel()
         {
-            GameObject levelGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.DEFAULT_LEVEL_TEXT);
+            GameObject levelGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.LEVEL_UI_TEXT_NAME);
 
             var material2D = (TextMaterial2D)levelGameObject.GetComponent<Renderer2D>().Material;
             material2D.StringBuilder.Clear();
@@ -171,7 +170,7 @@ namespace App.Managers
         }
 
         private void ResetLevel()
-        {        
+        {
             gameStarted = false;
             EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
                EventActionType.ResetSnake));
@@ -188,29 +187,15 @@ namespace App.Managers
         private void StartOfLevel()
         {
             ResetLevel();
+
             int defaultFoodNumber = 0;
             int defaultBombNumber = 0;
 
-
-            switch (this.currentLevel)
-                {
-                case (int)Level.LevelOne:
-                    defaultFoodNumber = defaultFoodEachLevel[0];
-                    break;
-
-                case (int)Level.LevelTwo:
-                    defaultFoodNumber = defaultFoodEachLevel[1];
-                    defaultBombNumber = defaultBombsEachLevel[1];
-                    break;
-
-                case (int)Level.LevelThree:
-                    defaultFoodNumber = defaultFoodEachLevel[2];
-                    defaultBombNumber = defaultBombsEachLevel[2];
-                    break;
-
-                default:
-                   break;
-                }
+            if (currentLevel > 0)
+            {
+                defaultFoodNumber = snakeLevelsData.DefaultFoodEachLevel[currentLevel - 1];
+                defaultBombNumber = snakeLevelsData.DefaultFoodEachLevel[currentLevel - 1];
+            }
 
             object[] parametersFood = { defaultFoodNumber };
             EventDispatcher.Raise(new EventData(EventCategoryType.FoodManager,
@@ -229,86 +214,24 @@ namespace App.Managers
 
         private void StartNewLevel(GameObject removeGameObject)
         {
-            Application.UISceneManager.ActiveScene.Remove((uiElement) => uiElement.Name == removeGameObject.Name);           
-            
+            Application.UISceneManager.ActiveScene.Remove((uiElement) => uiElement.Name == removeGameObject.Name);
+
             totalElapsedTimeMS = 0;
             currentScore = 0;
             UpdateScore();
+            UpdateLevel();
+
+            if (currentLevel > 0)
+            {
+                maxTimeInMS = snakeLevelsData.TimesEachLevel[currentLevel - 1];
+            }
+
 
             EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
             EventActionType.UITextIsDrawn));
 
-            gameStarted = true;          
+            gameStarted = true;
         }
-
-        private void CheckCurrentLevel()
-        {
-            if(currentLevel > totalLevels)
-            {
-                EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
-                EventActionType.OnPause));
-
-                EventDispatcher.Raise(new EventData(EventCategoryType.Game,
-                EventActionType.OnLose));
-            }
-        }
-
-        private bool CheckCameraRotateStart()
-        {
-            if(currentLevel >= 2)
-            {
-                return true;
-            }
-
-            return false;
-        }
-        private float rotation = 0f;
-        private float targetRotation = 90f;
-        private float rotateSpeed = 0.1f;
-       
-        //private void UpdateCameraRotataion(GameTime gameTime)
-        //{
-        //    totalElapsedTimeCameraRotationMS += gameTime.ElapsedGameTime.Milliseconds;
-
-
-        //    if (totalElapsedTimeCameraRotationMS >= 5000f)
-        //    {
-
-        //            float rotationAmt = (float)(rotateSpeed * gameTime.ElapsedGameTime.TotalMilliseconds);
-
-        //            if (rotation < targetRotation)
-        //            {
-
-        //            if (Application.CameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
-        //            {
-        //                Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, 0, rotationAmt);
-        //            }
-        //            else if (Application.CameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
-        //            {
-        //                Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, 0, -rotationAmt);
-        //            }
-
-        //            else if (Application.CameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
-        //            {
-        //                Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, rotationAmt, 0);
-
-        //            }
-        //            else if (Application.CameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
-        //            {
-        //                Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, -rotationAmt, 0);
-
-        //            }
-
-        //            rotation += rotationAmt;
-        //        }
-        //        else
-        //        {
-        //            rotation = 0f;
-        //            totalElapsedTimeCameraRotationMS = 0;
-        //        }
-
-        //    }
-            
-        //}
+    
     }
 }

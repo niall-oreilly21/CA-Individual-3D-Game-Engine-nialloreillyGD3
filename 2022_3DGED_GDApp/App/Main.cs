@@ -586,6 +586,13 @@ namespace GD.App
             uiManager.ActiveScene.Add(uiGameObject);
             #endregion Timer
 
+            #region UI Helper
+            uiGameObject = InitializeUIText(AppData.UI_TEXT_HELPER_NAME, AppData.UI_TEXT_HELPER_SCALE, AppData.UI_TEXT_HELPER_TEXT_OFFSET, AppData.UI_TEXT_HELPER_TEXT[0], AppData.TIMER_UI_TEXT_COLOR, AppData.UI_FONT_NAME, GameObjectType.UI_Game_Text);
+            uiManager.ActiveScene.Add(uiGameObject);
+            uiGameObject.AddComponent(new UIHelperController(AppData.UI_TEXT_HELPER_TEXT));
+            uiManager.ActiveScene.Add(uiGameObject);
+            #endregion UI Helper
+
         }
 
         private void SetTitle(string title)
@@ -1322,7 +1329,7 @@ namespace GD.App
             #region Game State
 
             //add state manager for inventory and countdown
-            stateManager = new MyStateManager(this, AppData.MAX_SNAKE_LEVEL_TIME, AppData.TOTAL_LEVELS, AppData.DEFAULT_FOOD_EACH_LEVEL, AppData.DEFAULT_BOMB_EACH_LEVEL);
+            stateManager = new MyStateManager(this, new SnakeLevelsData(AppData.DEFAULT_FOOD_EACH_LEVEL, AppData.DEFAULT_BOMB_EACH_LEVEL, AppData.START_TIMES_EACH_LEVEL));
             Components.Add(stateManager);
 
             #endregion
@@ -1404,9 +1411,9 @@ namespace GD.App
             #endregion Main Menu Button
 
             #region Levels Menu Button
-            menuButtonDictionary.Add(AppData.LEVEL_ONE_BUTTON_NAME, new MenuButton(AppData.LEVEL_ONE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_ONE_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel)));
-            menuButtonDictionary.Add(AppData.LEVEL_TWO_BUTTON_NAME, new MenuButton(AppData.LEVEL_TWO_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_TWO_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel)));
-            menuButtonDictionary.Add(AppData.LEVEL_THREE_BUTTON_NAME, new MenuButton(AppData.LEVEL_THREE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_THREE_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel)));
+            menuButtonDictionary.Add(AppData.LEVEL_ONE_BUTTON_NAME, new MenuButton(AppData.LEVEL_ONE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_ONE_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { AppData.LEVEL_ONE })));
+            menuButtonDictionary.Add(AppData.LEVEL_TWO_BUTTON_NAME, new MenuButton(AppData.LEVEL_TWO_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_TWO_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { AppData.LEVEL_TWO })));
+            menuButtonDictionary.Add(AppData.LEVEL_THREE_BUTTON_NAME, new MenuButton(AppData.LEVEL_THREE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_THREE_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { AppData.LEVEL_THREE })));
             #endregion Levels Menu Button
 
             #region Pause Menu Button
@@ -1485,9 +1492,6 @@ namespace GD.App
                 menuManager.SetActiveScene(AppData.PAUSE_SCENE_NAME);
                 EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                     EventActionType.OnPause));
-
-                EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
-             EventActionType.UITextIsDrawn));
             }
 
             #endregion

@@ -226,12 +226,6 @@
         * A. StatusType.Updated | StatusType.Drawn - See ObjectManager::Update() or Draw()
         */
     }
-    public enum Level
-    {
-        LevelOne = 1,
-        LevelTwo = 2,
-        LevelThree = 3
-    }
 
     #endregion Unused
 }

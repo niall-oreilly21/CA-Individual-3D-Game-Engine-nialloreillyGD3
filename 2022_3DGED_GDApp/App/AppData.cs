@@ -332,7 +332,6 @@ namespace GD.App
         #endregion Menus
 
         #region Snake State Manager
-        public static readonly int TOTAL_LEVELS = 3;
 
         public static readonly int LEVEL_ONE = 1;
         public static readonly int LEVEL_TWO = 2;
@@ -354,6 +353,14 @@ namespace GD.App
         public static readonly int[] DEFAULT_BOMB_EACH_LEVEL = { DEFAULT_BOMB_LEVEL_ONE, DEFAULT_BOMB_LEVEL_TWO, DEFAULT_BOMB_LEVEL_THREE };
         #endregion Bomb Level Default Figures
 
+        #region Start Times Each Level
+        private static readonly float START_TIME_LEVEL_ONE = 120f;
+        private static readonly float START_TIME_LEVEL_TWO = 90f;
+        private static readonly float START_TIME_LEVEL_THREE = 180f;
+
+        public static readonly float[] START_TIMES_EACH_LEVEL = { START_TIME_LEVEL_ONE, START_TIME_LEVEL_TWO, START_TIME_LEVEL_THREE };
+        #endregion Start Times Each Level
+
         #endregion Snake State Manager
 
         #region UI
@@ -362,20 +369,20 @@ namespace GD.App
         #region Score UI Text
         public static readonly string SCORE_UI_TEXT_NAME = "Score Text UI Text";
         public static readonly Vector2 SCORE_UI_TEXT_SCALE = new Vector2(1f, 1f);
-        public static readonly Vector2 SCORE_UI_TEXT_OFFSET = new Vector2(30f, 120f);
+        public static readonly Vector2 SCORE_UI_TEXT_OFFSET = new Vector2(30f, 100f);
         public static readonly string DEFAULT_SCORE_TEXT = "SCORE ";
         #endregion Score UI Text
 
         #region Level UI Text
         public static readonly string LEVEL_UI_TEXT_NAME = "Level text UI Text";
         public static readonly Vector2 LEVEL_UI_TEXT_SCALE = new Vector2(1f, 1f);
-        public static readonly Vector2 LEVEL_UI_TEXT_OFFSET = new Vector2(30f, 5f);
+        public static readonly Vector2 LEVEL_UI_TEXT_OFFSET = new Vector2(30f, 20f);
         public static readonly string DEFAULT_LEVEL_TEXT = "LEVEL ";
         #endregion Level UI Text
 
         #region Camera UI Text
         public static readonly string CAMERA_UI_TEXT_NAME = "Camera UI Text";
-        public static readonly Vector2 CAMERA_UI_TEXT_SCALE = new Vector2(0.8f, 0.8f);
+        public static readonly Vector2 CAMERA_UI_TEXT_SCALE = new Vector2(0.9f, 0.9f);
         public static readonly Vector2 CAMERA_UI_TEXT_OFFSET = new Vector2(1040f, 120f);
 
         public static readonly string FRONT_CAMERA_UI_TEXT = "FRONT";
@@ -427,6 +434,17 @@ namespace GD.App
         #endregion Menu Title UI Text
 
         #endregion Controls Menu UI Text
+
+        #region UI Text Helper
+        public static readonly string UI_TEXT_HELPER_NAME = "Menu UI Helper Text";
+        public static readonly Vector2 UI_TEXT_HELPER_SCALE = new Vector2(0.5f, 0.5f);
+        public static readonly Vector2 UI_TEXT_HELPER_TEXT_OFFSET = new Vector2(1040f, 370f);
+
+        private static readonly string UI_TEXT_HELPER_TEXT_LEVEL_ONE = "Eat 10 Apples \nbefore the \ntimer runs out";
+        private static readonly string UI_TEXT_HELPER_TEXT_LEVEL_TWO = UI_TEXT_HELPER_TEXT_LEVEL_ONE + "\n\nAvoid the fire \nobstactles";
+        private static readonly string UI_TEXT_HELPER_TEXT_LEVEL_THREE = "Survive for \nas long \nas possible";
+        public static readonly string[] UI_TEXT_HELPER_TEXT = { UI_TEXT_HELPER_TEXT_LEVEL_ONE, UI_TEXT_HELPER_TEXT_LEVEL_TWO, UI_TEXT_HELPER_TEXT_LEVEL_THREE };
+        #endregion UI Text Helper
 
         #endregion UI
 
