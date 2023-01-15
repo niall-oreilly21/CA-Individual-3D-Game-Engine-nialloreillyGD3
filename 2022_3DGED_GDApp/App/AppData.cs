@@ -9,6 +9,8 @@ using GD.Engine;
 using GD.Engine.Data;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Drawing;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace GD.App
 {
@@ -243,11 +245,6 @@ namespace GD.App
         public static readonly string SNAKE_MENU_BUTTON_TEXTURE_NAME = "Snake Button Texture";
         #endregion button Attributes
 
-        #region Menu Background
-        public static readonly string SNAKE_MENU_BACKGROUND_TEXTURE_PATH = "Assets/Textures/Menu/Backgrounds/snake_background";
-        public static readonly string BACKGROUND_NAME = "background";
-        #endregion Menu Background
-
         #region Main Menu
 
         #region Start Game Button
@@ -323,6 +320,14 @@ namespace GD.App
         public static readonly string MAIN_MENU_BUTTON_TEXT = "QUIT";
         #endregion Main Menu Button
 
+        #region Back Button
+        public static readonly string BACK_BUTTON_NAME = "Back Button";
+        public static readonly Vector2 BACK_BUTTON_TRANSLATION = new Vector2(400f, -250f);
+        public static readonly Vector2 BACK_BUTTON_TEXT_OFFSET = new Vector2(90f, 5f);
+        public static readonly Color BACK_BUTTON_COLOR = Color.LawnGreen;
+        public static readonly string BACK_BUTTON_TEXT = "BACK";
+        #endregion Back Button
+
         #endregion Pause Menu
 
 
@@ -358,20 +363,68 @@ namespace GD.App
         #endregion Snake State Manager
 
         #region UI
-        public static readonly string LEVEL_UI_NAME = "Level text ui";
-        public static readonly string SCORE_UI_NAME = "Score text ui";
-        public static readonly string CAMERA_UI_TEXT = "Camera UI";
-        public static readonly string DEFAULT_LEVEL_TEXT = "Level ";
-        public static readonly string DEFAULT_SCORE_TEXT = "Score ";
+        public static readonly Color DEFAULT_UI_TEXT_COLOR = Color.White;
+
+        #region Score UI Text
+        public static readonly string SCORE_UI_TEXT_NAME = "Score Text UI Text";
+        public static readonly Vector2 SCORE_UI_TEXT_SCALE = new Vector2(1f, 1f);
+        public static readonly Vector2 SCORE_UI_TEXT_OFFSET = new Vector2(30f, 120f);
+        public static readonly string DEFAULT_SCORE_TEXT = "SCORE ";
+        #endregion Score UI Text
+
+        #region Level UI Text
+        public static readonly string LEVEL_UI_TEXT_NAME = "Level text UI Text";
+        public static readonly Vector2 LEVEL_UI_TEXT_SCALE = new Vector2(1f, 1f);
+        public static readonly Vector2 LEVEL_UI_TEXT_OFFSET = new Vector2(30f, 5f);
+        public static readonly string DEFAULT_LEVEL_TEXT = "LEVEL ";
+        #endregion Level UI Text
+
+        #region Camera UI Text
+        public static readonly string CAMERA_UI_TEXT_NAME = "Camera UI Text";
+        public static readonly Vector2 CAMERA_UI_TEXT_SCALE = new Vector2(0.8f, 0.8f);
+        public static readonly Vector2 CAMERA_UI_TEXT_OFFSET = new Vector2(1040f, 120f);
+
         public static readonly string FRONT_CAMERA_UI_TEXT = "FRONT";
         public static readonly string BACK_CAMERA_UI_TEXT = "BACK";
         public static readonly string TOP_CAMERA_UI_TEXT = "TOP";
         public static readonly string BOTTOM_CAMERA_UI_TEXT = "BOTTOM";
         public static readonly string RIGHT_CAMERA_UI_TEXT = "RIGHT";
         public static readonly string LEFT_CAMERA_UI_TEXT = "LEFT";
-        public static readonly string LEVEL_START_TIME_UI_NAME = "Level start timer ui";
-        public static readonly float LEVEL_START_TIME_UI = 3000f;
-        public static readonly string TIMER_UI_NAME = "Timer ui";
+        #endregion Camera UI Text
+
+        #region Start Of Level Timer UI Text
+        public static readonly string LEVEL_START_TIME_UI_NAME = "Start Of Level Timer UI Text";
+        public static readonly Vector2 LEVEL_START_TIMER_UI_TEXT_SCALE = new Vector2(4f, 4f);
+        public static readonly Vector2 LEVEL_START_TIMER_UI_TEXT_OFFSET = new Vector2(100f, 120f);
+        public static readonly float LEVEL_START_TIMER_UI_SECONDS = 3000f;
+        #endregion Start Of Level Timer UI Text
+
+        #region Timer UI Text
+        public static readonly string TIMER_UI_TEXT_NAME = "Timer UI Text";
+        public static readonly Vector2 TIMER_UI_TEXT_SCALE = new Vector2(1.5f, 1.5f);
+        public static readonly Vector2 TIMER_UI_TEXT_OFFSET = new Vector2(30f, 300f);
+        public static readonly string TIMER_UI_TEXT = "";
+        public static readonly Color TIMER_UI_TEXT_COLOR = Color.Cyan;
+        #endregion Timer UI Text
+
+        #region Controls Menu UI Text
+        public static readonly Vector2 CONTROLS_UI_TEXT_SCALE = new Vector2(1f, 1f);
+        public static readonly Color CONTROLS_UI_TEXT_COLOR = Color.MediumSeaGreen;
+
+        #region Snake Controls Menu UI Text
+        public static readonly string SNAKE_CONTROLS_UI_TEXT_NAME = "Snake UI Text";
+        public static readonly Vector2 SNAKE_CONTROLS_TEXT_OFFSET = new Vector2(200, APP_RESOLUTION.Y / 2 - 240);
+        public static readonly string SNAKE_CONTROLS_UI_TEXT = "SNAKE";
+        #endregion Snake Controls Menu UI Text
+
+        #region Camera Controls Menu UI Text
+        public static readonly string CAMERA_CONTROLS_UI_TEXT_NAME = "Snake UI Text";
+        public static readonly Vector2 CAMERA_CONTROLS_TEXT_OFFSET = new Vector2(APP_RESOLUTION.X / 2 + 140, APP_RESOLUTION.Y / 2 - 240);
+        public static readonly string CAMERA_CONTROLS_UI_TEXT = "CAMERA";
+        #endregion Camera Controls Menu UI Text
+
+        #endregion Controls Menu UI Text
+
         #endregion UI
 
         #region Textures
@@ -399,6 +452,44 @@ namespace GD.App
         public static readonly string BACKGROUND_TEXTURE_NAME = "Background Black Sky Texture";
         #endregion Background Texture
 
+        #region Menu Background Textures
+        private static readonly string MENU_BACKGROUND_BASE_TEXTURE_PATH = TEXTURES_BASE_PATH + "Backgrounds/";
+        private static readonly string CONTROLS_MENU_BACKGROUND_BASE_TEXTURE_PATH = MENU_BACKGROUND_BASE_TEXTURE_PATH + "Controls/";
+
+        public static readonly string MENU_BACKGROUND_TEXTURE_PATH = MENU_BACKGROUND_BASE_TEXTURE_PATH + "menu_background";
+        public static readonly string SNAKE_MENU_BACKGROUND_TEXTURE_PATH = MENU_BACKGROUND_BASE_TEXTURE_PATH + "snakes_menu_background";
+
+        public static readonly string MENU_BACKGROUND_TEXTURE_NAME = "Menu Background";
+        public static readonly string SNAKE_MENU_BACKGROUND_TEXTURE_NAME = "Snake Menu Background";
+        public static readonly string MENU_BACKGROUND_NAME = "Menu Background ";
+
+        #region Controls
+       
+        #region Camera Controls
+        public static readonly string CAMERA_CONTROLS_BACKGROUND_NAME = "Camera Controls";
+        public static readonly string CAMERA_CONTROLS_TEXTURE_PATH = CONTROLS_MENU_BACKGROUND_BASE_TEXTURE_PATH + "camera_controls";
+        public static readonly Vector3 CAMERA_CONTROLS_BACKGROUND_SCALE = new Vector3(0.5f, 0.5f, 0.5f);
+        public static readonly Vector3 CAMERA_CONTROLS_BACKGROUND_TRANSLATION = new Vector3(APP_RESOLUTION.X / 2 + 50, APP_RESOLUTION.Y / 2 - 140, 1);
+        #endregion Camera Controls
+
+        #region Snake Controls
+        public static readonly string SNAKE_CONTROLS_BACKGROUND_NAME = "Snake Controls";
+        public static readonly string SNAKE_CONTROLS_BACKGROUND_TEXTURE_PATH = CONTROLS_MENU_BACKGROUND_BASE_TEXTURE_PATH + "snake_controls";
+        public static readonly Vector3 SNAKE_CONTROLS_BACKGROUND_SCALE = new Vector3(0.5f, 0.5f, 0.5f);
+        public static readonly Vector3 SNAKE_CONTROLS_BACKGROUND_TRANSLATION = new Vector3(50, APP_RESOLUTION.Y / 2 - 140, 1);
+        #endregion Snake Controls
+
+        #region XYZ Controls
+        public static readonly string XYZ_CONTROLS_BACKGROUND_NAME = "XYZ Controls";
+        public static readonly string XYZ_CONTROLS_BACKGROUND_TEXTURE_PATH = CONTROLS_MENU_BACKGROUND_BASE_TEXTURE_PATH + "xyz_controls";
+        public static readonly Vector3 XYZ_CONTROLS_BACKGROUND_SCALE = new Vector3(0.5f, 0.5f, 0.5f);
+        public static readonly Vector3 XYZ_CONTROLS_BACKGROUND_TRANSLATION = new Vector3(APP_RESOLUTION.X / 2 + 60, 520, 1);
+        #endregion XYZ Controls
+
+        #endregion Controls
+
+        #endregion Menu Background Textures
+
         #endregion Textures
 
         #region Scene Manager
@@ -406,6 +497,8 @@ namespace GD.App
         public static readonly string MAIN_MENU_SCENE_NAME = "Main Menu Scene";
         public static readonly string LEVELS_SCENE_NAME = "Levels Scene";
         public static readonly string PAUSE_SCENE_NAME = "Pause Menu Scene";
+        public static readonly string AUDIO_SCENE_NAME = "Audio Menu Scene";
+        public static readonly string CONTROLS_SCENE_NAME = "Controls Menu Scene";
         #endregion Scene Manager
 
         #region Fonts

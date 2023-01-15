@@ -134,7 +134,8 @@
         Snake,
         Food,
         StateManager,
-        Bomb
+        Bomb,
+        SceneManager
     }
 
     /// <summary>
@@ -198,7 +199,12 @@
         InitializeUI,
         StartOfLevel,
         InitilizeFoodStartOfLevel,       
-        InitilizeBombsStartOfLevel
+        InitilizeBombsStartOfLevel,
+        OnLevelsScene,
+        OnMainMenuScene,
+        OnAudioScene,
+        OnControlsScene,
+        OnGameExit
     }
 
     /// <summary>

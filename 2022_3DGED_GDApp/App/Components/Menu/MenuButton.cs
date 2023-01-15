@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GD.Engine.Events;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace GD.Engine
         private Vector2 buttonTextOffSet;
         private Color buttonColor;
         private string buttonText;
+        private EventData buttonEventData;
 
         #endregion Fields
 
@@ -49,13 +51,23 @@ namespace GD.Engine
                 return buttonText;
             }
         }
+
+        public EventData ButtonEventData
+        {
+            get
+            {
+                return buttonEventData;
+            }
+        }
+
         #endregion Properies
-        public MenuButton(Vector2 buttonTranslation, Vector2 buttonTextOffSet, Color buttonColor, string buttonText)
+        public MenuButton(Vector2 buttonTranslation, Vector2 buttonTextOffSet, Color buttonColor, string buttonText, EventData buttonEventData)
         {
             this.buttonTranslation = buttonTranslation;
             this.buttonTextOffSet = buttonTextOffSet;
             this.buttonColor = buttonColor;
             this.buttonText = buttonText;
+            this.buttonEventData = buttonEventData;
         }
     }
 }

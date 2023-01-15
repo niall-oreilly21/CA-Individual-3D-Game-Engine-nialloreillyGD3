@@ -45,27 +45,40 @@ namespace GD.Engine.Managers
         protected override void SubscribeToEvents()
         {
             //handle add/remove events
-            EventDispatcher.Subscribe(EventCategoryType.GameObject, HandleGameObjectEvents);
+            EventDispatcher.Subscribe(EventCategoryType.SceneManager, HandleGameObjectEvents);
 
             base.SubscribeToEvents();
         }
 
         protected void HandleGameObjectEvents(EventData eventData)
         {
+            string menuName = "";
             switch (eventData.EventActionType)
             {
-                case EventActionType.OnRemoveObject: //TODO
+                case EventActionType.OnMainMenuScene:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
                     break;
 
-                case EventActionType.OnAddObject: //TODO
+                case EventActionType.OnLevelsScene:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
+                    break;
+
+                case EventActionType.OnAudioScene:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
+                    break;
+
+                case EventActionType.OnControlsScene:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
                     break;
 
                 default:
                     break;
-                    //add more cases for each method that we want to support with events
             }
 
-            //call base method because we want to participate in the pause/play events
             base.HandleEvent(eventData);
         }
 

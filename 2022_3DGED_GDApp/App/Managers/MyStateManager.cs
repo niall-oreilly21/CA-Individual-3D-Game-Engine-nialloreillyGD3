@@ -156,7 +156,7 @@ namespace App.Managers
 
         private void UpdateScore()
         {
-            GameObject scoreGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.SCORE_UI_NAME);
+            GameObject scoreGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.SCORE_UI_TEXT_NAME);
 
             var material2D = (TextMaterial2D)scoreGameObject.GetComponent<Renderer2D>().Material;
             material2D.StringBuilder.Clear();

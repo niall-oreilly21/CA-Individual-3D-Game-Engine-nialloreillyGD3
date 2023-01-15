@@ -505,18 +505,6 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Menu/Backgrounds/mainmenu.PNG
 
-#begin Assets/Textures/Menu/Backgrounds/snake_background.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Menu/Backgrounds/snake_background.png
-
 #begin Assets/Textures/Menu/Controls/genericbtn.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -636,18 +624,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Props/tv.png
-
-#begin Assets/Textures/Radar/radar-display-texture.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Radar/radar-display-texture.png
 
 #begin Assets/Textures/Skybox/back.bmp
 /importer:TextureImporter
@@ -793,7 +769,7 @@
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Skybox/sky.bmp
 
-#begin Assets/Textures/Snake Game/Background/black_background.png
+#begin Assets/Textures/Snake Game/Backgrounds/black_background.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -803,7 +779,79 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Assets/Textures/Snake Game/Background/black_background.png
+/build:Assets/Textures/Snake Game/Backgrounds/black_background.png
+
+#begin Assets/Textures/Snake Game/Backgrounds/Controls/camera_controls.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Snake Game/Backgrounds/Controls/camera_controls.png
+
+#begin Assets/Textures/Snake Game/Backgrounds/Controls/snake_controls.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Snake Game/Backgrounds/Controls/snake_controls.png
+
+#begin Assets/Textures/Snake Game/Backgrounds/Controls/xyz_controls.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Snake Game/Backgrounds/Controls/xyz_controls.png
+
+#begin Assets/Textures/Snake Game/Backgrounds/Controls/xyz_controls.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Snake Game/Backgrounds/Controls/xyz_controls.png
+
+#begin Assets/Textures/Snake Game/Backgrounds/menu_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Snake Game/Backgrounds/menu_background.png
+
+#begin Assets/Textures/Snake Game/Backgrounds/snakes_menu_background.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Assets/Textures/Snake Game/Backgrounds/snakes_menu_background.png
 
 #begin Assets/Textures/Snake Game/Consumables/apple_texture.png
 /importer:TextureImporter
