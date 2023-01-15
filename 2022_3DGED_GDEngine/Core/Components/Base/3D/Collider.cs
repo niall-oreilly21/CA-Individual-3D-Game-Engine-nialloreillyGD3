@@ -32,7 +32,7 @@ namespace GD.Engine
         public Body Body { get => body; protected set => body = value; }
         public CollisionSkin Collision { get => collision; protected set => collision = value; }
         public bool IsTrigger { get => isTrigger; }
-        public bool IsHandlingCollision { get => isHandlingCollision; }
+        public bool IsHandlingCollision { get => isHandlingCollision; protected set => isHandlingCollision = value; }
 
         #endregion Properties
 

@@ -11,6 +11,7 @@ namespace GD.Engine
         #region Fields
         private int[] defaultFoodEachLevel;
         private int[] defaultBombsEachLevel;
+        private int[] maxScore;
         private float[] timesEachLevel;
         #endregion Fields
 
@@ -38,13 +39,22 @@ namespace GD.Engine
                 return timesEachLevel;
             }
         }
+
+        public int[] MaxScore
+        {
+            get
+            {
+                return maxScore;
+            }
+        }
         #endregion Properties
 
-        public SnakeLevelsData(int[] defaultFoodEachLevel, int[] defaultBombsEachLevel, float[] timesEachLevel)
+        public SnakeLevelsData(int[] defaultFoodEachLevel, int[] defaultBombsEachLevel, float[] timesEachLevel, int[] maxScore)
         {
             this.defaultFoodEachLevel = defaultFoodEachLevel;
             this.defaultBombsEachLevel = defaultBombsEachLevel;
             this.timesEachLevel = timesEachLevel;
+            this.maxScore = maxScore;
         }
     }
 }

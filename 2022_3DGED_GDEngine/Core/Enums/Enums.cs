@@ -195,6 +195,7 @@
         ResetVelocity,
         UpdateActiveCameraPosition,
         AddBomb,
+        RemoveBomb,
         MoveTongue,
         UpdateScore,
         RemoveUILevelStart,
@@ -210,7 +211,9 @@
         ResetSnake,
         UITextIsDrawn,
         UITextIsNotDrawn,
-        ResetIntroCamera
+        ResetIntroCamera,
+        UpdateEndMenuScreenUIText,
+        RemoveSnake
     }
 
     /// <summary>

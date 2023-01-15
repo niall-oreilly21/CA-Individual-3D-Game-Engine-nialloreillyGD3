@@ -9,6 +9,7 @@ using SharpDX.Direct2D1.Effects;
 using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -68,37 +69,59 @@ namespace GD.Engine
 
         protected void InitializeConsumableItem()
         {
-            ResetSnakeHeadColliding();
+            //ResetSnakeHeadColliding();
 
-            consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
+            //consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
 
             GameObject snakePart;
             CharacterCollider snakePartCollider;
 
             bool noCollision = false;
 
+            List<GameObject> consumables = Application.SceneManager.ActiveScene.FindAll(ObjectType.Static, RenderType.Opaque, (consumable) => consumable.GameObjectType == GameObjectType.Consumable);
+
+            //foreach(GameObject consumable in consumables)
+            //{
+            //    System.Diagnostics.Debug.WriteLine(consumable.Transform.Translation);
+            //}
+            //System.Diagnostics.Debug.WriteLine(consumables.Count);
+            System.Diagnostics.Debug.WriteLine(Application.SnakeManager.SnakePartsListBodies.Count);
+
+            Vector3 newTranslation;
             while (!noCollision)
             {
                 noCollision = true;
                 for (int i = 0; i < Application.SnakeManager.SnakePartsListBodies.Count; i++)
                 {
-                    snakePart = Application.SnakeManager.SnakePartsListBodies[i].Parent as GameObject;
-                    snakePartCollider = snakePart.GetComponent<CharacterCollider>();
+                    newTranslation = GetRandomTranslation();
 
-                    if (snakePartCollider.IsColliding)
+                    snakePart = Application.SnakeManager.SnakePartsListBodies[i].Parent as GameObject;
+
+                    if (IsColliding(snakePart, newTranslation))
                     {
-                        consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
-                        snakePartCollider.IsColliding = false;
-                        noCollision = false;
+
+                        noCollision = false;                   
                         break;
                     }
-                }
 
+      
+                }
+  
             }
-            Application.SceneManager.ActiveScene.Add(Consumable);
+
+            GameObject consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
+            Application.SceneManager.ActiveScene.Add(consumable);
             ConsumableID++;
+
         }
 
+        protected bool IsColliding(GameObject snake, Vector3 translation)
+        {
+            return Math.Round(snake.Transform.Translation.X) == Math.Round(translation.X) &&
+                Math.Round(snake.Transform.Translation.Y) == Math.Round(translation.Y) &&
+                    Math.Round(snake.Transform.Translation.Z) == Math.Round(translation.Z);
+                
+        }
         protected virtual void InitializeConsumableItemsStart(int consumableNumber)
         {
             for(int i = 0; i < consumableNumber; i++)

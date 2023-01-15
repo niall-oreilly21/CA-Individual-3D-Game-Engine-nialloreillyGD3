@@ -33,6 +33,11 @@ namespace GD.Engine
                     InitializeConsumableItem();
                     break;
 
+                case EventActionType.RemoveBomb:
+                    GameObject removeFoodItem = (GameObject)eventData.Parameters[0];
+                    RemoveBombItem(removeFoodItem);
+                    break;
+
                 case EventActionType.InitilizeBombsStartOfLevel:
                     int bombStartNumber = (int)eventData.Parameters[0];
                     InitializeConsumableItemsStart(bombStartNumber);
@@ -44,6 +49,18 @@ namespace GD.Engine
 
         }
 
+        private void RemoveBombItem(GameObject consumableToRemove)
+        {
+            if (base.RemoveConsumable(consumableToRemove))
+            {
+                EventDispatcher.Raise(new EventData(EventCategoryType.SceneManager,
+                EventActionType.OnLose, new object[] { AppData.END_MENU_SCENE_NAME }));
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
+                EventActionType.UpdateEndMenuScreenUIText, new object[] { AppData.SNAKE_MENU_UI_TEXT_HIT_BOMB }));
+            }
+
+        }
         protected override GameObject CloneModelGameObject(string newName)
         {
 

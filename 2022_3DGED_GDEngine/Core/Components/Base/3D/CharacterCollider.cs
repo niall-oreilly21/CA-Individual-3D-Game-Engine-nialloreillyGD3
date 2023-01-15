@@ -78,20 +78,17 @@ namespace GD.Engine
 
         protected override void HandleResponse(GameObject parentGameObject)
         {
-            if(parentGameObject.GameObjectType == GameObjectType.Consumable)
-            {
-                isColliding = true;
-            }
 
-            if(parentGameObject.GameObjectType == GameObjectType.Player && parentGameObject.Name == Application.Player.Name)
-            {
-                //System.Diagnostics.Debug.WriteLine("Here");
-                //EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
-                //EventActionType.OnPause));
-                EventDispatcher.Raise(new EventData(EventCategoryType.Game,
-                EventActionType.OnLose));
-            }
-           
+            //if (parentGameObject.GameObjectType == GameObjectType.SnakePart)
+            //{
+            //    if(parentGameObject.GetComponent<CharacterCollider>().Body as Character != Application.SnakeManager.SnakePartsListBodies[1])
+            //    {
+            //        EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
+            //        EventActionType.RemoveSnake, new object[] { parentGameObject }));
+            //    }
+
+            //}
+
 
         }
 

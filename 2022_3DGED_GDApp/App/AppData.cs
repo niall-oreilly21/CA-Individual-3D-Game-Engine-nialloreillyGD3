@@ -224,10 +224,6 @@ namespace GD.App
 
         #endregion Consumables
 
-        #region Game State Manager Data
-        public static readonly float MAX_SNAKE_LEVEL_TIME = 70f;
-        #endregion Game State Manager Data
-
         #region Menus
 
         #region Button Attributes
@@ -374,6 +370,13 @@ namespace GD.App
         public static readonly float[] START_TIMES_EACH_LEVEL = { START_TIME_LEVEL_ONE, START_TIME_LEVEL_TWO, START_TIME_LEVEL_THREE };
         #endregion Start Times Each Level
 
+        #region Max Score Each Level
+        private static readonly int MAX_SCORE_LEVEL_ONE = 10;
+        private static readonly int MAX_SCORE_LEVEL_TWO = 15;
+
+        public static readonly int[] MAX_SCORES_EACH_LEVEL = { MAX_SCORE_LEVEL_ONE, MAX_SCORE_LEVEL_TWO };
+        #endregion Max Score Each Level
+
         #endregion Snake State Manager
 
         #region UI
@@ -451,17 +454,17 @@ namespace GD.App
         #region End Menu UI Text
 
         #region End Menu Screen Menu UI Text
-        public static readonly string END_MENU_UI_TEXT_NAME = "End Meny UI Text";
+        public static readonly string END_MENU_UI_TEXT_NAME = "End Menu UI Text";
         public static readonly Vector2 END_MENU_UI_TEXT_SCALE = new Vector2(1f, 1f);
         public static readonly Vector2 END_MENU_UI_TEXT_OFFSET = new Vector2(350, APP_RESOLUTION.Y / 2 - 310);
 
-        public static readonly string SNAKE_CONTROLS_UI_TEXT_HIT_SNAKE = "You ran out of room!";
-        public static readonly string SNAKE_CONTROLS_UI_TEXT_HIT_BOMB = "You ran into the fire!";
-        public static readonly string SNAKE_CONTROLS_UI_TEXT_HIT_OUT_OF_TIME = "You ran out of time!";
+        public static readonly string SNAKE_MENU_UI_TEXT_HIT_SNAKE = "You ran out of room!";
+        public static readonly string SNAKE_MENU_UI_TEXT_HIT_BOMB = "You ran into the fire!";
+        public static readonly string SNAKE_MENU_UI_TEXT_OUT_OF_TIME = "You ran out of time!";
         #endregion End Menu Screen Menu UI Text
 
         #region End Menu Final Score UI Text
-        public static readonly string END_MENU_UI_FINAL_SCORE_TEXT_NAME = "End Menu UI Text";
+        public static readonly string END_MENU_UI_FINAL_SCORE_TEXT_NAME = "End Menu UI Final Score Text";
         public static readonly Vector2 END_MENU_UI_FINAL_SCORE_TEXT_SCALE = new Vector2(1.4f, 1.4f);
         public static readonly Vector2 END_MENU_UI_FINAL_SCORE_TEXT_OFFSET = new Vector2(250, APP_RESOLUTION.Y / 2 - 200);
         public static readonly string END_MENU_UI_FINAL_SCORE_TEXT = "SCORE: ";

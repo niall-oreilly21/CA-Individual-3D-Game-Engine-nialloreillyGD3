@@ -1,7 +1,7 @@
 ﻿#region Pre-compiler directives
 
 #define DEMO
-//#define SHOW_DEBUG_INFO
+#define SHOW_DEBUG_INFO
 
 #endregion
 
@@ -126,13 +126,6 @@ namespace GD.App
         {
             switch (eventData.EventActionType)
             {
-                case EventActionType.OnWin:
-                    System.Diagnostics.Debug.WriteLine(eventData.Parameters[0] as string);
-                    break;
-
-                case EventActionType.OnLose:
-                    break;
-
                 case EventActionType.InitializeLevelUITimerStart:
                     InitializeLevelUITimerStart();
                     break;
@@ -266,7 +259,7 @@ namespace GD.App
             InitializeEndGameMenu();
             InitializeWinLevelMenu();
 
-            menuManager.SetActiveScene(AppData.END_MENU_SCENE_NAME);
+            menuManager.SetActiveScene(AppData.MAIN_MENU_SCENE_NAME);
         }
 
         private void InitializeMenuTitle()
@@ -491,7 +484,7 @@ namespace GD.App
             menuGameObject = CloneMenusBackgroundTexture(AppData.MENU_BACKGROUND_NAME + AppData.END_MENU_SCENE_NAME, AppData.MENU_BACKGROUND_TEXTURE_NAME);
             endMenuScene.Add(menuGameObject);
 
-            menuGameObject = InitializeUIText(AppData.END_MENU_UI_TEXT_NAME, AppData.END_MENU_UI_TEXT_SCALE, AppData.END_MENU_UI_TEXT_OFFSET, AppData.SNAKE_CONTROLS_UI_TEXT_HIT_BOMB, AppData.MENU_TITLE_UI_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Menu_Text);
+            menuGameObject = InitializeUIText(AppData.END_MENU_UI_TEXT_NAME, AppData.END_MENU_UI_TEXT_SCALE, AppData.END_MENU_UI_TEXT_OFFSET, AppData.SNAKE_MENU_UI_TEXT_HIT_BOMB, AppData.MENU_TITLE_UI_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Menu_Text);
             endMenuScene.Add(menuGameObject);
 
             menuGameObject = InitializeUIText(AppData.END_MENU_UI_FINAL_SCORE_TEXT_NAME, AppData.END_MENU_UI_FINAL_SCORE_TEXT_SCALE, AppData.END_MENU_UI_FINAL_SCORE_TEXT_OFFSET, AppData.END_MENU_UI_FINAL_SCORE_TEXT, AppData.MENU_TITLE_UI_COLOR, AppData.UI_FONT_NAME, GameObjectType.UI_Menu_Text);
@@ -553,8 +546,6 @@ namespace GD.App
 
             #endregion Create Audio Menu Scene
         }
-
-
 
         private GameObject InitializeUIText(string newName, Vector2 newScale, Vector2 textOffSet, string text, Color textColor, string uiFontName, GameObjectType gameObjectType)
         {
@@ -1078,10 +1069,9 @@ namespace GD.App
 
             snakeGameObject.AddComponent(collider);
             collider.AddPrimitive(
-                new Box(
+                   new Sphere(
                     snakeGameObject.Transform.Translation,
-                    snakeGameObject.Transform.Rotation,
-                    AppData.SNAKE_GAMEOBJECTS_COLLIDER_SCALE
+                    AppData.SCALE_AMOUNT / 2f
                     ),
                 new MaterialProperties(0.8f, 0.8f, 0.7f)
                 );
@@ -1381,7 +1371,7 @@ namespace GD.App
             #region Game State
 
             //add state manager for inventory and countdown
-            stateManager = new MyStateManager(this, new SnakeLevelsData(AppData.DEFAULT_FOOD_EACH_LEVEL, AppData.DEFAULT_BOMB_EACH_LEVEL, AppData.START_TIMES_EACH_LEVEL));
+            stateManager = new MyStateManager(this, new SnakeLevelsData(AppData.DEFAULT_FOOD_EACH_LEVEL, AppData.DEFAULT_BOMB_EACH_LEVEL, AppData.START_TIMES_EACH_LEVEL, AppData.MAX_SCORES_EACH_LEVEL));
             Components.Add(stateManager);
 
             #endregion
@@ -1482,7 +1472,7 @@ namespace GD.App
             #endregion Restart Button
 
             #region Next Level Button
-            menuButtonDictionary.Add(AppData.NEXT_LEVEL_BUTTON_NAME, new MenuButton(AppData.NEXT_LEVEL_BUTTON_TRANSLATION, AppData.NEXT_LEVEL_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.NEXT_LEVEL_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { stateManager.CurrentLevel++})));
+            menuButtonDictionary.Add(AppData.NEXT_LEVEL_BUTTON_NAME, new MenuButton(AppData.NEXT_LEVEL_BUTTON_TRANSLATION, AppData.NEXT_LEVEL_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.NEXT_LEVEL_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { stateManager.CurrentLevel + 1})));
             #endregion Next Level Button
     }
 
@@ -1549,6 +1539,7 @@ namespace GD.App
 
             if (Input.Keys.WasJustPressed(Keys.P))
             {
+                stateManager.Enabled = false;
                 menuManager.SetActiveScene(AppData.PAUSE_SCENE_NAME);
                 EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                     EventActionType.OnPause));

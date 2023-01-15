@@ -23,11 +23,11 @@ namespace GD.Engine
 
             material2D.StringBuilder.Clear();
 
-            if(Application.StateManager.Seconds <= 9)
+            if(Application.StateManager.Seconds > 0 && Application.StateManager.Seconds <= 9)
             {
                 material2D.StringBuilder.Append(Application.StateManager.Minutes + ":0" + Application.StateManager.Seconds);
             }
-            else if(Application.StateManager.Seconds == 60)
+            else if(Application.StateManager.Seconds <= 0 || Application.StateManager.Seconds == 60)
             {
                 material2D.StringBuilder.Append("0:00");
             }

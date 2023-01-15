@@ -57,8 +57,8 @@ namespace GD.Engine
         {
             this.head = CreateSnakeHead(snakePart);
             this.snakePart = snakePart;
-            this.tail = snakePart.GetComponent<CharacterCollider>().Body as Character;
-            snakePartsListBodies.Add(tail);
+            //this.tail = snakePart.GetComponent<CharacterCollider>().Body as Character;
+            //snakePartsListBodies.Add(tail);
             this.snakeBodyMesh = snakeBodyMesh;
             this.snakeTailMesh = snakeTailMesh;
             this.snakeMaterial = snakeMaterial;
@@ -87,7 +87,7 @@ namespace GD.Engine
                     Vector3 direction = (Vector3)eventData.Parameters[0];
                     GameTime gameTime = (GameTime)eventData.Parameters[1];
 
-                    if(Application.StateManager.GameStarted)
+                    if(Application.StateManager.Enabled == true)
                     {
                         Move(direction, gameTime);
                     }                  
@@ -101,6 +101,11 @@ namespace GD.Engine
                     ResetSnake();
                     break;
 
+                case EventActionType.RemoveSnake:
+                    GameObject removeSnakePart = (GameObject)eventData.Parameters[0];
+                    RemoveSnake(removeSnakePart);
+                    break;
+
                 default:
                     break;
                     //add more cases for each method that we want to support with events
@@ -110,23 +115,39 @@ namespace GD.Engine
             base.HandleEvent(eventData);
         }
 
+
+        private void RemoveSnake(GameObject removeSnakePart)
+        {
+            if (Application.SceneManager.ActiveScene.Remove(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.Name == removeSnakePart.Name))
+            {
+                EventDispatcher.Raise(new EventData(EventCategoryType.SceneManager,
+                EventActionType.OnLose, new object[] { AppData.END_MENU_SCENE_NAME }));
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
+                EventActionType.UpdateEndMenuScreenUIText, new object[] { AppData.SNAKE_MENU_UI_TEXT_HIT_SNAKE }));
+            }
+
+        }
+
         private void ResetSnake()
-        {       
+        {
+
+            Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.SnakePart);
             Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.Player);
 
             snakePartsListBodies.Clear();
 
-
             GameObject newHead = CreateSnakeHead(this.head);
             snakePartsListBodies.Add(newHead.GetComponent<CharacterCollider>().Body as Character);
            
-            Application.SceneManager.ActiveScene.Add(newHead);
+            Application.SceneManager.ActiveScene.Add(newHead);           
 
             this.snakePart = newHead;
             Application.Player = newHead;
 
             this.snakeNumber = 0;
             this.snakeMoveSpeed = defaultMoveSpeed;
+
             Grow();
         }
 
@@ -193,7 +214,7 @@ namespace GD.Engine
         private GameObject CloneModelGameObjectSnake(GameObject gameObject, string newName, Vector3 translation)
         {
             GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
-            gameObjectClone.GameObjectType = gameObject.GameObjectType;
+
 
             gameObjectClone.Transform = new Transform(
                 AppData.SNAKE_GAMEOBJECTS_SCALE,
@@ -209,12 +230,13 @@ namespace GD.Engine
                
         GameObject gameObjectClone = CloneModelGameObjectSnake(gameObject, newName, translation);
 
-        Renderer renderer = gameObject.GetComponent<Renderer>();
+            gameObjectClone.GameObjectType = GameObjectType.SnakePart;
+            Renderer renderer = gameObject.GetComponent<Renderer>();
         Renderer cloneRenderer = new Renderer(renderer.Effect, snakeMaterial, snakeBodyMesh);
         gameObjectClone.AddComponent(cloneRenderer);
 
 
-            Collider cloneCollider = new CharacterCollider(gameObjectClone, true);
+            Collider cloneCollider = new SnakeCollider(gameObjectClone, true);
 
         cloneCollider.AddPrimitive(
             new Box(
@@ -234,12 +256,13 @@ namespace GD.Engine
         private GameObject CreateSnakeTail(GameObject gameObject, string newName, Vector3 translation)
         {
             GameObject gameObjectClone = CloneModelGameObjectSnake(gameObject, newName, translation);
+            gameObjectClone.GameObjectType = GameObjectType.SnakePart;
 
             Renderer renderer = gameObject.GetComponent<Renderer>();
             Renderer cloneRenderer = new Renderer(renderer.Effect, snakeMaterial, snakeTailMesh);
             gameObjectClone.AddComponent(cloneRenderer);
 
-            Collider cloneCollider = new CharacterCollider(gameObjectClone, true);
+            Collider cloneCollider = new SnakeCollider(gameObjectClone, true);
 
             cloneCollider.AddPrimitive(
                 new Box(
@@ -259,18 +282,18 @@ namespace GD.Engine
         private GameObject CreateSnakeHead(GameObject gameObject)
         {
             GameObject gameObjectClone = CloneModelGameObjectSnake(gameObject, gameObject.Name, gameObject.Transform.Translation);
+            gameObjectClone.GameObjectType = GameObjectType.Player;
 
             Renderer renderer = gameObject.GetComponent<Renderer>();
-            Renderer cloneRenderer = new Renderer(renderer.Effect, snakeMaterial, renderer.Mesh);
+            Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, renderer.Mesh);
             gameObjectClone.AddComponent(cloneRenderer);
 
             Collider cloneCollider = new CharacterCollider(gameObjectClone, true);
 
             cloneCollider.AddPrimitive(
-                new Box(
+                  new Sphere(
                     gameObjectClone.Transform.Translation,
-                    gameObjectClone.Transform.Rotation,
-                    AppData.SNAKE_GAMEOBJECTS_COLLIDER_SCALE
+                    AppData.SCALE_AMOUNT / 2f
                     ),
                 new MaterialProperties(0.8f, 0.8f, 0.7f)
                 );
@@ -290,7 +313,7 @@ namespace GD.Engine
             if (snakePartsListBodies.Count == 1)
             {
                 GameObject tailGameObject = CreateSnakeTail(snakePart, "tail ", new Vector3(snakePart.Transform.Translation.X - snakePart.Transform.Scale.X, snakePart.Transform.Translation.Y, snakePart.Transform.Translation.Z));
-                tail = tailGameObject.GetComponent<CharacterCollider>().Body as Character;
+                tail = tailGameObject.GetComponent<SnakeCollider>().Body as Character;
                 snakePartsListBodies.Add(tail);
                 Application.SceneManager.ActiveScene.Add(tailGameObject);
 
@@ -300,7 +323,7 @@ namespace GD.Engine
                 snakeNumber++;
                 snakePart = CloneModelGameObjectSnakeBody(snakePart, "snake part " + snakeNumber, new Vector3(tail.Transform.Position.X, tail.Transform.Position.Y, tail.Transform.Position.Z));
 
-                snakePartsListBodies.Add(snakePart.GetComponent<CharacterCollider>().Body as Character);
+                snakePartsListBodies.Add(snakePart.GetComponent<SnakeCollider>().Body as Character);
 
                 snakePartsListBodies.Remove(tail);
                 snakePartsListBodies.Add(tail);
@@ -310,7 +333,7 @@ namespace GD.Engine
 
             snakeMoveSpeed -= snakeMultiplier;
 
-            if(snakePartsListBodies.Count > 2 && Application.StateManager.GameStarted)
+            if(snakePartsListBodies.Count > 2 && Application.StateManager.Enabled == true)
             {
                 EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
                 EventActionType.UpdateScore));

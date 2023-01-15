@@ -22,7 +22,6 @@ namespace GD.Engine
         {
             pressed = false;
             direction = new Vector3(AppData.SCALE_AMOUNT, 0, 0);
-
         }
 
 

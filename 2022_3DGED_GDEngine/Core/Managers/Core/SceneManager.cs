@@ -1,4 +1,5 @@
 ﻿using GD.Engine.Events;
+using GD.Engine.Globals;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -72,6 +73,26 @@ namespace GD.Engine.Managers
 
                 case EventActionType.OnControlsScene:
                     menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
+                    break;
+
+                case EventActionType.OnLose:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
+
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+                    EventActionType.OnPause));
+
+                    Application.StateManager.Enabled = false;
+                    break;
+
+                case EventActionType.OnWin:
+                    menuName = (string)eventData.Parameters[0];
+
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+                   EventActionType.OnPause));
+                    Application.StateManager.Enabled = false;
+
                     SetActiveScene(menuName);
                     break;
 

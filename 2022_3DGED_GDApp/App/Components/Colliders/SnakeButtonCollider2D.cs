@@ -1,4 +1,5 @@
-﻿using GD.Engine.Events;
+﻿using GD.App;
+using GD.Engine.Events;
 using GD.Engine.Globals;
 using GD.Engine.Inputs;
 using Microsoft.Xna.Framework;
@@ -83,6 +84,11 @@ namespace GD.Engine
         protected override void HandleMouseClick(MouseButton mouseButton)
         {
             base.HandleMouseClick(mouseButton);
+            
+            if(gameObject.Name == AppData.RESUME_BUTTON_NAME)
+            {
+                Application.StateManager.Enabled = true;
+            }
         }
     }
 }
