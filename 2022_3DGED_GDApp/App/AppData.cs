@@ -309,7 +309,7 @@ namespace GD.App
 
         #region Main Menu Button
         public static readonly string MAIN_MENU_BUTTON_NAME = "Main Menu Button";
-        public static readonly Vector2 MAIN_MENU_BUTTON_TRANSLATION = new Vector2(0f, -20f);
+        public static readonly Vector2 MAIN_MENU_BUTTON_TRANSLATION = new Vector2(0f, -100f);
         public static readonly Vector2 MAIN_MENU_BUTTON_TEXT_OFFSET = new Vector2(90f, 5f);
         public static readonly string MAIN_MENU_BUTTON_TEXT = "QUIT";
         #endregion Main Menu Button
@@ -324,9 +324,22 @@ namespace GD.App
 
         #endregion Pause Menu
 
-
         #region End Menu
-        public static readonly string END_MENU_NAME = "end menu";
+
+        #region Restart Button
+        public static readonly string RESTART_BUTTON_NAME = "Restart Button";
+        public static readonly Vector2 RESTART_BUTTON_TRANSLATION = new Vector2(0f, 5f);
+        public static readonly Vector2 RESTART_BUTTON_TEXT_OFFSET = new Vector2(25f, 5f);
+        public static readonly string RESTART_BUTTON_TEXT = "RESTART";
+        #endregion Restart Button
+
+        #region Next Level Button
+        public static readonly string NEXT_LEVEL_BUTTON_NAME = "Next Level Button";
+        public static readonly Vector2 NEXT_LEVEL_BUTTON_TRANSLATION = new Vector2(0f, 5f);
+        public static readonly Vector2 NEXT_LEVEL_BUTTON_TEXT_OFFSET = new Vector2(90f, 5f);
+        public static readonly string NEXT_LEVEL_BUTTON_TEXT = "NEXT";
+        #endregion Next Level Button
+
         #endregion End Menu
 
         #endregion Menus
@@ -424,6 +437,8 @@ namespace GD.App
         public static readonly string CAMERA_CONTROLS_UI_TEXT = "CAMERA";
         #endregion Camera Controls Menu UI Text
 
+        #endregion Controls Menu UI Text
+
         #region Menu Title UI Text
         public static readonly string MENU_TITLE_UI_TEXT_NAME = "Menu Title UI Text";
         public static readonly Vector2 MENU_TITLE_UI_TEXT_SCALE = new Vector2(1.5f, 1.5f);
@@ -433,7 +448,34 @@ namespace GD.App
         public static readonly Vector2 MENU_TITLE_TRANSLATION = new Vector2(0, 300);
         #endregion Menu Title UI Text
 
-        #endregion Controls Menu UI Text
+        #region End Menu UI Text
+
+        #region End Menu Screen Menu UI Text
+        public static readonly string END_MENU_UI_TEXT_NAME = "End Meny UI Text";
+        public static readonly Vector2 END_MENU_UI_TEXT_SCALE = new Vector2(1f, 1f);
+        public static readonly Vector2 END_MENU_UI_TEXT_OFFSET = new Vector2(350, APP_RESOLUTION.Y / 2 - 310);
+
+        public static readonly string SNAKE_CONTROLS_UI_TEXT_HIT_SNAKE = "You ran out of room!";
+        public static readonly string SNAKE_CONTROLS_UI_TEXT_HIT_BOMB = "You ran into the fire!";
+        public static readonly string SNAKE_CONTROLS_UI_TEXT_HIT_OUT_OF_TIME = "You ran out of time!";
+        #endregion End Menu Screen Menu UI Text
+
+        #region End Menu Final Score UI Text
+        public static readonly string END_MENU_UI_FINAL_SCORE_TEXT_NAME = "End Menu UI Text";
+        public static readonly Vector2 END_MENU_UI_FINAL_SCORE_TEXT_SCALE = new Vector2(1.4f, 1.4f);
+        public static readonly Vector2 END_MENU_UI_FINAL_SCORE_TEXT_OFFSET = new Vector2(250, APP_RESOLUTION.Y / 2 - 200);
+        public static readonly string END_MENU_UI_FINAL_SCORE_TEXT = "SCORE: ";
+        public static readonly string END_MENU_UI_HIGH_SCORE_TEXT = "HIGH SCORE: ";
+        #endregion End Menu Final Score UI Text
+
+        #endregion End Menu UI Text
+
+        #region Win Level Menu UI Text
+        public static readonly string WIN_LEVEL_MENU_UI_TEXT_NAME = "End Menu UI Text";
+        public static readonly Vector2 WIN_LEVEL_MENU_UI_TEXT_SCALE = new Vector2(1f, 1f);
+        public static readonly Vector2 WIN_LEVEL_MENU_UI_TEXT_NAME_OFFSET = new Vector2(320, APP_RESOLUTION.Y / 2 - 210);
+        public static readonly string WIN_LEVEL_MENU_UI_TEXT_TEXT = "You passed the level!";
+        #endregion Win Level Menu UI Text
 
         #region UI Text Helper
         public static readonly string UI_TEXT_HELPER_NAME = "Menu UI Helper Text";
@@ -520,6 +562,8 @@ namespace GD.App
         public static readonly string PAUSE_SCENE_NAME = "Pause Menu Scene";
         public static readonly string AUDIO_SCENE_NAME = "Audio Menu Scene";
         public static readonly string CONTROLS_SCENE_NAME = "Controls Menu Scene";
+        public static readonly string END_MENU_SCENE_NAME = "End Menu Scene";
+        public static readonly string WIN_LEVEL_MENU_SCENE_NAME = "Win Level Menu Scene";
         #endregion Scene Manager
 
         #region Fonts

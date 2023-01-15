@@ -131,7 +131,6 @@ namespace GD.App
                     break;
 
                 case EventActionType.OnLose:
-                    menuManager.SetActiveScene(AppData.END_MENU_NAME);
                     break;
 
                 case EventActionType.InitializeLevelUITimerStart:
@@ -265,8 +264,9 @@ namespace GD.App
             InitializeAudioMenu();
             InitializePauseMenu();
             InitializeEndGameMenu();
+            InitializeWinLevelMenu();
 
-            menuManager.SetActiveScene(AppData.LEVELS_SCENE_NAME);
+            menuManager.SetActiveScene(AppData.END_MENU_SCENE_NAME);
         }
 
         private void InitializeMenuTitle()
@@ -481,6 +481,61 @@ namespace GD.App
             #endregion Create Controls Menu Scene
         }
 
+        private void InitializeEndGameMenu()
+        {
+            #region Create End Menu Scene
+
+            GameObject menuGameObject = null;
+
+            var endMenuScene = new Scene2D(AppData.END_MENU_SCENE_NAME);
+            menuGameObject = CloneMenusBackgroundTexture(AppData.MENU_BACKGROUND_NAME + AppData.END_MENU_SCENE_NAME, AppData.MENU_BACKGROUND_TEXTURE_NAME);
+            endMenuScene.Add(menuGameObject);
+
+            menuGameObject = InitializeUIText(AppData.END_MENU_UI_TEXT_NAME, AppData.END_MENU_UI_TEXT_SCALE, AppData.END_MENU_UI_TEXT_OFFSET, AppData.SNAKE_CONTROLS_UI_TEXT_HIT_BOMB, AppData.MENU_TITLE_UI_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Menu_Text);
+            endMenuScene.Add(menuGameObject);
+
+            menuGameObject = InitializeUIText(AppData.END_MENU_UI_FINAL_SCORE_TEXT_NAME, AppData.END_MENU_UI_FINAL_SCORE_TEXT_SCALE, AppData.END_MENU_UI_FINAL_SCORE_TEXT_OFFSET, AppData.END_MENU_UI_FINAL_SCORE_TEXT, AppData.MENU_TITLE_UI_COLOR, AppData.UI_FONT_NAME, GameObjectType.UI_Menu_Text);
+            endMenuScene.Add(menuGameObject);
+
+            menuGameObject = CloneModelGameObjectButton(AppData.RESTART_BUTTON_NAME);
+            endMenuScene.Add(menuGameObject);
+
+            menuGameObject = CloneModelGameObjectButton(AppData.MAIN_MENU_BUTTON_NAME);
+            endMenuScene.Add(menuGameObject);
+
+            #region Add Scene to Manager
+            menuManager.Add(endMenuScene.ID, endMenuScene);
+            #endregion Add Scene to Manager
+
+            #endregion Create End Menu Scene
+        }
+
+        private void InitializeWinLevelMenu()
+        {
+            #region Create Win Level Menu Scene
+
+            GameObject menuGameObject = null;
+
+            var endMenuScene = new Scene2D(AppData.WIN_LEVEL_MENU_SCENE_NAME);
+            menuGameObject = CloneMenusBackgroundTexture(AppData.MENU_BACKGROUND_NAME + AppData.WIN_LEVEL_MENU_SCENE_NAME, AppData.MENU_BACKGROUND_TEXTURE_NAME);
+            endMenuScene.Add(menuGameObject);
+
+            menuGameObject = InitializeUIText(AppData.WIN_LEVEL_MENU_UI_TEXT_NAME, AppData.WIN_LEVEL_MENU_UI_TEXT_SCALE, AppData.WIN_LEVEL_MENU_UI_TEXT_NAME_OFFSET, AppData.WIN_LEVEL_MENU_UI_TEXT_TEXT, AppData.MENU_TITLE_UI_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Menu_Text);
+            endMenuScene.Add(menuGameObject);
+
+            menuGameObject = CloneModelGameObjectButton(AppData.NEXT_LEVEL_BUTTON_NAME);
+            endMenuScene.Add(menuGameObject);
+
+            menuGameObject = CloneModelGameObjectButton(AppData.MAIN_MENU_BUTTON_NAME);
+            endMenuScene.Add(menuGameObject);
+
+            #region Add Scene to Manager
+            menuManager.Add(endMenuScene.ID, endMenuScene);
+            #endregion Add Scene to Manager
+
+            #endregion Create Win Level Menu Scene
+        }
+
         private void InitializeAudioMenu()
         {
             #region Create Audio Menu Scene
@@ -499,10 +554,7 @@ namespace GD.App
             #endregion Create Audio Menu Scene
         }
 
-        private void InitializeEndGameMenu()
-        {
-            
-        }
+
 
         private GameObject InitializeUIText(string newName, Vector2 newScale, Vector2 textOffSet, string text, Color textColor, string uiFontName, GameObjectType gameObjectType)
         {
@@ -1200,9 +1252,6 @@ namespace GD.App
             //add game effects
             InitializeEffects();
 
-            //add dictionaries to store and access content
-            InitializeDictionaries();
-
             //add camera, scene manager
             InitializeManagers();
 
@@ -1214,6 +1263,9 @@ namespace GD.App
 
             //add game cameras
             InitializeCameras();
+
+            //add dictionaries to store and access content
+            InitializeDictionaries();
         }
 
         private void InitializeGlobals()
@@ -1424,7 +1476,15 @@ namespace GD.App
             #region Back Button
             menuButtonDictionary.Add(AppData.BACK_BUTTON_NAME, new MenuButton(AppData.BACK_BUTTON_TRANSLATION, AppData.BACK_BUTTON_TEXT_OFFSET, AppData.BACK_BUTTON_COLOR, AppData.BACK_BUTTON_TEXT, new EventData(EventCategoryType.SceneManager, EventActionType.OnMainMenuScene, new object[] { AppData.MAIN_MENU_SCENE_NAME })));
             #endregion Back Button
-        }
+
+            #region Restart Button
+            menuButtonDictionary.Add(AppData.RESTART_BUTTON_NAME, new MenuButton(AppData.RESTART_BUTTON_TRANSLATION, AppData.RESTART_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.RESTART_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { stateManager.CurrentLevel})));
+            #endregion Restart Button
+
+            #region Next Level Button
+            menuButtonDictionary.Add(AppData.NEXT_LEVEL_BUTTON_NAME, new MenuButton(AppData.NEXT_LEVEL_BUTTON_TRANSLATION, AppData.NEXT_LEVEL_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.NEXT_LEVEL_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { stateManager.CurrentLevel++})));
+            #endregion Next Level Button
+    }
 
         private void InitializeDebug(bool showCollisionSkins = true)
         {
