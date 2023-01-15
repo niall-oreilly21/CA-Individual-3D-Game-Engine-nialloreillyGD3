@@ -75,6 +75,10 @@ namespace GD.Engine.Managers
                     SetActiveScene(menuName);
                     break;
 
+                case EventActionType.OnGameExit:
+                    Game.Exit();
+                    break;
+
                 default:
                     break;
             }

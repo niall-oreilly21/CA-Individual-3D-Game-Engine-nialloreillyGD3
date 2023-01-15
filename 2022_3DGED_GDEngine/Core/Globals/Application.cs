@@ -74,11 +74,17 @@ namespace GD.Engine.Globals
         /// Stores and updates all Menu elements
         /// </summary>
         public static SceneManager<Scene2D> MenuSceneManager { get; internal set; }
-        public static List<Character> SnakeParts { get; internal set; }
 
+        /// <summary>
+        /// Stores and updates all Snake Movement
+        /// </summary>
+        public static SnakeManager SnakeManager { get; internal set; }
+
+        /// <summary>
+        /// Stores and updates all Snake Game States
+        /// </summary>
         public static MyStateManager StateManager { get; internal set; }
 
-        public static float SnakeMoveSpeed { get; internal set; }
 
         #endregion Properties
     }

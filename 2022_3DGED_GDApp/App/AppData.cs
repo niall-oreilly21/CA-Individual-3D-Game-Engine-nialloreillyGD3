@@ -7,6 +7,7 @@
 
 using GD.Engine;
 using GD.Engine.Data;
+using GD.Engine.Globals;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Drawing;
@@ -83,12 +84,6 @@ namespace GD.App
         public static readonly string SECURITY_CAMERA_NAME = "security camera 1";
 
         #endregion Camera - Security Camera
-
-        #region Camera - Curve
-
-        public static readonly string CURVE_CAMERA_NAME = "curve camera 1";
-
-        #endregion
 
         #region Input Key Mappings
 
@@ -195,20 +190,19 @@ namespace GD.App
         public static readonly Vector3 DEFAULT_LEFT_CAMERA_ROTATION = new Vector3(0, -CAMERA_ROTATION, 0);
         #endregion Left Camera
 
-
         #region Intro Camera
+        public static readonly string CURVE_CAMERA_NAME = "Intro curve camera";
+        public static readonly int CURVE_TIME_SPAN = 4000;
 
         #region Curve Translations
         public static readonly Vector3[] CURVE_TRANSLATIONS = {DEFAULT_FRONT_CAMERA_TRANSLATION, DEFAULT_RIGHT_CAMERA_TRANSLATION, DEFAULT_BACK_CAMERA_TRANSLATION, DEFAULT_LEFT_CAMERA_TRANSLATION,DEFAULT_FRONT_CAMERA_TRANSLATION };
+        public static readonly string INTRO_CURVE_TRANSLATIONS_NAME = "Intro Curve Translations";
         #endregion Curve Translations
 
         #region Curve Rotations
         //Last two rotation can't be a minus as Curve Behaviour will track to the wrong location
         public static readonly Vector3[] CURVE_ROTATIONS = { DEFAULT_FRONT_CAMERA_ROTATION, DEFAULT_RIGHT_CAMERA_ROTATION, DEFAULT_BACK_CAMERA_ROTATION, new Vector3(0, 270, 0), new Vector3(0, 360, 0) };
-        #endregion Curve Rotations
-
-        #region Curve Rotations
-        public static readonly int CURVE_TIME_SPAN = 4000;
+        public static readonly string INTRO_CURVE_ROTATIONS_NAME = "Intro Curve Rotations";
         #endregion Curve Rotations
 
         #endregion Intro Camera
@@ -323,7 +317,7 @@ namespace GD.App
         #region Back Button
         public static readonly string BACK_BUTTON_NAME = "Back Button";
         public static readonly Vector2 BACK_BUTTON_TRANSLATION = new Vector2(400f, -250f);
-        public static readonly Vector2 BACK_BUTTON_TEXT_OFFSET = new Vector2(90f, 5f);
+        public static readonly Vector2 BACK_BUTTON_TEXT_OFFSET = new Vector2(80f, 5f);
         public static readonly Color BACK_BUTTON_COLOR = Color.LawnGreen;
         public static readonly string BACK_BUTTON_TEXT = "BACK";
         #endregion Back Button
@@ -395,7 +389,7 @@ namespace GD.App
         #region Start Of Level Timer UI Text
         public static readonly string LEVEL_START_TIME_UI_NAME = "Start Of Level Timer UI Text";
         public static readonly Vector2 LEVEL_START_TIMER_UI_TEXT_SCALE = new Vector2(4f, 4f);
-        public static readonly Vector2 LEVEL_START_TIMER_UI_TEXT_OFFSET = new Vector2(100f, 120f);
+        public static readonly Vector2 LEVEL_START_TIMER_UI_TEXT_OFFSET = new Vector2(100, 120);
         public static readonly float LEVEL_START_TIMER_UI_SECONDS = 3000f;
         #endregion Start Of Level Timer UI Text
 
@@ -422,6 +416,15 @@ namespace GD.App
         public static readonly Vector2 CAMERA_CONTROLS_TEXT_OFFSET = new Vector2(APP_RESOLUTION.X / 2 + 140, APP_RESOLUTION.Y / 2 - 240);
         public static readonly string CAMERA_CONTROLS_UI_TEXT = "CAMERA";
         #endregion Camera Controls Menu UI Text
+
+        #region Menu Title UI Text
+        public static readonly string MENU_TITLE_UI_TEXT_NAME = "Menu Title UI Text";
+        public static readonly Vector2 MENU_TITLE_UI_TEXT_SCALE = new Vector2(1.5f, 1.5f);
+        public static readonly Vector2 MENU_TITLE_TEXT_OFFSET = new Vector2(20f, 5f);
+        public static readonly string MENU_TITLE_UI_TEXT = "SNAKE 3D";
+        public static readonly Color MENU_TITLE_UI_COLOR = Color.Black;
+        public static readonly Vector2 MENU_TITLE_TRANSLATION = new Vector2(0, 300);
+        #endregion Menu Title UI Text
 
         #endregion Controls Menu UI Text
 

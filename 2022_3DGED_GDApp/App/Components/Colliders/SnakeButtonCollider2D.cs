@@ -83,15 +83,6 @@ namespace GD.Engine
         protected override void HandleMouseClick(MouseButton mouseButton)
         {
             base.HandleMouseClick(mouseButton);
-
-            if(mouseButton == MouseButton.Left)
-            {
-                if(gameObject.Name == App.AppData.START_BUTTON_NAME)
-                {
-                    EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
-                    EventActionType.StartOfLevel));
-                }
-            }
         }
     }
 }

@@ -73,7 +73,7 @@ namespace GD.Engine
                 {
                     translation.Z++;
                     object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
                     EventActionType.OnMove, parameters));
                 }
             }
@@ -95,7 +95,7 @@ namespace GD.Engine
                 {
                     translation.Z--;
                     object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
                     EventActionType.OnMove, parameters));
                 }
             }
@@ -116,7 +116,7 @@ namespace GD.Engine
                 {
                     translation.X--;
                     object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
                     EventActionType.OnMove, parameters));
                 }
             }
@@ -138,7 +138,7 @@ namespace GD.Engine
                 {
                     translation.X++;
                     object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
                     EventActionType.OnMove, parameters));                 
                 }
 
@@ -160,7 +160,7 @@ namespace GD.Engine
                 {
                     translation.Y--;
                     object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
                     EventActionType.OnMove, parameters));
                 }
             }
@@ -181,7 +181,7 @@ namespace GD.Engine
                 {
                     translation.Y++;
                     object[] parameters = { translation };
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+                    EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
                     EventActionType.OnMove, parameters));
                 }
             }

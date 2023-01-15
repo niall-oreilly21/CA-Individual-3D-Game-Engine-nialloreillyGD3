@@ -68,6 +68,8 @@ namespace GD.App
         private Dictionary<string, MenuButton> menuButtonDictionary;
         private ContentDictionary<Texture2D> textureDictionary;
         private ContentDictionary<SpriteFont> fontDictionary;
+        private Dictionary<string, Curve3D> curveDictionary;
+        private SnakeManager snakeManager;
 
 #if DEMO
 
@@ -136,10 +138,10 @@ namespace GD.App
                     InitializeLevelUITimerStart();
                     break;
 
-                case EventActionType.InitializeUI:
-                    InitializeUI();
-                    
+                case EventActionType.ResetIntroCamera:
+                    ResetIntroCameraCurve();
                     break;
+
             }
         }
 
@@ -264,26 +266,13 @@ namespace GD.App
             InitializePauseMenu();
             InitializeEndGameMenu();
 
-            menuManager.SetActiveScene(AppData.CONTROLS_SCENE_NAME);
+            menuManager.SetActiveScene(AppData.LEVELS_SCENE_NAME);
         }
 
         private void InitializeMenuTitle()
         {
-            menuGameObjectTitle = null;
-            Material2D material = null;
-            Renderer2D renderer2D = null;
-
             #region Main Menu Title
-            Vector2 titleScale = new Vector2(1.5f, 1.5f);
-            menuGameObjectTitle = new GameObject("menu title");
-            menuGameObjectTitle.Transform = new Transform(
-            new Vector3(titleScale, 1), //s
-            new Vector3(0, 0, 0), //r
-            new Vector3(Application.Screen.ScreenCentre - titleScale * textureDictionary[AppData.SNAKE_MENU_BUTTON_TEXTURE_NAME].GetCenter() - new Vector2(0, 300), 0)); //t
-            material = new TextMaterial2D(spriteFontMenu, "SNAKE 3D", new Vector2(20, 5), Color.Black, 0.8f);
-            //add renderer to draw the text
-            renderer2D = new Renderer2D(material);
-            menuGameObjectTitle.AddComponent(renderer2D);
+            menuGameObjectTitle = InitializeUIText(AppData.MENU_TITLE_UI_TEXT_NAME, AppData.MENU_TITLE_UI_TEXT_SCALE, AppData.MENU_TITLE_TEXT_OFFSET, AppData.MENU_TITLE_UI_TEXT, AppData.MENU_TITLE_UI_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Menu_Text, AppData.MENU_TITLE_TRANSLATION);
             #endregion Main Menu Title
         }
 
@@ -313,7 +302,7 @@ namespace GD.App
         public GameObject CloneModelGameObjectButton(string newName)
         {
             GameObject gameObjectClone = new GameObject(newName);
-            Renderer2D cloneRenderer2D = null;               
+            Renderer2D cloneRenderer2D = null;
 
             #region Transform
             gameObjectClone.Transform = new Transform(
@@ -322,6 +311,7 @@ namespace GD.App
                 new Vector3(Application.Screen.ScreenCentre - AppData.BUTTON_SCALE * textureDictionary[AppData.SNAKE_MENU_BUTTON_TEXTURE_NAME].GetCenter() - menuButtonDictionary[newName].ButtonTranslation, 0)
                 );
             #endregion Transform
+
 
             #region Texture
             Material2D cloneTextureMaterial2D = new TextureMaterial2D(textureDictionary[AppData.SNAKE_MENU_BUTTON_TEXTURE_NAME], menuButtonDictionary[newName].ButtonColor, 0.9f);
@@ -383,7 +373,7 @@ namespace GD.App
             GameObject menuGameObject = null;
 
             var levelsMenuScene = new Scene2D(AppData.LEVELS_SCENE_NAME);
-            menuGameObject = CloneMenusBackgroundTexture(AppData.MENU_BACKGROUND_NAME + AppData.LEVELS_SCENE_NAME, AppData.SNAKE_MENU_BACKGROUND_TEXTURE_NAME);
+            menuGameObject = CloneMenusBackgroundTexture(AppData.MENU_BACKGROUND_NAME + AppData.LEVELS_SCENE_NAME, AppData.MENU_BACKGROUND_TEXTURE_NAME);
             levelsMenuScene.Add(menuGameObject);
             levelsMenuScene.Add(menuGameObjectTitle);
 
@@ -396,10 +386,11 @@ namespace GD.App
             menuGameObject = CloneModelGameObjectButton(AppData.LEVEL_THREE_BUTTON_NAME);
             levelsMenuScene.Add(menuGameObject);
 
+            menuGameObject = CloneModelGameObjectButton(AppData.BACK_BUTTON_NAME);
+            levelsMenuScene.Add(menuGameObject);
+
             #region Add Scene to Manager
-
             menuManager.Add(levelsMenuScene.ID, levelsMenuScene);
-
             #endregion Add Scene to Manager
 
             #endregion Create Levels Menu Scene
@@ -475,10 +466,10 @@ namespace GD.App
             #endregion Controls Menu Textures
 
             #region Controls Menu Text
-            menuGameObject = InitializeUIText(AppData.SNAKE_CONTROLS_UI_TEXT_NAME, AppData.CONTROLS_UI_TEXT_SCALE, AppData.SNAKE_CONTROLS_TEXT_OFFSET, AppData.SNAKE_CONTROLS_UI_TEXT, AppData.CONTROLS_UI_TEXT_COLOR, AppData.MENU_FONT_NAME);
+            menuGameObject = InitializeUIText(AppData.SNAKE_CONTROLS_UI_TEXT_NAME, AppData.CONTROLS_UI_TEXT_SCALE, AppData.SNAKE_CONTROLS_TEXT_OFFSET, AppData.SNAKE_CONTROLS_UI_TEXT, AppData.CONTROLS_UI_TEXT_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Menu_Text);
             controlsMenuScene.Add(menuGameObject);
 
-            menuGameObject = InitializeUIText(AppData.CAMERA_CONTROLS_UI_TEXT_NAME, AppData.CONTROLS_UI_TEXT_SCALE, AppData.CAMERA_CONTROLS_TEXT_OFFSET, AppData.CAMERA_CONTROLS_UI_TEXT, AppData.CONTROLS_UI_TEXT_COLOR, AppData.MENU_FONT_NAME);
+            menuGameObject = InitializeUIText(AppData.CAMERA_CONTROLS_UI_TEXT_NAME, AppData.CONTROLS_UI_TEXT_SCALE, AppData.CAMERA_CONTROLS_TEXT_OFFSET, AppData.CAMERA_CONTROLS_UI_TEXT, AppData.CONTROLS_UI_TEXT_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Menu_Text);
             controlsMenuScene.Add(menuGameObject);
             #endregion Controls Menu Text
 
@@ -513,15 +504,16 @@ namespace GD.App
             
         }
 
-        private GameObject InitializeUIText(string newName, Vector2 newScale, Vector2 textOffSet, string text, Color textColor, string uiFontName)
+        private GameObject InitializeUIText(string newName, Vector2 newScale, Vector2 textOffSet, string text, Color textColor, string uiFontName, GameObjectType gameObjectType)
         {
             GameObject uiTextGameObjectClone = new GameObject(newName);
-            uiTextGameObjectClone.GameObjectType = GameObjectType.UI_Text;
+            uiTextGameObjectClone.GameObjectType = gameObjectType;
 
             uiTextGameObjectClone.Transform = new Transform(
                 new Vector3(newScale, 1),
                 Vector3.Zero,
-                Vector3.Zero);
+                Vector3.Zero
+                );
 
             TextMaterial2D material = new TextMaterial2D(fontDictionary[uiFontName], text, textOffSet, textColor, 0.8f);
 
@@ -533,12 +525,34 @@ namespace GD.App
 
         }
 
+        private GameObject InitializeUIText(string newName, Vector2 newScale, Vector2 textOffSet, string text, Color textColor, string uiFontName, GameObjectType gameObjectType, Vector2 translation)
+        {
+            GameObject uiTextGameObjectClone = new GameObject(newName);
+            uiTextGameObjectClone.GameObjectType = gameObjectType;
+
+            uiTextGameObjectClone.Transform = new Transform(
+                new Vector3(newScale, 1),
+                Vector3.Zero,
+                new Vector3(Application.Screen.ScreenCentre - newScale * textureDictionary[AppData.SNAKE_MENU_BUTTON_TEXTURE_NAME].GetCenter() - translation, 0)
+                );
+
+            TextMaterial2D material = new TextMaterial2D(fontDictionary[uiFontName], text, textOffSet, textColor, 0.8f);
+
+            Renderer2D renderer2D = new Renderer2D(material);
+
+            uiTextGameObjectClone.AddComponent(renderer2D);
+
+            return uiTextGameObjectClone;
+
+        }
+
+
         private void InitializeLevelUITimerStart()
         {
             #region Level Start Time UI
             GameObject uiGameObject = null;
 
-            uiGameObject = InitializeUIText(AppData.LEVEL_START_TIME_UI_NAME, AppData.LEVEL_START_TIMER_UI_TEXT_SCALE, AppData.LEVEL_START_TIMER_UI_TEXT_OFFSET, AppData.TIMER_UI_TEXT, AppData.DEFAULT_UI_TEXT_COLOR, AppData.MENU_FONT_NAME);
+            uiGameObject = InitializeUIText(AppData.LEVEL_START_TIME_UI_NAME, AppData.LEVEL_START_TIMER_UI_TEXT_SCALE, Application.Screen.ScreenCentre - AppData.LEVEL_START_TIMER_UI_TEXT_OFFSET, AppData.TIMER_UI_TEXT, AppData.DEFAULT_UI_TEXT_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Timer_Text);
             uiManager.ActiveScene.Add(uiGameObject);
 
             uiGameObject.AddComponent(new UIStartLevelTimerController(AppData.LEVEL_START_TIMER_UI_SECONDS));
@@ -551,22 +565,22 @@ namespace GD.App
             GameObject uiGameObject = null;
 
             #region Current Level
-            uiGameObject = InitializeUIText(AppData.LEVEL_UI_TEXT_NAME, AppData.LEVEL_UI_TEXT_SCALE, AppData.LEVEL_UI_TEXT_OFFSET, AppData.DEFAULT_LEVEL_TEXT + stateManager.CurrentScore, AppData.DEFAULT_UI_TEXT_COLOR, AppData.MENU_FONT_NAME);
+            uiGameObject = InitializeUIText(AppData.LEVEL_UI_TEXT_NAME, AppData.LEVEL_UI_TEXT_SCALE, AppData.LEVEL_UI_TEXT_OFFSET, AppData.DEFAULT_LEVEL_TEXT + stateManager.CurrentScore, AppData.DEFAULT_UI_TEXT_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Game_Text);
             uiManager.ActiveScene.Add(uiGameObject);
             #endregion Current Level
 
             #region Current Score
-            uiGameObject = InitializeUIText(AppData.SCORE_UI_TEXT_NAME, AppData.SCORE_UI_TEXT_SCALE, AppData.SCORE_UI_TEXT_OFFSET, AppData.DEFAULT_SCORE_TEXT + stateManager.CurrentScore, AppData.DEFAULT_UI_TEXT_COLOR, AppData.MENU_FONT_NAME);
+            uiGameObject = InitializeUIText(AppData.SCORE_UI_TEXT_NAME, AppData.SCORE_UI_TEXT_SCALE, AppData.SCORE_UI_TEXT_OFFSET, AppData.DEFAULT_SCORE_TEXT + stateManager.CurrentScore, AppData.DEFAULT_UI_TEXT_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Game_Text);
             uiManager.ActiveScene.Add(uiGameObject);
             #endregion Current Score
 
             #region Current Camera
-            uiGameObject = InitializeUIText(AppData.CAMERA_UI_TEXT_NAME, AppData.CAMERA_UI_TEXT_SCALE, AppData.CAMERA_UI_TEXT_OFFSET, AppData.FRONT_CAMERA_UI_TEXT, AppData.DEFAULT_UI_TEXT_COLOR, AppData.MENU_FONT_NAME);
+            uiGameObject = InitializeUIText(AppData.CAMERA_UI_TEXT_NAME, AppData.CAMERA_UI_TEXT_SCALE, AppData.CAMERA_UI_TEXT_OFFSET, AppData.FRONT_CAMERA_UI_TEXT, AppData.DEFAULT_UI_TEXT_COLOR, AppData.MENU_FONT_NAME, GameObjectType.UI_Game_Text);
             uiManager.ActiveScene.Add(uiGameObject);
             #endregion Current Camera
 
             #region Timer
-            uiGameObject = InitializeUIText(AppData.TIMER_UI_TEXT_NAME, AppData.TIMER_UI_TEXT_SCALE, AppData.TIMER_UI_TEXT_OFFSET, AppData.TIMER_UI_TEXT, AppData.TIMER_UI_TEXT_COLOR, AppData.UI_FONT_NAME);
+            uiGameObject = InitializeUIText(AppData.TIMER_UI_TEXT_NAME, AppData.TIMER_UI_TEXT_SCALE, AppData.TIMER_UI_TEXT_OFFSET, AppData.TIMER_UI_TEXT, AppData.TIMER_UI_TEXT_COLOR, AppData.UI_FONT_NAME, GameObjectType.UI_Game_Text);
             uiManager.ActiveScene.Add(uiGameObject);
             uiGameObject.AddComponent(new UITimerController());
             uiManager.ActiveScene.Add(uiGameObject);
@@ -644,7 +658,21 @@ namespace GD.App
 
         private void InitializeCurves()
         {
-            //load and add to dictionary
+            Curve3D curve3DTranslation = new Curve3D(CurveLoopType.Oscillate);
+
+            for (int i = 0; i < AppData.CURVE_TRANSLATIONS.Length; i++)
+            {
+                curve3DTranslation.Add(AppData.CURVE_TRANSLATIONS[i], AppData.CURVE_TIME_SPAN * i);
+            }
+
+            Curve3D curve3DRotation = new Curve3D(CurveLoopType.Oscillate);
+
+            for (int i = 0; i < AppData.CURVE_ROTATIONS.Length; i++)
+            {
+                curve3DRotation.Add(AppData.CURVE_ROTATIONS[i], AppData.CURVE_TIME_SPAN * i);
+            }
+
+
         }
 
         private void InitializeRails()
@@ -700,6 +728,22 @@ namespace GD.App
             exitSignEffect.AmbientLightColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
 
             #endregion
+        }
+
+        private void ResetIntroCameraCurve()
+        {
+            //define what action the curve will apply to the target game object
+            var curveAction = (Curve3D curve, GameObject target, GameTime gameTime) =>
+            {
+                target.Transform.SetTranslation(curveDictionary[AppData.INTRO_CURVE_TRANSLATIONS_NAME].Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
+                target.Transform.SetRotation(curveDictionary[AppData.INTRO_CURVE_ROTATIONS_NAME].Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
+            };
+
+            cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
+
+            cameraManager.ActiveCamera.gameObject.RemoveComponent<CurveBehaviour>();
+
+            cameraManager.ActiveCamera.gameObject.AddComponent(new CurveBehaviour(curveDictionary[AppData.INTRO_CURVE_TRANSLATIONS_NAME], curveAction));
         }
 
         public GameObject CloneModelGameObjectCamera(GameObject gameObject, string newName, Vector3 rotation, Vector3 translation)
@@ -863,49 +907,12 @@ namespace GD.App
 
             //Left Camera
             cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
-            #endregion Snake Cameras
 
+            //Curve Camera
+            cameraManager.Add(AppData.CURVE_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.CURVE_CAMERA_NAME, new Vector3(0,0,0), new Vector3(0, 0, 0)));
 
-            #region Curve
-
-            Curve3D curve3DTranslation = new Curve3D(CurveLoopType.Oscillate);
-
-            for(int i = 0; i < AppData.CURVE_TRANSLATIONS.Length; i++)
-            {
-                curve3DTranslation.Add(AppData.CURVE_TRANSLATIONS[i], AppData.CURVE_TIME_SPAN * i);
-            }
-
-            Curve3D curve3DRotation = new Curve3D(CurveLoopType.Oscillate);
-
-            for (int i = 0; i < AppData.CURVE_ROTATIONS.Length; i++)
-            {
-                curve3DRotation.Add(AppData.CURVE_ROTATIONS[i], AppData.CURVE_TIME_SPAN * i);
-            }
-
-            cameraGameObject = new GameObject(AppData.CURVE_CAMERA_NAME);
-            cameraGameObject.Transform =
-                new Transform(null, null, null);
-            cameraGameObject.AddComponent(new Camera(
-                MathHelper.PiOver2 / 2,
-                (float)_graphics.PreferredBackBufferWidth / _graphics.PreferredBackBufferHeight,
-                0.1f, 3500,
-                  new Viewport(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight)));
-
-            //define what action the curve will apply to the target game object
-            var curveAction = (Curve3D curve, GameObject target, GameTime gameTime) =>
-            {
-                target.Transform.SetTranslation(curve3DTranslation.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
-                target.Transform.SetRotation(curve3DRotation.Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
-            };
-
-            cameraGameObject.AddComponent(new CurveBehaviour(curve3DTranslation, curveAction));
-
-            cameraManager.Add(cameraGameObject.Name, cameraGameObject);
-
-            #endregion Curve
-
-            Application.StateManager.GameStarted = true;
             cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+            #endregion Snake Cameras
         }
 
         private void InitializeCollidableContent(float worldScale)
@@ -1022,9 +1029,6 @@ namespace GD.App
 
             collider.Enable(snakeGameObject, false, 1);
 
-            Application.SnakeMoveSpeed = AppData.SNAKE_DEFAULT_MOVE_SPEED;
-
-
             var snakeGameObjectTongue = new GameObject("snake tongue", ObjectType.Dynamic, RenderType.Opaque);
 
             snakeGameObjectTongue.Transform = new Transform(
@@ -1042,17 +1046,13 @@ namespace GD.App
             snakeGameObjectTongue.AddComponent(new SnakeTongueController(AppData.SNAKE_HEAD_TRANSLATE_AMOUNT));
             sceneManager.ActiveScene.Add(snakeGameObjectTongue);
 
-            
-
-            sceneManager.ActiveScene.Add(snakeGameObject);
-
 
             texture = Content.Load<Texture2D>(AppData.SNAKE_SKIN_TEXTURE_PATH);
             var snakeSkin = new Material(texture, 1);
             CubeMesh snakeBodyMesh = new CubeMesh(_graphics.GraphicsDevice);
             OctahedronMesh snakeTailMesh = new OctahedronMesh(_graphics.GraphicsDevice);
-            SnakeManager snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh, snakeTailMesh, snakeSkin);
-
+            snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh, snakeTailMesh, snakeSkin, AppData.SNAKE_DEFAULT_MOVE_SPEED, AppData.SNAKE_MULTIPLIER);
+            Application.SnakeManager = snakeManager;
 
             snakeGameObject.Transform.SetRotation(0, 90, 0);
             snakeGameObject.AddComponent(new CollidableSnakeController());
@@ -1362,10 +1362,34 @@ namespace GD.App
         {
             //TODO - add texture dictionary, soundeffect dictionary, model dictionary
             InitilizeButtonTextTranslationsDictionary();
+            InitilizeCurveDictionary();
 
             textureDictionary = new ContentDictionary<Texture2D>();
             fontDictionary = new ContentDictionary<SpriteFont>();
 
+
+        }
+
+        private void InitilizeCurveDictionary()
+        {
+            curveDictionary = new Dictionary<string, Curve3D>();
+
+            Curve3D curve3DTranslation = new Curve3D(CurveLoopType.Oscillate);
+
+            for (int i = 0; i < AppData.CURVE_TRANSLATIONS.Length; i++)
+            {
+                curve3DTranslation.Add(AppData.CURVE_TRANSLATIONS[i], AppData.CURVE_TIME_SPAN * i);
+            }
+
+            Curve3D curve3DRotation = new Curve3D(CurveLoopType.Oscillate);
+
+            for (int i = 0; i < AppData.CURVE_ROTATIONS.Length; i++)
+            {
+                curve3DRotation.Add(AppData.CURVE_ROTATIONS[i], AppData.CURVE_TIME_SPAN * i);
+            }
+
+            curveDictionary.Add(AppData.INTRO_CURVE_TRANSLATIONS_NAME, curve3DTranslation);
+            curveDictionary.Add(AppData.INTRO_CURVE_ROTATIONS_NAME, curve3DRotation);
         }
 
         private void InitilizeButtonTextTranslationsDictionary()
@@ -1380,9 +1404,9 @@ namespace GD.App
             #endregion Main Menu Button
 
             #region Levels Menu Button
-            menuButtonDictionary.Add(AppData.LEVEL_ONE_BUTTON_NAME, new MenuButton(AppData.LEVEL_ONE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_ONE_BUTTON_TEXT, new EventData(EventCategoryType.Menu, EventActionType.OnPlay)));
-            menuButtonDictionary.Add(AppData.LEVEL_TWO_BUTTON_NAME, new MenuButton(AppData.LEVEL_TWO_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_TWO_BUTTON_TEXT, new EventData(EventCategoryType.Menu, EventActionType.OnPlay)));
-            menuButtonDictionary.Add(AppData.LEVEL_THREE_BUTTON_NAME, new MenuButton(AppData.LEVEL_THREE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_THREE_BUTTON_TEXT, new EventData(EventCategoryType.Menu, EventActionType.OnPlay)));
+            menuButtonDictionary.Add(AppData.LEVEL_ONE_BUTTON_NAME, new MenuButton(AppData.LEVEL_ONE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_ONE_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel)));
+            menuButtonDictionary.Add(AppData.LEVEL_TWO_BUTTON_NAME, new MenuButton(AppData.LEVEL_TWO_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_TWO_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel)));
+            menuButtonDictionary.Add(AppData.LEVEL_THREE_BUTTON_NAME, new MenuButton(AppData.LEVEL_THREE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_THREE_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel)));
             #endregion Levels Menu Button
 
             #region Pause Menu Button
@@ -1462,7 +1486,8 @@ namespace GD.App
                 EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                     EventActionType.OnPause));
 
-                
+                EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
+             EventActionType.UITextIsDrawn));
             }
 
             #endregion
@@ -1603,50 +1628,6 @@ namespace GD.App
                     UpdateCameraUI(AppData.BACK_CAMERA_UI_TEXT);
                 }
             }
-
-
-
-            //if (Input.Keys.WasJustPressed(Keys.Up))
-            //{
-            //    if  (
-            //            cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
-            //            cameraManager.ActiveCameraName == AppData.SIDE_CAMERA_NAME
-            //        )
-            //    {
-            //        cameraManager.SetActiveCamera(AppData.TOP_CAMERA_NAME);
-            //        UpdateCameraUI(AppData.TOP_CAMERA_UI_TEXT);
-            //    }
-
-            //}
-            //else if (Input.Keys.WasJustPressed(Keys.Right))
-            //{
-            //    if (
-            //         cameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME || 
-            //         cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME
-
-            //       )
-            //    {
-            //        Application.CameraManager.SetActiveCamera(AppData.SIDE_CAMERA_NAME);
-            //        UpdateCameraUI(AppData.SIDE_CAMERA_UI_TEXT);
-            //    }
-            //}
-            //else if (Input.Keys.WasJustPressed(Keys.Left))
-            //{
-            //    if (cameraManager.ActiveCameraName == AppData.SIDE_CAMERA_NAME)
-            //    {
-            //        cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
-            //        UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
-            //    }
-            //}
-            //else if (Input.Keys.WasJustPressed(Keys.Down))
-            //{
-            //    if (cameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
-            //    {
-            //        cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
-            //        UpdateCameraUI(AppData.FRONT_CAMERA_UI_TEXT);
-            //    }
-            //}
-
 
             #endregion Camera switching
 

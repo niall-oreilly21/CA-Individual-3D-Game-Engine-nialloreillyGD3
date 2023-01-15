@@ -17,15 +17,12 @@ namespace GD.Engine
     {
         public BombManager(Game game, GameObject consumable) : base(game, consumable)
         {
-            for (int i = 0; i < 10; i++)
-            {
-                InitializeConsumableItem();
-            }
+
         }
 
         protected override void SubscribeToEvents()
         {
-            EventDispatcher.Subscribe(EventCategoryType.Bomb, HandleEvent);
+            EventDispatcher.Subscribe(EventCategoryType.BombManager, HandleEvent);
         }
 
         protected override void HandleEvent(EventData eventData)

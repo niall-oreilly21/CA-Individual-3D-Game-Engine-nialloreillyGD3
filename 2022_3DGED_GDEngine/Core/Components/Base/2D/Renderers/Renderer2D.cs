@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GD.Engine.Events;
+using System.Collections.Generic;
 using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
 
 namespace GD.Engine
@@ -31,9 +32,10 @@ namespace GD.Engine
 
         #region Actions - Draw
 
+
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            material.Draw(spriteBatch, transform);
+           material.Draw(spriteBatch, transform);         
         }
 
         #endregion Actions - Draw

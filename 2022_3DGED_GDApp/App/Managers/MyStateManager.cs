@@ -136,7 +136,7 @@ namespace App.Managers
 
                 case EventActionType.StartOfLevel:
                     StartOfLevel();
-                    break; ;
+                    break;
 
                 default:
                     break;
@@ -149,18 +149,16 @@ namespace App.Managers
             totalSeconds = Math.Abs(maxTimeInMS - totalElapsedTimeMS / 1000d);
             minutes = Math.Floor(totalSeconds / 60);
             seconds = Math.Round(totalSeconds % 60);
-
-            //CheckCurrentLevel();
-            // base.Update(gameTime);
         }
 
         private void UpdateScore()
         {
+            currentScore++;
             GameObject scoreGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.SCORE_UI_TEXT_NAME);
 
             var material2D = (TextMaterial2D)scoreGameObject.GetComponent<Renderer2D>().Material;
             material2D.StringBuilder.Clear();
-            material2D.StringBuilder.Append(AppData.DEFAULT_SCORE_TEXT + Application.StateManager.CurrentScore);
+            material2D.StringBuilder.Append(AppData.DEFAULT_SCORE_TEXT + currentScore);
         }
 
         private void UpdateLevel()
@@ -169,14 +167,30 @@ namespace App.Managers
 
             var material2D = (TextMaterial2D)levelGameObject.GetComponent<Renderer2D>().Material;
             material2D.StringBuilder.Clear();
-            material2D.StringBuilder.Append(AppData.DEFAULT_LEVEL_TEXT + Application.StateManager.CurrentLevel);
+            material2D.StringBuilder.Append(AppData.DEFAULT_LEVEL_TEXT + currentLevel);
+        }
+
+        private void ResetLevel()
+        {        
+            gameStarted = false;
+            EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
+               EventActionType.ResetSnake));
+
+            Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Static, RenderType.Opaque, (consumable) => consumable.GameObjectType == GameObjectType.Consumable);
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
+               EventActionType.UITextIsNotDrawn));
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.Game,
+               EventActionType.ResetIntroCamera));
         }
 
         private void StartOfLevel()
         {
-            
+            ResetLevel();
             int defaultFoodNumber = 0;
             int defaultBombNumber = 0;
+
 
             switch (this.currentLevel)
                 {
@@ -195,19 +209,22 @@ namespace App.Managers
                     break;
 
                 default:
-                        break;
+                   break;
                 }
 
             object[] parametersFood = { defaultFoodNumber };
-            EventDispatcher.Raise(new EventData(EventCategoryType.Food,
+            EventDispatcher.Raise(new EventData(EventCategoryType.FoodManager,
             EventActionType.InitilizeFoodStartOfLevel, parametersFood));
 
             if (currentLevel > AppData.LEVEL_ONE)
             {
-                object[] parametersBombs = {defaultBombNumber};
-                EventDispatcher.Raise(new EventData(EventCategoryType.Bomb,
+                object[] parametersBombs = { defaultBombNumber };
+                EventDispatcher.Raise(new EventData(EventCategoryType.BombManager,
                 EventActionType.InitilizeBombsStartOfLevel, parametersBombs));
             }
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+               EventActionType.OnPlay));
         }
 
         private void StartNewLevel(GameObject removeGameObject)
@@ -216,11 +233,12 @@ namespace App.Managers
             
             totalElapsedTimeMS = 0;
             currentScore = 0;
-            gameStarted = true;
+            UpdateScore();
 
-            EventDispatcher.Raise(new EventData(EventCategoryType.Game,
-                 EventActionType.InitializeUI));
-           
+            EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
+            EventActionType.UITextIsDrawn));
+
+            gameStarted = true;          
         }
 
         private void CheckCurrentLevel()

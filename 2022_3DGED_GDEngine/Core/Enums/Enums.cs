@@ -14,14 +14,16 @@
         Architecture,
         Camera,
         Trigger,  //collidable volume with no model
-
+        SnakePart,
         #endregion 3D
 
         #region 2D
 
-        UI_Text,
+        UI_Menu_Text,
         UI_Texture,
-        UI_Button
+        UI_Button,
+        UI_Game_Text,
+        UI_Timer_Text
 
         #endregion 2D
     }
@@ -131,11 +133,12 @@
         Video,
 
         //add more here...
-        Snake,
-        Food,
+        SnakeManager,
+        FoodManager,
         StateManager,
-        Bomb,
-        SceneManager
+        BombManager,
+        SceneManager,
+        RenderUIGameObjects
     }
 
     /// <summary>
@@ -196,7 +199,6 @@
         UpdateScore,
         RemoveUILevelStart,
         InitializeLevelUITimerStart,
-        InitializeUI,
         StartOfLevel,
         InitilizeFoodStartOfLevel,       
         InitilizeBombsStartOfLevel,
@@ -204,7 +206,11 @@
         OnMainMenuScene,
         OnAudioScene,
         OnControlsScene,
-        OnGameExit
+        OnGameExit,
+        ResetSnake,
+        UITextIsDrawn,
+        UITextIsNotDrawn,
+        ResetIntroCamera
     }
 
     /// <summary>

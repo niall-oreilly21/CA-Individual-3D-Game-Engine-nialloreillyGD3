@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
-    public abstract class ConsumableManager : PausableGameComponent
+    public class ConsumableManager : PausableGameComponent
     {
         GameObject consumable;
         int consumableID;
@@ -59,6 +59,7 @@ namespace GD.Engine
             }
         }
         #endregion Properties
+ 
 
         protected bool RemoveConsumable(GameObject consumableToRemove)
         {
@@ -79,9 +80,9 @@ namespace GD.Engine
             while (!noCollision)
             {
                 noCollision = true;
-                for (int i = 0; i < Application.SnakeParts.Count; i++)
+                for (int i = 0; i < Application.SnakeManager.SnakePartsListBodies.Count; i++)
                 {
-                    snakePart = Application.SnakeParts[i].Parent as GameObject;
+                    snakePart = Application.SnakeManager.SnakePartsListBodies[i].Parent as GameObject;
                     snakePartCollider = snakePart.GetComponent<CharacterCollider>();
 
                     if (snakePartCollider.IsColliding)
@@ -108,7 +109,7 @@ namespace GD.Engine
 
         protected void ResetSnakeHeadColliding()
         {
-            GameObject head = Application.SnakeParts[0].Parent as GameObject;
+            GameObject head = Application.SnakeManager.SnakePartsListBodies[0].Parent as GameObject;
             CharacterCollider headCollider = head.GetComponent<CharacterCollider>();
 
             if (headCollider.IsColliding)

@@ -24,7 +24,7 @@ namespace GD.Engine
 
         protected override void SubscribeToEvents()
         {
-            EventDispatcher.Subscribe(EventCategoryType.Food, HandleEvent);
+            EventDispatcher.Subscribe(EventCategoryType.FoodManager, HandleEvent);
         }
 
         protected override void HandleEvent(EventData eventData)
@@ -57,7 +57,7 @@ namespace GD.Engine
             {
                 for(int i = 0; i <= Application.StateManager.CurrentLevel; i++)
                 {
-                    EventDispatcher.Raise(new EventData(EventCategoryType.Snake, EventActionType.Grow));
+                    EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager, EventActionType.Grow));
                 }
 
                 InitializeConsumableItem();

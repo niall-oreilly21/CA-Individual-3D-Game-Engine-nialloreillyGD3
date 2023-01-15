@@ -18,7 +18,7 @@ namespace GD.Engine
         {
             object[] parameters = {this.gameObject};
 
-            EventDispatcher.Raise(new EventData(EventCategoryType.Food, EventActionType.RemoveFood, parameters));   
+            EventDispatcher.Raise(new EventData(EventCategoryType.FoodManager, EventActionType.RemoveFood, parameters));   
         }
     }
 }

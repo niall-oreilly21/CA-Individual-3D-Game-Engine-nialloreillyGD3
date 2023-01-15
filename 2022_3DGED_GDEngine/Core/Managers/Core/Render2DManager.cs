@@ -1,8 +1,12 @@
-﻿using GD.Engine.Managers;
+﻿using GD.Engine.Events;
+using GD.Engine.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SharpDX.Direct3D9;
 using System.Collections.Generic;
+using SamplerState = Microsoft.Xna.Framework.Graphics.SamplerState;
 using SpriteBatch = Microsoft.Xna.Framework.Graphics.SpriteBatch;
+using TextureFilter = Microsoft.Xna.Framework.Graphics.TextureFilter;
 
 namespace GD.Engine
 {
@@ -13,6 +17,7 @@ namespace GD.Engine
         private SpriteBatch spriteBatch;
         private SceneManager<Scene2D> sceneManager;
         private SamplerState samplerState;
+        private bool uiIsDrawn;
 
         #endregion Fields
 
@@ -34,6 +39,31 @@ namespace GD.Engine
 
         #region Actions - Draw
 
+        protected override void SubscribeToEvents()
+        {
+            EventDispatcher.Subscribe(EventCategoryType.RenderUIGameObjects, HandleEvent);
+            base.SubscribeToEvents();
+        }
+
+        protected override void HandleEvent(EventData eventData)
+        {
+            switch (eventData.EventActionType)
+            {
+                case EventActionType.UITextIsDrawn:
+                    uiIsDrawn = true;
+                    break;
+
+                case EventActionType.UITextIsNotDrawn:
+                    uiIsDrawn = false;
+                    break;
+
+                default:
+                    break;
+            }
+
+            base.HandleEvent(eventData);
+        }
+
         public override void Draw(GameTime gameTime)
         {
             if (IsDrawn)
@@ -44,12 +74,26 @@ namespace GD.Engine
                     List<Renderer2D> renderers = gameObject.GetComponents<Renderer2D>();
                     if (renderers != null)
                     {
-                        foreach (Renderer2D renderer in renderers)
-                            renderer.Draw(spriteBatch);
+
+                        switch (uiIsDrawn)
+                        {
+                            case true:
+                                foreach (Renderer2D renderer in renderers)
+                                    renderer.Draw(spriteBatch);
+                                break;
+
+                            case false:
+                                if(gameObject.GameObjectType != GameObjectType.UI_Game_Text)
+                                foreach (Renderer2D renderer in renderers)
+                                    renderer.Draw(spriteBatch);
+                                break;
+                        }
                     }
+                            
                 }
                 spriteBatch.End();
             }
+
         }
 
         #endregion Actions - Draw

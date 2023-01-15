@@ -143,11 +143,11 @@ namespace GD.Engine
             }
 
             object[] parameters = { direction, gameTime};
-            EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+            EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
             EventActionType.OnMove, parameters));
 
             object[] parametersTwo = {direction};
-            EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+            EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
             EventActionType.MoveTongue, parametersTwo));
 
         }

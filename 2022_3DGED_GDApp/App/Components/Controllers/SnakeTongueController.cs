@@ -28,7 +28,7 @@ namespace GD.Engine
     private void SubscribeToEvents()
     {
         //handle add/remove events
-        EventDispatcher.Subscribe(EventCategoryType.Snake, HandleGameObjectEvents);
+        EventDispatcher.Subscribe(EventCategoryType.SnakeManager, HandleGameObjectEvents);
     }
 
     protected void HandleGameObjectEvents(EventData eventData)
