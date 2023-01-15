@@ -25,7 +25,6 @@ namespace GD.Engine
             //target = snakeParts.Last();
             if (target != null)
             {
-                System.Diagnostics.Debug.WriteLine(target.Transform.Translation.Y);
                 //use target position + offset to generate new camera position
                 var newPosition = target.Transform.Translation
                     + new Vector3(0, 3, 0);

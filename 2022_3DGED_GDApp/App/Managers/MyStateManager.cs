@@ -7,6 +7,8 @@ using GD.App;
 using GD.Engine.Managers;
 using SharpDX.MediaFoundation.DirectX;
 using System;
+using static System.Net.Mime.MediaTypeNames;
+using Application = GD.Engine.Globals.Application;
 
 namespace App.Managers
 {
@@ -32,32 +34,43 @@ namespace App.Managers
     /// <summary>
     /// Countdown/up timer and we need an inventory system
     /// </summary>
-    public class MyStateManager : GameComponent
+    public class MyStateManager : PausableGameComponent
     {
         private float maxTimeInMS;
         private float totalElapsedTimeMS;
-        private float totalElapsedTimeCameraRotationMS;
+        private double totalSeconds;
+        private double minutes;
+        private double seconds;
         private int currentLevel;
         private int currentScore;
+        private SnakeLevelsData snakeLevelsData;
 
-        public MyStateManager(Game game, float maxTimeInMS) : base(game)
+        public MyStateManager(Game game, SnakeLevelsData snakeLevelsData) : base(game)
         {
-            this.maxTimeInMS = maxTimeInMS;
+            this.maxTimeInMS = snakeLevelsData.TimesEachLevel[0];
             this.totalElapsedTimeMS = 0;
-            this.totalElapsedTimeCameraRotationMS = 0;
-            this.currentLevel = 1;
+            this.totalSeconds = 0;
+            this.minutes = 0;
+            this.seconds = 0;
+            this.currentLevel = AppData.LEVEL_ONE;
+            this.snakeLevelsData = snakeLevelsData;
+            Enabled = false;
         }
 
         #region Properties
-        public int CurrentLevel
+        public double Minutes
         {
             get
             {
-                return currentLevel;
+                return minutes;
             }
-            set
+        }
+
+        public double Seconds
+        {
+            get
             {
-                currentLevel = value;
+                return seconds;
             }
         }
 
@@ -72,102 +85,197 @@ namespace App.Managers
                 currentScore = value;
             }
         }
+
+        public int CurrentLevel
+        {
+            get
+            {
+                return currentLevel;
+            }
+            set
+            {
+                currentLevel = value;
+            }
+        }
+
         #endregion Properties
+
+        protected override void SubscribeToEvents()
+        {
+            EventDispatcher.Subscribe(EventCategoryType.StateManager, HandleGameObjectEvents);
+        }
+
+        protected void HandleGameObjectEvents(EventData eventData)
+        {
+            switch (eventData.EventActionType)
+            {
+                case EventActionType.UpdateScore:
+                    UpdateScoreText();
+                    break;
+
+                case EventActionType.RemoveUILevelStart:
+                    GameObject removeGameObject = (GameObject)eventData.Parameters[0];
+                    StartNewLevel(removeGameObject);
+                    break;
+
+                case EventActionType.StartOfLevel:
+                    int newLevel = (int)eventData.Parameters[0];
+                    currentLevel = newLevel;
+                    StartOfLevel();
+                    break;
+
+                case EventActionType.UpdateEndMenuScreenUIText:
+                    string endScreenMessage = (string)eventData.Parameters[0];
+                    UpdateEndScreenUI(endScreenMessage);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void UpdateEndScreenUI(string endScreenMessage)
+        {
+            GameObject uiEndScreenMessageGameObject = Application.MenuSceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.END_MENU_UI_TEXT_NAME);
+            var material2D = (TextMaterial2D)uiEndScreenMessageGameObject.GetComponent<Renderer2D>().Material;
+            material2D.StringBuilder.Clear();
+            material2D.StringBuilder.Append(endScreenMessage);
+
+
+            uiEndScreenMessageGameObject = Application.MenuSceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.END_MENU_UI_FINAL_SCORE_TEXT_NAME);
+
+            material2D = (TextMaterial2D)uiEndScreenMessageGameObject.GetComponent<Renderer2D>().Material;
+            material2D.StringBuilder.Clear();
+            
+            if(currentLevel == AppData.LEVEL_THREE)
+            {
+                material2D.StringBuilder.Append(AppData.END_MENU_UI_FINAL_SCORE_TEXT + currentScore + "   " + AppData.END_MENU_UI_HIGH_SCORE_TEXT + 10);
+            }
+            
+
+        }
 
         public override void Update(GameTime gameTime)
         {
-            totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
+                totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
+                totalSeconds = maxTimeInMS - totalElapsedTimeMS / 1000d;
+                minutes = Math.Floor(totalSeconds / 60);
+                seconds = Math.Round(totalSeconds % 60);
+                CheckTimer();
+                CheckScore();
 
-            if (totalElapsedTimeMS >= maxTimeInMS)
-            {
-                totalElapsedTimeMS = 0;
-                currentLevel++;
-                string text = "Level: " + Application.StateManager.CurrentLevel;
-                object[] parameters = { text };
-
-                EventDispatcher.Raise(new EventData(EventCategoryType.UpdateUIElements,
-                    EventActionType.UpdateUI, parameters));
-            }
-
-            if(CheckCameraRotateStart())
-            {
-                UpdateCameraRotataion(gameTime);
-            }
-
-            //check game state
-            //if win then
-            //CheckWinLose()
-            //show win toast
-            //if lose then
-            //show lose toast
-            //fade to black
-            //show restart screen
-
-            base.Update(gameTime);
+            System.Diagnostics.Debug.WriteLine("BOOM");
         }
 
-        private bool CheckWinLose()
+        private void CheckTimer()
         {
-            return false;
-            //check individual game items
-        }
-
-        private bool CheckCameraRotateStart()
-        {
-            if(currentLevel >= 2)
+            if(totalSeconds <= 0)
             {
-                return true;
+                EventDispatcher.Raise(new EventData(EventCategoryType.SceneManager,
+                EventActionType.OnLose, new object[] { AppData.END_MENU_SCENE_NAME}));
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
+                EventActionType.UpdateEndMenuScreenUIText, new object[] { AppData.SNAKE_MENU_UI_TEXT_OUT_OF_TIME}));
             }
-
-            return false;
         }
-        private float rotation = 0f;
-        private float targetRotation = 90f;
-        private float rotateSpeed = 0.1f;
-       
-        private void UpdateCameraRotataion(GameTime gameTime)
+
+        private void CheckScore()
         {
-            totalElapsedTimeCameraRotationMS += gameTime.ElapsedGameTime.Milliseconds;
-
-
-            if (totalElapsedTimeCameraRotationMS >= 5000f)
+            if(CurrentLevel < AppData.LEVEL_THREE)
             {
-
-                    float rotationAmt = (float)(rotateSpeed * gameTime.ElapsedGameTime.TotalMilliseconds);
-
-                    if (rotation < targetRotation)
-                    {
-
-                    if (Application.CameraManager.ActiveCameraName == AppData.FRONT_CAMERA_NAME)
-                    {
-                        Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, 0, rotationAmt);
-                    }
-                    else if (Application.CameraManager.ActiveCameraName == AppData.BACK_CAMERA_NAME)
-                    {
-                        Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, 0, -rotationAmt);
-                    }
-
-                    else if (Application.CameraManager.ActiveCameraName == AppData.TOP_CAMERA_NAME)
-                    {
-                        Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, rotationAmt, 0);
-
-                    }
-                    else if (Application.CameraManager.ActiveCameraName == AppData.BOTTOM_CAMERA_NAME)
-                    {
-                        Application.CameraManager.ActiveCamera.gameObject.Transform.Rotate(0, -rotationAmt, 0);
-
-                    }
-
-                    rotation += rotationAmt;
-                }
-                else
+                if (currentScore >= snakeLevelsData.MaxScore[CurrentLevel - 1])
                 {
-                    rotation = 0f;
-                    totalElapsedTimeCameraRotationMS = 0;
+                    EventDispatcher.Raise(new EventData(EventCategoryType.SceneManager,
+                    EventActionType.OnWin, new object[] { AppData.WIN_LEVEL_MENU_SCENE_NAME }));
                 }
-
             }
-            
+           
         }
+
+
+        private void UpdateScoreText()
+        {
+            currentScore++;
+            GameObject scoreGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.SCORE_UI_TEXT_NAME);
+
+            var material2D = (TextMaterial2D)scoreGameObject.GetComponent<Renderer2D>().Material;
+            material2D.StringBuilder.Clear();
+            material2D.StringBuilder.Append(AppData.DEFAULT_SCORE_TEXT + currentScore);
+        }
+
+        private void UpdateLevelText()
+        {
+            GameObject levelGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.LEVEL_UI_TEXT_NAME);
+
+            var material2D = (TextMaterial2D)levelGameObject.GetComponent<Renderer2D>().Material;
+            material2D.StringBuilder.Clear();
+            material2D.StringBuilder.Append(AppData.DEFAULT_LEVEL_TEXT + currentLevel);
+        }
+
+        private void ResetLevel()
+        {
+            EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
+            EventActionType.ResetSnake));
+
+            Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Static, RenderType.Opaque, (consumable) => consumable.GameObjectType == GameObjectType.Consumable);
+
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
+               EventActionType.UITextIsDrawn));
+
+            //EventDispatcher.Raise(new EventData(EventCategoryType.Game,
+            //   EventActionType.ResetIntroCamera));
+
+            Application.CameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+        }
+
+        private void StartOfLevel()
+        {
+            ResetLevel();
+
+            int defaultFoodNumber = 0;
+            int defaultBombNumber = 0;
+
+            if (currentLevel > 0)
+            {
+                defaultFoodNumber = snakeLevelsData.DefaultFoodEachLevel[currentLevel - 1];
+                defaultBombNumber = snakeLevelsData.DefaultBombsEachLevel[currentLevel - 1];
+            }
+
+            object[] parametersFood = { defaultFoodNumber };
+            EventDispatcher.Raise(new EventData(EventCategoryType.FoodManager,
+            EventActionType.InitilizeFoodStartOfLevel, parametersFood));
+
+            if (currentLevel > AppData.LEVEL_ONE)
+            {
+                object[] parametersBombs = { defaultBombNumber };
+                EventDispatcher.Raise(new EventData(EventCategoryType.BombManager,
+                EventActionType.InitilizeBombsStartOfLevel, parametersBombs));
+            }
+
+            Enabled = true;
+            EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+            EventActionType.OnPlay));
+        }
+
+        private void StartNewLevel(GameObject removeGameObject)
+        {
+            Application.UISceneManager.ActiveScene.Remove((uiElement) => uiElement.Name == removeGameObject.Name);
+
+            totalElapsedTimeMS = 0;
+            currentScore = 0;
+            UpdateScoreText();
+            UpdateLevelText();
+ 
+            if (currentLevel > 0)
+            {
+                maxTimeInMS = snakeLevelsData.TimesEachLevel[currentLevel - 1];
+            }
+
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
+            EventActionType.UITextIsDrawn));
+        }
+    
     }
 }

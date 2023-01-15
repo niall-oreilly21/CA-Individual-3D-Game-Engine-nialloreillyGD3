@@ -5,6 +5,7 @@ using GD.Engine.Managers;
 using JigLibX.Collision;
 using JigLibX.Geometry;
 using Microsoft.Xna.Framework;
+using SharpDX.Direct2D1.Effects;
 using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
@@ -15,23 +16,15 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
-    public class FoodManager : PausableGameComponent
+    public class FoodManager : ConsumableManager
     {
-        GameObject food;
-        private int foodNumber;
-        public FoodManager(Game game, GameObject food) : base(game)
+        public FoodManager(Game game, GameObject consumable) : base(game, consumable)
         {
-            if (food == null)
-            {
-                throw new ArgumentNullException("Active object not set. Please make sure the food item is not null");
-            }
-            this.food = food;
-            
         }
 
         protected override void SubscribeToEvents()
         {
-            EventDispatcher.Subscribe(EventCategoryType.Food, HandleEvent);
+            EventDispatcher.Subscribe(EventCategoryType.FoodManager, HandleEvent);
         }
 
         protected override void HandleEvent(EventData eventData)
@@ -44,84 +37,35 @@ namespace GD.Engine
                     break;
 
                 case EventActionType.AddFood:
-                    InitializeFoodItem();
+                    InitializeConsumableItem();
+                    break;
+
+                case EventActionType.InitilizeFoodStartOfLevel:
+                    int foodStartNumber = (int)eventData.Parameters[0];
+                    InitializeConsumableItemsStart(foodStartNumber);
                     break;
 
                 default:
                     break;
             }
-           
+
         }
 
-        private void RemoveFoodItem(GameObject removeFoodItem)
+        private void RemoveFoodItem(GameObject consumableToRemove)
         {
-            if (Application.SceneManager.ActiveScene.Remove(ObjectType.Static, RenderType.Opaque, (food) => food.Transform == removeFoodItem.Transform))
+            if(base.RemoveConsumable(consumableToRemove))
             {
-                EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
-                EventActionType.Grow));
-
-                InitializeFoodItem();
-                
-            }
-        }
-
-        private void InitializeFoodItem()
-        {
-            GameObject snakePart;
-            CharacterCollider snakePartCollider;
-
-            GameObject head = Application.SnakeParts[0].Parent as GameObject;
-            CharacterCollider headCollider = head.GetComponent<CharacterCollider>();
-
-            if (headCollider.IsColliding)
-            {
-                headCollider.IsColliding = false;
+                EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager, EventActionType.Grow));
+                InitializeConsumableItem();
             }
 
-            food = CloneModelGameObject(AppData.FOOD_BASE_NAME + foodNumber);
-
-            for (int i = 0; i < Application.SnakeParts.Count; i++)
-            {
-                snakePart = Application.SnakeParts[i].Parent as GameObject;
-                snakePartCollider = snakePart.GetComponent<CharacterCollider>();
-
-                if (snakePartCollider.IsColliding)
-                {
-                    food = CloneModelGameObject(AppData.FOOD_BASE_NAME + foodNumber);
-                    snakePartCollider.IsColliding = false;        
-                }
-            }
-
-            Application.SceneManager.ActiveScene.Add(food);
-
         }
+ 
 
-        private Vector3 GetRandomTranslation()
+        protected override GameObject CloneModelGameObject(string newName)
         {
-            Random random = new Random();
-            int x = random.Next(AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MAX_SIZE);
-            int y = random.Next(AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MAX_SIZE);
-            int z = random.Next(AppData.SNAKE_GAME_MIN_SIZE, AppData.SNAKE_GAME_MAX_SIZE);
 
-            Vector3 newTranslation = new Vector3(x,y,z);
-            return newTranslation;
-        }
-
-        private GameObject CloneModelGameObject(string newName)
-        {
-            GameObject gameObjectClone = new GameObject(newName, food.ObjectType, food.RenderType);
-            gameObjectClone.GameObjectType = food.GameObjectType;
-
-            gameObjectClone.Transform = new Transform(
-                food.Transform.Scale,
-                food.Transform.Rotation,
-                GetRandomTranslation()
-                );
-
-            Renderer renderer = food.GetComponent<Renderer>();
-            Renderer cloneRenderer = new Renderer(renderer.Effect, renderer.Material, renderer.Mesh);
-            gameObjectClone.AddComponent(cloneRenderer);
-
+            GameObject gameObjectClone = base.CloneModelGameObject(newName);
 
             Collider cloneCollider = new FoodCollider(gameObjectClone, true);
 
@@ -136,7 +80,7 @@ namespace GD.Engine
             cloneCollider.Enable(gameObjectClone, false, 1);
             gameObjectClone.AddComponent(cloneCollider);
 
-            gameObjectClone.AddComponent(new FoodController());
+            gameObjectClone.AddComponent(new FoodController(AppData.FOOD_ROTATE_SPEED));
 
             return gameObjectClone;
 

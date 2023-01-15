@@ -1,4 +1,5 @@
 ﻿using GD.Engine.Events;
+using GD.Engine.Globals;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -45,27 +46,64 @@ namespace GD.Engine.Managers
         protected override void SubscribeToEvents()
         {
             //handle add/remove events
-            EventDispatcher.Subscribe(EventCategoryType.GameObject, HandleGameObjectEvents);
+            EventDispatcher.Subscribe(EventCategoryType.SceneManager, HandleGameObjectEvents);
 
             base.SubscribeToEvents();
         }
 
         protected void HandleGameObjectEvents(EventData eventData)
         {
+            string menuName = "";
             switch (eventData.EventActionType)
             {
-                case EventActionType.OnRemoveObject: //TODO
+                case EventActionType.OnMainMenuScene:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
                     break;
 
-                case EventActionType.OnAddObject: //TODO
+                case EventActionType.OnLevelsScene:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
+                    break;
+
+                case EventActionType.OnAudioScene:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
+                    break;
+
+                case EventActionType.OnControlsScene:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
+                    break;
+
+                case EventActionType.OnLose:
+                    menuName = (string)eventData.Parameters[0];
+                    SetActiveScene(menuName);
+
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+                    EventActionType.OnPause));
+
+                    Application.StateManager.Enabled = false;
+                    break;
+
+                case EventActionType.OnWin:
+                    menuName = (string)eventData.Parameters[0];
+
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
+                   EventActionType.OnPause));
+                    Application.StateManager.Enabled = false;
+
+                    SetActiveScene(menuName);
+                    break;
+
+                case EventActionType.OnGameExit:
+                    Game.Exit();
                     break;
 
                 default:
                     break;
-                    //add more cases for each method that we want to support with events
             }
 
-            //call base method because we want to participate in the pause/play events
             base.HandleEvent(eventData);
         }
 

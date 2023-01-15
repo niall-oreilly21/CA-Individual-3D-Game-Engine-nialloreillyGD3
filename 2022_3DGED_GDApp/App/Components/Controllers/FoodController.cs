@@ -7,21 +7,16 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
-    public class FoodController : Component
+    public class FoodController : ConsumableController
     {
-        private float rotationSpeed;
-        private float rotationAmount;
-
-        public FoodController()
+        public FoodController(float rotationSpeed) : base(rotationSpeed)
         {
-            this.rotationSpeed = 0.2f;
         }
 
         public override void Update(GameTime gameTime)
         {
-            rotationAmount = (float)(rotationSpeed * gameTime.ElapsedGameTime.TotalMilliseconds);
-
-            transform.Rotate(rotationAmount, rotationAmount, rotationAmount);
+            base.Update(gameTime);
+            transform.Rotate(RotationAmount, RotationAmount, RotationAmount);
         }
     }
 }

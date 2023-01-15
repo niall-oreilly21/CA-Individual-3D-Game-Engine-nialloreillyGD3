@@ -14,14 +14,16 @@
         Architecture,
         Camera,
         Trigger,  //collidable volume with no model
-
+        SnakePart,
         #endregion 3D
 
         #region 2D
 
-        UI_Text,
+        UI_Menu_Text,
         UI_Texture,
-        UI_Button
+        UI_Button,
+        UI_Game_Text,
+        UI_Timer_Text
 
         #endregion 2D
     }
@@ -80,7 +82,7 @@
         /// <summary>
         /// Used when something happens to a PC e.g. win,lose,respawn
         /// </summary>
-        Player,
+        Game,
 
         /// <summary>
         /// Used when something happens to a NPC e.g. win,lose,respawn
@@ -131,9 +133,12 @@
         Video,
 
         //add more here...
-        Snake,
-        Food,
-        UpdateUIElements
+        SnakeManager,
+        FoodManager,
+        StateManager,
+        BombManager,
+        SceneManager,
+        RenderUIGameObjects
     }
 
     /// <summary>
@@ -188,8 +193,27 @@
         RemoveFood,
         AddFood,
         ResetVelocity,
-        UpdateUI,
-        UpdateActiveCameraPosition
+        UpdateActiveCameraPosition,
+        AddBomb,
+        RemoveBomb,
+        MoveTongue,
+        UpdateScore,
+        RemoveUILevelStart,
+        InitializeLevelUITimerStart,
+        StartOfLevel,
+        InitilizeFoodStartOfLevel,       
+        InitilizeBombsStartOfLevel,
+        OnLevelsScene,
+        OnMainMenuScene,
+        OnAudioScene,
+        OnControlsScene,
+        OnGameExit,
+        ResetSnake,
+        UITextIsDrawn,
+        UITextIsNotDrawn,
+        ResetIntroCamera,
+        UpdateEndMenuScreenUIText,
+        RemoveSnake
     }
 
     /// <summary>

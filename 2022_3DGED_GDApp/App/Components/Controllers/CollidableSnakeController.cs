@@ -12,16 +12,16 @@ namespace GD.Engine
 {
     class CollidableSnakeController : SnakeController
     {
-        private bool pressed = false;
+        private bool pressed;
         private Keys pressedKey;
         private Keys previousKey;
-        protected float moveSpeed = 0.01f;
-        protected float multiplier = 0.5f;
-        private Vector3 direction = new Vector3(AppData.SCALE_AMOUNT, 0, 0);
+        private Vector3 direction;
 
 
         public CollidableSnakeController()
         {
+            pressed = false;
+            direction = new Vector3(AppData.SCALE_AMOUNT, 0, 0);
         }
 
 
@@ -44,13 +44,14 @@ namespace GD.Engine
             if (Input.Keys.IsPressed(Keys.W))
             {
                 if (!pressed)
-                {
+                {             
                     pressedKey = Keys.W;
                     pressed = true;
                     if (previousKey != Keys.S)
                     {
                         previousKey = Keys.W;
-                        direction = transform.World.Forward;
+                        transform.SetRotation(0, 0, 0);
+                        direction = transform.World.Forward;                        
                     }
 
                 }
@@ -59,12 +60,13 @@ namespace GD.Engine
             else if (Input.Keys.IsPressed(Keys.S))
             {
                 if (!pressed)
-                {
+                {                 
                     pressedKey = Keys.S;
                     pressed = true;
                     if (previousKey != Keys.W)
                     {
                         previousKey = Keys.S;
+                        transform.SetRotation(0, 0, 0);
                         direction = transform.World.Backward;
                     }
 
@@ -74,12 +76,15 @@ namespace GD.Engine
             {
                 if (!pressed)
                 {
+                    
                     pressedKey = Keys.A;
                     pressed = true;
                     if (previousKey != Keys.D)
-                    {
+                    {                   
                         previousKey = Keys.A;
+                        transform.SetRotation(0, 0, 0);
                         direction = transform.World.Left;
+                        transform.SetRotation(0, 90, 0);
                     }
                     
                 }
@@ -89,12 +94,15 @@ namespace GD.Engine
             {
                 if (!pressed)
                 {
+                    
                     pressedKey = Keys.D;
                     pressed = true;
                     if (previousKey != Keys.A)
                     {
                         previousKey = Keys.D;
+                        transform.SetRotation(0, 0, 0);
                         direction = transform.World.Right;
+                        transform.SetRotation(0, 90, 0);
                     }                  
                 }
 
@@ -103,37 +111,43 @@ namespace GD.Engine
             {
                 if (!pressed)
                 {
+                    
                     pressedKey = Keys.Q;
                     pressed = true;
-                    if (previousKey != Keys.R)
+                    if (previousKey != Keys.E)
                     {
-                        previousKey = Keys.R;
+                        previousKey = Keys.Q;
+                        transform.SetRotation(0, 0, 0);
                         direction = transform.World.Down;
+                        transform.SetRotation(0, 90, 0);
                     }
                 }
             }
 
-            else if (Input.Keys.IsPressed(Keys.R))
+            else if (Input.Keys.IsPressed(Keys.E))
             {
                 if (!pressed)
                 {
-                    pressedKey = Keys.R;
+                    
+                    pressedKey = Keys.E;
                     pressed = true;
                     if (previousKey != Keys.Q)
                     {
-                        previousKey = Keys.Q;
+                        previousKey = Keys.E;
+                        transform.SetRotation(0, 0, 0);
                         direction = transform.World.Up;
+                        transform.SetRotation(0, 90, 0);
                     }
                 }
             }
 
-
-            
-            object[] parameters = { direction, moveSpeed, multiplier, gameTime};
-            EventDispatcher.Raise(new EventData(EventCategoryType.Snake,
+            object[] parameters = { direction, gameTime};
+            EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
             EventActionType.OnMove, parameters));
 
-
+            object[] parametersTwo = {direction};
+            EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
+            EventActionType.MoveTongue, parametersTwo));
 
         }
         #endregion Actions - Update, Input

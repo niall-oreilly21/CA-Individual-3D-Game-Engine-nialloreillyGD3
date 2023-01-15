@@ -158,7 +158,7 @@ namespace GD.Engine.Managers
             listInstances2D = new List<KeyValuePair<string, SoundEffectInstance>>();
 
             //Register for certain events - see Main demo
-            EventDispatcher.Subscribe(EventCategoryType.Player, HandlePlayerEvent);
+            EventDispatcher.Subscribe(EventCategoryType.Game, HandlePlayerEvent);
             EventDispatcher.Subscribe(EventCategoryType.Menu, HandleMenuEvent);
             EventDispatcher.Subscribe(EventCategoryType.Sound, HandleSoundEvent);
         }
@@ -181,11 +181,11 @@ namespace GD.Engine.Managers
 
         private void HandlePlayerEvent(EventData eventData)
         {
-            if (eventData.EventActionType == EventActionType.OnLose
-                || eventData.EventActionType == EventActionType.OnWin)
-            {
-                Play2D(eventData.Parameters[0] as string);
-            }
+            //if (eventData.EventActionType == EventActionType.OnLose
+            //    || eventData.EventActionType == EventActionType.OnWin)
+            //{
+            //    Play2D(eventData.Parameters[0] as string);
+            //}
 
             //switch (eventData.EventActionType)
             //{

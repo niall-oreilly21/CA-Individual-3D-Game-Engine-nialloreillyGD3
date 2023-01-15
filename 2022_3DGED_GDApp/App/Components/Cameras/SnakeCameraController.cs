@@ -33,6 +33,7 @@ namespace GD.Engine
         private void HandleKeyboardInput(GameTime gameTime)
         {
 
+
             //if (Input.Keys.WasJustPressed(pressedKey))
             //{
             //    System.Diagnostics.Debug.WriteLine("Pressed");
@@ -40,29 +41,29 @@ namespace GD.Engine
 
             //}
 
-            if (Input.Keys.IsPressed(Keys.Up))
-            {
+            //if (Input.Keys.IsPressed(Keys.Up))
+            //{
  
-                    if (totalTime >= 2000f)
-                    {
-                        Application.CameraManager.SetActiveCamera(AppData.TOP_CAMERA_NAME);
-                        pressed = true;
-                        pressedKey = Keys.Up;
-                    }
+            //        if (totalTime >= 2000f)
+            //        {
+            //            Application.CameraManager.SetActiveCamera(AppData.TOP_CAMERA_NAME);
+            //            pressed = true;
+            //            pressedKey = Keys.Up;
+            //        }
 
-                    if (currentTime <= 0f)
-                    {
+            //        if (currentTime <= 0f)
+            //        {
 
-                        Application.CameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
-                        pressed = true;
-                        pressedKey = Keys.Up;
-                    }
+            //            Application.CameraManager.SetActiveCamera(AppData.BACK_CAMERA_NAME);
+            //            pressed = true;
+            //            pressedKey = Keys.Up;
+            //        }
                     
 
-                    System.Diagnostics.Debug.WriteLine(pressedKey);
+            //        System.Diagnostics.Debug.WriteLine(pressedKey);
   
   
-            }
+            //}
 
 
             //if(pressedKey == Keys.Up)

@@ -1,4 +1,5 @@
-﻿using GD.Engine.Globals;
+﻿using GD.Engine.Events;
+using GD.Engine.Globals;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -13,6 +14,7 @@ namespace GD.Engine.Managers
         #region Fields
 
         private SceneRenderer sceneRenderer;
+        bool uiISDrawn;
 
         #endregion Fields
 
@@ -31,6 +33,8 @@ namespace GD.Engine.Managers
 
         #endregion Constructors
 
+
+
         public override void Draw(GameTime gameTime)
         {
             if (IsDrawn)
@@ -42,6 +46,7 @@ namespace GD.Engine.Managers
                     Application.CameraManager.ActiveCamera,
                     Application.SceneManager.ActiveScene);
             }
+
         }
     }
 

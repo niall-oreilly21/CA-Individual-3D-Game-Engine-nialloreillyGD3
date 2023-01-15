@@ -16,9 +16,13 @@ namespace GD.Engine
 
         protected override void HandleResponse(GameObject parentGameObject)
         {
-            object[] parameters = {this.gameObject};
+            if(parentGameObject.GameObjectType == GameObjectType.Player)
+            {
+                object[] parameters = { this.gameObject };
 
-            EventDispatcher.Raise(new EventData(EventCategoryType.Food, EventActionType.RemoveFood, parameters));   
+                EventDispatcher.Raise(new EventData(EventCategoryType.FoodManager, EventActionType.RemoveFood, parameters));
+            }
+
         }
     }
 }

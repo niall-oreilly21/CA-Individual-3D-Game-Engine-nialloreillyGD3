@@ -80,6 +80,7 @@ namespace GD.Engine
                         statusType = StatusType.Updated;
                     else if (eventData.EventActionType == EventActionType.OnPlay)
                         statusType = StatusType.Off;
+                                    
                 }
                 else
                 {
