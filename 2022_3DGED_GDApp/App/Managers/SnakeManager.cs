@@ -87,10 +87,7 @@ namespace GD.Engine
                     Vector3 direction = (Vector3)eventData.Parameters[0];
                     GameTime gameTime = (GameTime)eventData.Parameters[1];
 
-                    if(Application.StateManager.StartMove)
-                    {
-                        Move(direction, gameTime);
-                    }                  
+                    Move(direction, gameTime);                                  
                     break;
 
                 case EventActionType.Grow: 
@@ -209,7 +206,7 @@ namespace GD.Engine
             }
 
             //Move head
-            snakePartsListBodies[0].Position += newTranslation ;
+            snakePartsListBodies[0].Position += newTranslation;
             ZeroPosition(snakePartsListBodies[0]);
         }
 

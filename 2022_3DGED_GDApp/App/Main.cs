@@ -672,15 +672,16 @@ namespace GD.App
 
         private void LoadSounds()
         {
-
             soundEffectDictionary.Add(AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME, Content.Load<SoundEffect>(AppData.SNAKE_MENU_BACKGROUND_SOUND_TEXTURE_PATH));
             soundEffectDictionary.Add(AppData.BUTTON_CLICK_SOUND_NAME, Content.Load<SoundEffect>(AppData.BUTTON_CLICK_SOUND_TEXTURE_PATH));
             soundEffectDictionary.Add(AppData.EAT_APPLE_SOUND_NAME, Content.Load<SoundEffect>(AppData.EAT_APPLE_SOUND_TEXTURE_PATH));
             soundEffectDictionary.Add(AppData.EAT_POISON_SOUND_NAME, Content.Load<SoundEffect>(AppData.EAT_POISON_SOUND_TEXTURE_PATH));
             soundEffectDictionary.Add(AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_NAME, Content.Load<SoundEffect>(AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_TEXTURE_PATH));
-        }
+            soundEffectDictionary.Add(AppData.SNAKE_HISSING_SOUND_NAME, Content.Load<SoundEffect>(AppData.SNAKE_HISSING_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.IN_GAME_BACKGROUND_SOUND_NAME, Content.Load<SoundEffect>(AppData.IN_GAME_BACKGROUND_SOUND_TEXTURE_PATH));
+    }
 
-        private void LoadFonts()
+    private void LoadFonts()
         {
             fontDictionary.Add(AppData.MENU_FONT_NAME, AppData.MENU_FONT_PATH);
             fontDictionary.Add(AppData.UI_FONT_NAME, AppData.UI_FONT_PATH);
@@ -1458,6 +1459,17 @@ namespace GD.App
                 )
             );
 
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.IN_GAME_BACKGROUND_SOUND_NAME,
+                    soundEffectDictionary[AppData.IN_GAME_BACKGROUND_SOUND_NAME],
+                    SoundCategoryType.BackgroundMusic,
+                    AppData.IN_GAME_BACKGROUND_SOUND_PITCH,
+                    false
+                )
+            );
             #endregion Non Diegetic Sounds
 
             #region Diegetic Sounds
@@ -1482,6 +1494,18 @@ namespace GD.App
                     soundEffectDictionary[AppData.EAT_POISON_SOUND_NAME],
                     SoundCategoryType.Consumable,
                     AppData.EAT_POISON_SOUND_PITCH,
+                    false
+                )
+            );
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.SNAKE_HISSING_SOUND_NAME,
+                    soundEffectDictionary[AppData.SNAKE_HISSING_SOUND_NAME],
+                    SoundCategoryType.Player,
+                    AppData.SNAKE_HISSING_SOUND_PITCH,
                     false
                 )
             );
@@ -1648,6 +1672,9 @@ namespace GD.App
                 menuManager.SetActiveScene(AppData.PAUSE_SCENE_NAME);
                 EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                     EventActionType.OnPause));
+
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { AppData.IN_GAME_BACKGROUND_SOUND_NAME }));
             }
 
             #endregion

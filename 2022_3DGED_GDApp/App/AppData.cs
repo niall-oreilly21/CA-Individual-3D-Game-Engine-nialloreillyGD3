@@ -661,14 +661,20 @@ namespace GD.App
         #region Menu Button Click Sound
         public static readonly string BUTTON_CLICK_SOUND_NAME = "Menu Button Click Sound";
         public static readonly string BUTTON_CLICK_SOUND_TEXTURE_PATH = NON_DIEGEITC_SOUND_BASE_PATH + "menu_button_click_sound";
-        public static readonly Vector3 BUTTON_CLICK_SOUND_PITCH = new Vector3(0.3f, 0, 0);
+        public static readonly Vector3 BUTTON_CLICK_SOUND_PITCH = new Vector3(0.4f, 0, 0);
         #endregion Menu Button Click Sound
     
         #region Start Level Countdown Timer Sound
         public static readonly string START_TIMER_COUNTDOWN_TIMER_SOUND_NAME = "Start Level Countdown Timer Sound";
         public static readonly string START_TIMER_COUNTDOWN_TIMER_SOUND_TEXTURE_PATH = NON_DIEGEITC_SOUND_BASE_PATH + "start_level_countdown_timer_sound";
-        public static readonly Vector3 START_TIMER_COUNTDOWN_TIMER_SOUND_PITCH = new Vector3(0.6f, 0, 0);
+        public static readonly Vector3 START_TIMER_COUNTDOWN_TIMER_SOUND_PITCH = new Vector3(0.5f, 0, 0);
         #endregion Start Level Countdown Timer Sound
+
+        #region In Game Background Sound
+        public static readonly string IN_GAME_BACKGROUND_SOUND_NAME = "In Game Background Sound";
+        public static readonly string IN_GAME_BACKGROUND_SOUND_TEXTURE_PATH = NON_DIEGEITC_SOUND_BASE_PATH + "game_background_sound";
+        public static readonly Vector3 IN_GAME_BACKGROUND_SOUND_PITCH = new Vector3(0.25f, 0, 0);
+        #endregion In Game Background Sound
         #endregion Non Diegetic Sounds
 
         #region Diegetic Sounds
@@ -683,6 +689,12 @@ namespace GD.App
         public static readonly string EAT_POISON_SOUND_TEXTURE_PATH = DIEGETIC_SOUND_BASE_PATH + "eat_poison_sound";
         public static readonly Vector3 EAT_POISON_SOUND_PITCH = new Vector3(0.4f, 0, 0);
         #endregion Eat Poison Sound
+
+        #region Snake Hissing Sound
+        public static readonly string SNAKE_HISSING_SOUND_NAME = "Snake Hissing Sound";
+        public static readonly string SNAKE_HISSING_SOUND_TEXTURE_PATH = DIEGETIC_SOUND_BASE_PATH + "snake_hissing";
+        public static readonly Vector3 SNAKE_HISSING_SOUND_PITCH = new Vector3(0.7f, 0, 0);
+        #endregion Snake Hissing Sound
         #endregion Diegetic Sounds
 
         #endregion Sounds

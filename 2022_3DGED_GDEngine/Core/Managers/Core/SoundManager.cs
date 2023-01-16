@@ -1,5 +1,4 @@
 ﻿using GD.Engine.Events;
-using GD.Engine.Globals;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using SharpDX.X3DAudio;
@@ -173,6 +172,7 @@ namespace GD.Engine.Managers
             {
                 case EventActionType.OnPlay2D:
                     soundName = (string)eventData.Parameters[0];
+                    System.Diagnostics.Debug.WriteLine(soundName);
                     Play2D(soundName);
                     break;
 
@@ -186,6 +186,11 @@ namespace GD.Engine.Managers
                     Resume(soundName);
                     break;
 
+                case EventActionType.OnStop:
+                    soundName = (string)eventData.Parameters[0];
+                    Stop(soundName);
+                    break;
+
                 case EventActionType.OnPlay3D:
                     soundName = (string)eventData.Parameters[0];
                     AudioListener listener = (AudioListener)eventData.Parameters[1];
@@ -194,14 +199,13 @@ namespace GD.Engine.Managers
                     break;
 
                 case EventActionType.OnMute:
-                    SetMasterVolume(0);
+                    SetMasterVolume(0f);
                     break;
 
                 case EventActionType.OnUnMute:
-                    SetMasterVolume(5);
+                    SetMasterVolume(5f);
                     break;
             }
-
         }
 
         private void HandleMenuEvent(EventData eventData)
@@ -416,6 +420,7 @@ namespace GD.Engine.Managers
             }
             return bFound;
         }
+
 
         /// <summary>
         /// Set volume by unique ID

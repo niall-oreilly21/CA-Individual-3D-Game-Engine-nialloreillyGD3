@@ -18,6 +18,8 @@ namespace GD.Engine
         private Vector3 direction;
         private Dictionary<string, CameraKeys> cameraKeysDictionary;
         private CameraKeys activeCameraKeys;
+        private float totalElapsedGameTime;
+        private float soundTimeInterval;
 
         #region Properties
         public Vector3 Direction
@@ -39,6 +41,8 @@ namespace GD.Engine
             direction = new Vector3(AppData.SCALE_AMOUNT, 0, 0);
             this.cameraKeysDictionary = cameraKeysDictionary;
             this.activeCameraKeys = cameraKeysDictionary[AppData.FRONT_CAMERA_NAME];
+            this.soundTimeInterval = 10000f;
+            this.totalElapsedGameTime = 0;
         }
 
 
@@ -46,17 +50,39 @@ namespace GD.Engine
 
         public override void Update(GameTime gameTime)
         {
-            HandleKeyboardInput(gameTime);
-            HandleCameraSwitch();
+            if (Application.StateManager.StartMove)
+            {
+                HandleKeyboardInput(gameTime);
+                HandleCameraSwitch();
+                HandleSnakeHissingSound(gameTime);
+            }
         }
+        private void HandleSnakeHissingSound(GameTime gameTime)
+        {
+            if (totalElapsedGameTime >= soundTimeInterval)
+            {
+                totalElapsedGameTime = 0;
 
+                var audioListener = Application.Player.GetComponent<AudioListenerBehaviour>().AudioListener;
+                var audioEmitter = Application.Player.GetComponent<AudioEmitterBehaviour>().AudioEmitter;
+
+                object[] parameters = { AppData.EAT_POISON_SOUND_NAME, audioListener, audioEmitter };
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.Sound,
+                    EventActionType.OnPlay3D, parameters));
+            }
+            {
+                totalElapsedGameTime += gameTime.ElapsedGameTime.Milliseconds;
+            }
+  
+        }
+       
         private void HandleCameraSwitch()
         {
             if(Application.CameraManager.ActiveCamera.gameObject.Name != AppData.INTRO_CURVE_CAMERA_NAME)
             {
                 this.activeCameraKeys = cameraKeysDictionary[Application.CameraManager.ActiveCamera.gameObject.Name];
-            }
-            
+            }         
         }
 
         public virtual void HandleKeyboardInput(GameTime gameTime)

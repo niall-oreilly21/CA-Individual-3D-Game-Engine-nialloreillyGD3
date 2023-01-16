@@ -243,6 +243,7 @@ namespace App.Managers
             EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
                EventActionType.UITextIsNotDrawn));
 
+
             EventDispatcher.Raise(new EventData(EventCategoryType.Game,
                EventActionType.ResetIntroCamera));
 
@@ -256,6 +257,7 @@ namespace App.Managers
         {
             startMove = false;
             ResetLevel();
+
 
             int defaultFoodNumber = 0;
             int defaultBombNumber = 0;
@@ -282,7 +284,7 @@ namespace App.Managers
 
             EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME }));
 
-           
+            EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnPlay2D, new object[] { AppData.IN_GAME_BACKGROUND_SOUND_NAME }));
         }
 
         private void StartNewLevel(GameObject removeGameObject)

@@ -25,6 +25,18 @@
 /processorParam:Quality=Best
 /build:Assets/Audio/Diegetic/eat_poison_sound.wav
 
+#begin Assets/Audio/Diegetic/snake_hissing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Audio/Diegetic/snake_hissing.wav
+
+#begin Assets/Audio/Non Diegetic/game_background_sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Audio/Non Diegetic/game_background_sound.wav
+
 #begin Assets/Audio/Non Diegetic/menu_button_click_sound.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

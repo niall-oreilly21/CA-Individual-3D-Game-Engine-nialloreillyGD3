@@ -66,7 +66,8 @@
         BackgroundMusic,
         UI,
         Alarm,
-        Consumable
+        Consumable,
+        Player
     }
 
     #region Unused
