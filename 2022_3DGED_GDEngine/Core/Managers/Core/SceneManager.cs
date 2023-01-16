@@ -1,4 +1,5 @@
-﻿using GD.Engine.Events;
+﻿using GD.App;
+using GD.Engine.Events;
 using GD.Engine.Globals;
 using Microsoft.Xna.Framework;
 using System;
@@ -46,12 +47,12 @@ namespace GD.Engine.Managers
         protected override void SubscribeToEvents()
         {
             //handle add/remove events
-            EventDispatcher.Subscribe(EventCategoryType.SceneManager, HandleGameObjectEvents);
+            EventDispatcher.Subscribe(EventCategoryType.SceneManager, HandleMenuChangeEvents);
 
             base.SubscribeToEvents();
         }
 
-        protected void HandleGameObjectEvents(EventData eventData)
+        protected void HandleMenuChangeEvents(EventData eventData)
         {
             string menuName = "";
             switch (eventData.EventActionType)
@@ -83,6 +84,9 @@ namespace GD.Engine.Managers
                     EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                     EventActionType.OnPause));
 
+
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnStop, new object[] { AppData.IN_GAME_BACKGROUND_SOUND_NAME }));
+
                     Application.StateManager.Enabled = false;
                     break;
 
@@ -91,6 +95,10 @@ namespace GD.Engine.Managers
 
                     EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                    EventActionType.OnPause));
+
+
+                    EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnStop, new object[] { AppData.IN_GAME_BACKGROUND_SOUND_NAME }));
+
                     Application.StateManager.Enabled = false;
 
                     SetActiveScene(menuName);

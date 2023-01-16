@@ -1,6 +1,7 @@
 ﻿using GD.Engine.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using SharpDX.X3DAudio;
 using System;
 using System.Collections.Generic;
 
@@ -165,10 +166,46 @@ namespace GD.Engine.Managers
 
         private void HandleSoundEvent(EventData eventData)
         {
-            if (eventData.EventActionType == EventActionType.OnPlay3D)
-                Play3D(eventData.Parameters[0] as string,
-                    eventData.Parameters[1] as AudioListener,
-                    eventData.Parameters[2] as AudioEmitter);
+            string soundName = "";
+
+            switch (eventData.EventActionType)
+            {
+                case EventActionType.OnPlay2D:
+                    soundName = (string)eventData.Parameters[0];
+                    System.Diagnostics.Debug.WriteLine(soundName);
+                    Play2D(soundName);
+                    break;
+
+                case EventActionType.OnPause:
+                    soundName = (string)eventData.Parameters[0];
+                    Pause(soundName);
+                    break;
+
+                case EventActionType.OnResume:
+                    soundName = (string)eventData.Parameters[0];
+                    Resume(soundName);
+                    break;
+
+                case EventActionType.OnStop:
+                    soundName = (string)eventData.Parameters[0];
+                    Stop(soundName);
+                    break;
+
+                case EventActionType.OnPlay3D:
+                    soundName = (string)eventData.Parameters[0];
+                    AudioListener listener = (AudioListener)eventData.Parameters[1];
+                    AudioEmitter emitter = (AudioEmitter)eventData.Parameters[2];
+                    Play3D(soundName, listener, emitter);
+                    break;
+
+                case EventActionType.OnMute:
+                    SetMasterVolume(0f);
+                    break;
+
+                case EventActionType.OnUnMute:
+                    SetMasterVolume(5f);
+                    break;
+            }
         }
 
         private void HandleMenuEvent(EventData eventData)
@@ -203,6 +240,8 @@ namespace GD.Engine.Managers
         }
 
         #endregion Constructors
+
+        
 
         #region Actions - Add, Play, Pause, Volume
 
@@ -250,6 +289,7 @@ namespace GD.Engine.Managers
         {
             if (id == null)
                 return;
+
 
             id = id.Trim();
 
@@ -380,6 +420,7 @@ namespace GD.Engine.Managers
             }
             return bFound;
         }
+
 
         /// <summary>
         /// Set volume by unique ID

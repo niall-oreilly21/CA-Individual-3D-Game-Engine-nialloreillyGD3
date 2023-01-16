@@ -64,7 +64,10 @@
         WinLose,
         Explosion,
         BackgroundMusic,
-        Alarm
+        UI,
+        Alarm,
+        Consumable,
+        Player
     }
 
     #region Unused
@@ -213,7 +216,9 @@
         UITextIsNotDrawn,
         ResetIntroCamera,
         UpdateEndMenuScreenUIText,
-        RemoveSnake
+        RemoveSnake,
+        ResetCameraUI,
+        RestartOfLevel
     }
 
     /// <summary>

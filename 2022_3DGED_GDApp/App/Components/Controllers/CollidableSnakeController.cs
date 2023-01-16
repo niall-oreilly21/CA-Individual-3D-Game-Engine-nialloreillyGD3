@@ -16,12 +16,33 @@ namespace GD.Engine
         private Keys pressedKey;
         private Keys previousKey;
         private Vector3 direction;
+        private Dictionary<string, CameraKeys> cameraKeysDictionary;
+        private CameraKeys activeCameraKeys;
+        private float totalElapsedGameTime;
+        private float soundTimeInterval;
 
+        #region Properties
+        public Vector3 Direction
+        {
+            get 
+            { 
+                return direction; 
+            }
+            set
+            {
+                direction = value;
+            }
+        }
+        #endregion Properties
 
-        public CollidableSnakeController()
+        public CollidableSnakeController(Dictionary<string, CameraKeys> cameraKeysDictionary)
         {
             pressed = false;
             direction = new Vector3(AppData.SCALE_AMOUNT, 0, 0);
+            this.cameraKeysDictionary = cameraKeysDictionary;
+            this.activeCameraKeys = cameraKeysDictionary[AppData.FRONT_CAMERA_NAME];
+            this.soundTimeInterval = 10000f;
+            this.totalElapsedGameTime = 0;
         }
 
 
@@ -29,7 +50,39 @@ namespace GD.Engine
 
         public override void Update(GameTime gameTime)
         {
-            HandleKeyboardInput(gameTime);
+            if (Application.StateManager.StartMove)
+            {
+                HandleKeyboardInput(gameTime);
+                HandleCameraSwitch();
+                HandleSnakeHissingSound(gameTime);
+            }
+        }
+        private void HandleSnakeHissingSound(GameTime gameTime)
+        {
+            if (totalElapsedGameTime >= soundTimeInterval)
+            {
+                totalElapsedGameTime = 0;
+
+                var audioListener = Application.Player.GetComponent<AudioListenerBehaviour>().AudioListener;
+                var audioEmitter = Application.Player.GetComponent<AudioEmitterBehaviour>().AudioEmitter;
+
+                object[] parameters = { AppData.EAT_POISON_SOUND_NAME, audioListener, audioEmitter };
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.Sound,
+                    EventActionType.OnPlay3D, parameters));
+            }
+            {
+                totalElapsedGameTime += gameTime.ElapsedGameTime.Milliseconds;
+            }
+  
+        }
+       
+        private void HandleCameraSwitch()
+        {
+            if(Application.CameraManager.ActiveCamera.gameObject.Name != AppData.INTRO_CURVE_CAMERA_NAME)
+            {
+                this.activeCameraKeys = cameraKeysDictionary[Application.CameraManager.ActiveCamera.gameObject.Name];
+            }         
         }
 
         public virtual void HandleKeyboardInput(GameTime gameTime)
@@ -41,15 +94,15 @@ namespace GD.Engine
 
             translation = Vector3.Zero;
 
-            if (Input.Keys.IsPressed(Keys.W))
+            if (Input.Keys.IsPressed(activeCameraKeys.Forward))
             {
                 if (!pressed)
                 {             
-                    pressedKey = Keys.W;
+                    pressedKey = activeCameraKeys.Forward;
                     pressed = true;
-                    if (previousKey != Keys.S)
+                    if (previousKey != activeCameraKeys.Backward)
                     {
-                        previousKey = Keys.W;
+                        previousKey = activeCameraKeys.Forward;
                         transform.SetRotation(0, 0, 0);
                         direction = transform.World.Forward;                        
                     }
@@ -57,31 +110,31 @@ namespace GD.Engine
                 }
             }
 
-            else if (Input.Keys.IsPressed(Keys.S))
+            else if (Input.Keys.IsPressed(activeCameraKeys.Backward))
             {
                 if (!pressed)
                 {                 
-                    pressedKey = Keys.S;
+                    pressedKey = activeCameraKeys.Backward;
                     pressed = true;
-                    if (previousKey != Keys.W)
+                    if (previousKey != activeCameraKeys.Forward)
                     {
-                        previousKey = Keys.S;
+                        previousKey = activeCameraKeys.Backward;
                         transform.SetRotation(0, 0, 0);
                         direction = transform.World.Backward;
                     }
 
                 }
             }
-            else if (Input.Keys.IsPressed(Keys.A))
+            else if (Input.Keys.IsPressed(activeCameraKeys.Left))
             {
                 if (!pressed)
                 {
                     
-                    pressedKey = Keys.A;
+                    pressedKey = activeCameraKeys.Left;
                     pressed = true;
-                    if (previousKey != Keys.D)
+                    if (previousKey != activeCameraKeys.Right)
                     {                   
-                        previousKey = Keys.A;
+                        previousKey = activeCameraKeys.Left;
                         transform.SetRotation(0, 0, 0);
                         direction = transform.World.Left;
                         transform.SetRotation(0, 90, 0);
@@ -90,16 +143,16 @@ namespace GD.Engine
                 }
                 
             }
-            else if (Input.Keys.IsPressed(Keys.D))
+            else if (Input.Keys.IsPressed(activeCameraKeys.Right))
             {
                 if (!pressed)
                 {
                     
-                    pressedKey = Keys.D;
+                    pressedKey = activeCameraKeys.Right;
                     pressed = true;
-                    if (previousKey != Keys.A)
+                    if (previousKey != activeCameraKeys.Left)
                     {
-                        previousKey = Keys.D;
+                        previousKey = activeCameraKeys.Right;
                         transform.SetRotation(0, 0, 0);
                         direction = transform.World.Right;
                         transform.SetRotation(0, 90, 0);

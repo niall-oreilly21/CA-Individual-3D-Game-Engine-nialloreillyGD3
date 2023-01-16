@@ -53,6 +53,14 @@ namespace GD.Engine
         {
             if (base.RemoveConsumable(consumableToRemove))
             {
+                var audioListener = Application.Player.GetComponent<AudioListenerBehaviour>().AudioListener;
+                var audioEmitter = Application.Player.GetComponent<AudioEmitterBehaviour>().AudioEmitter;
+
+                object[] parameters = { AppData.EAT_POISON_SOUND_NAME, audioListener, audioEmitter };
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.Sound,
+                    EventActionType.OnPlay3D, parameters));
+
                 EventDispatcher.Raise(new EventData(EventCategoryType.SceneManager,
                 EventActionType.OnLose, new object[] { AppData.END_MENU_SCENE_NAME }));
 

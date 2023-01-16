@@ -85,7 +85,6 @@ namespace GD.Engine
             //    System.Diagnostics.Debug.WriteLine(consumable.Transform.Translation);
             //}
             //System.Diagnostics.Debug.WriteLine(consumables.Count);
-            System.Diagnostics.Debug.WriteLine(Application.SnakeManager.SnakePartsListBodies.Count);
 
             Vector3 newTranslation;
             while (!noCollision)

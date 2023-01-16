@@ -56,6 +56,24 @@ namespace GD.Engine
             if(base.RemoveConsumable(consumableToRemove))
             {
                 EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager, EventActionType.Grow));
+
+                var audioListener = Application.Player.GetComponent<AudioListenerBehaviour>().AudioListener;
+                var audioEmitter = Application.Player.GetComponent<AudioEmitterBehaviour>().AudioEmitter;
+
+                object[] parameters = { AppData.EAT_APPLE_SOUND_NAME, audioListener, audioEmitter };
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.Sound,
+                    EventActionType.OnPlay3D, parameters));
+
+                if (Application.StateManager.CurrentLevel == AppData.LEVEL_THREE)
+                {
+                    InitializeConsumableItem();
+
+                    EventDispatcher.Raise(new EventData(EventCategoryType.BombManager,
+                    EventActionType.AddBomb));
+
+
+                }
                 InitializeConsumableItem();
             }
 

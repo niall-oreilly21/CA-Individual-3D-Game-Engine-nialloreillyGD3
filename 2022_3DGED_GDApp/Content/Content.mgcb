@@ -13,17 +13,53 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Assets/Audio/Diegetic/explode1.mp3
-/importer:Mp3Importer
+#begin Assets/Audio/Diegetic/eat_apple_sound.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Audio/Diegetic/explode1.mp3
+/build:Assets/Audio/Diegetic/eat_apple_sound.wav
 
-#begin Assets/Audio/Diegetic/smokealarm1.ogg
-/importer:OggImporter
+#begin Assets/Audio/Diegetic/eat_poison_sound.wav
+/importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Assets/Audio/Diegetic/smokealarm1.ogg
+/build:Assets/Audio/Diegetic/eat_poison_sound.wav
+
+#begin Assets/Audio/Diegetic/snake_hissing.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Audio/Diegetic/snake_hissing.wav
+
+#begin Assets/Audio/Non Diegetic/game_background_sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Audio/Non Diegetic/game_background_sound.wav
+
+#begin Assets/Audio/Non Diegetic/menu_button_click_sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Audio/Non Diegetic/menu_button_click_sound.wav
+
+#begin Assets/Audio/Non Diegetic/snake_3D_background_music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Audio/Non Diegetic/snake_3D_background_music.wav
+
+#begin Assets/Audio/Non Diegetic/start_level_countdown_timer_sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Audio/Non Diegetic/start_level_countdown_timer_sound.wav
+
+#begin Assets/Audio/Non Diegetic/start_level_countdown_timer_sound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Assets/Audio/Non Diegetic/start_level_countdown_timer_sound.wav
 
 #begin Assets/black.jpg
 /importer:TextureImporter
@@ -804,18 +840,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Assets/Textures/Snake Game/Backgrounds/Controls/snake_controls.png
-
-#begin Assets/Textures/Snake Game/Backgrounds/Controls/xyz_controls.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Assets/Textures/Snake Game/Backgrounds/Controls/xyz_controls.png
 
 #begin Assets/Textures/Snake Game/Backgrounds/Controls/xyz_controls.png
 /importer:TextureImporter

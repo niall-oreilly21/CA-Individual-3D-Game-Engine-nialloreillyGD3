@@ -1,7 +1,7 @@
 ﻿#region Pre-compiler directives
 
 #define DEMO
-#define SHOW_DEBUG_INFO
+//#define SHOW_DEBUG_INFO
 
 #endregion
 
@@ -62,13 +62,12 @@ namespace GD.App
         private GameObject bombGameObject;
         private GameObject menuGameObjectTitle;
         private GameObject snakeCameraGameObject;
-        private BasicEffect exitSignEffect;
-        SpriteFont spriteFontMenu;
-        SpriteFont spriteFontUI;
+        private BasicEffect cubeEffect;
         private Dictionary<string, MenuButton> menuButtonDictionary;
         private ContentDictionary<Texture2D> textureDictionary;
         private ContentDictionary<SpriteFont> fontDictionary;
         private Dictionary<string, Curve3D> curveDictionary;
+        private Dictionary<string, SoundEffect> soundEffectDictionary;
         private SnakeManager snakeManager;
 
 #if DEMO
@@ -134,6 +133,13 @@ namespace GD.App
                     ResetIntroCameraCurve();
                     break;
 
+                case EventActionType.ResetCameraUI:
+                    string uiName = (string)eventData.Parameters[0];
+                    UpdateCameraUI(uiName);
+                    break;
+
+
+
             }
         }
 
@@ -193,11 +199,11 @@ namespace GD.App
             //initialize curves used by cameras
             InitializeCurves();
 
-            //initialize rails used by cameras
-            InitializeRails();
-
             //add scene manager and starting scenes
             InitializeScenes();
+
+            //add aounds to Sound Manager
+            InitializeSoundManagerEffects();
 
             //add collidable drawn stuff
             InitializeCollidableContent(worldScale);
@@ -221,7 +227,12 @@ namespace GD.App
             #region Start Events - Menu etc
 
             //start the game paused
+
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnPlay2D, new object[] {AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME}));
+
             EventDispatcher.Raise(new EventData(EventCategoryType.Menu, EventActionType.OnPause));
+
 
             #endregion
         }
@@ -533,10 +544,19 @@ namespace GD.App
         {
             #region Create Audio Menu Scene
             GameObject menuGameObject = null;
+
             var audioMenuScene = new Scene2D(AppData.AUDIO_SCENE_NAME);
+            menuGameObject = CloneMenusBackgroundTexture(AppData.MENU_BACKGROUND_NAME + AppData.WIN_LEVEL_MENU_SCENE_NAME, AppData.MENU_BACKGROUND_TEXTURE_NAME);
+            audioMenuScene.Add(menuGameObject);
             audioMenuScene.Add(menuGameObjectTitle);
 
             menuGameObject = CloneModelGameObjectButton(AppData.BACK_BUTTON_NAME);
+            audioMenuScene.Add(menuGameObject);
+
+            menuGameObject = CloneModelGameObjectButton(AppData.MUTE_VOLUME_BUTTON_NAME);
+            audioMenuScene.Add(menuGameObject);
+
+            menuGameObject = CloneModelGameObjectButton(AppData.UNMUTE_VOLUME_BUTTON_NAME);
             audioMenuScene.Add(menuGameObject);
 
             #region Add Scene to Manager
@@ -645,32 +665,28 @@ namespace GD.App
 
         private void LoadMediaAssets()
         {
-            //sounds, models, textures
             LoadSounds();
             LoadTextures();
-            LoadModels();
             LoadFonts();
         }
 
         private void LoadSounds()
         {
-            var soundEffect =
-                Content.Load<SoundEffect>("Assets/Audio/Diegetic/explode1");
+            soundEffectDictionary.Add(AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME, Content.Load<SoundEffect>(AppData.SNAKE_MENU_BACKGROUND_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.BUTTON_CLICK_SOUND_NAME, Content.Load<SoundEffect>(AppData.BUTTON_CLICK_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.EAT_APPLE_SOUND_NAME, Content.Load<SoundEffect>(AppData.EAT_APPLE_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.EAT_POISON_SOUND_NAME, Content.Load<SoundEffect>(AppData.EAT_POISON_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_NAME, Content.Load<SoundEffect>(AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.SNAKE_HISSING_SOUND_NAME, Content.Load<SoundEffect>(AppData.SNAKE_HISSING_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.IN_GAME_BACKGROUND_SOUND_NAME, Content.Load<SoundEffect>(AppData.IN_GAME_BACKGROUND_SOUND_TEXTURE_PATH));
+    }
 
-            //add the new sound effect
-            soundManager.Add(new Cue(
-                "boom1",
-                soundEffect,
-                SoundCategoryType.Alarm,
-                new Vector3(1, 1, 0),
-                false));
-        }
-
-        private void LoadFonts()
+    private void LoadFonts()
         {
             fontDictionary.Add(AppData.MENU_FONT_NAME, AppData.MENU_FONT_PATH);
             fontDictionary.Add(AppData.UI_FONT_NAME, AppData.UI_FONT_PATH);
         }
+
         private void LoadTextures()
         {
             #region Game Textures
@@ -699,12 +715,8 @@ namespace GD.App
             #endregion Controls Textures
 
             #endregion Menu Textures
-    }
-
-        private void LoadModels()
-        {
-            //load and add to dictionary
         }
+
 
         private void InitializeCurves()
         {
@@ -725,11 +737,6 @@ namespace GD.App
 
         }
 
-        private void InitializeRails()
-        {
-            //load and add to dictionary
-        }
-
         private void InitializeScenes()
         {
             //initialize a scene
@@ -745,9 +752,6 @@ namespace GD.App
         private void InitializeEffects()
         {
 
-            spriteFontMenu = Content.Load<SpriteFont>("Assets/Fonts/menu_font");
-            spriteFontUI = Content.Load<SpriteFont>("Assets/Fonts/ui_font");
-
             //only for skybox with lighting disabled
             unlitEffect = new BasicEffect(_graphics.GraphicsDevice);
             unlitEffect.TextureEnabled = true;
@@ -761,21 +765,18 @@ namespace GD.App
 
             #region Exit Sign Emission Effect
 
-            exitSignEffect = new BasicEffect(_graphics.GraphicsDevice);
-            exitSignEffect.TextureEnabled = true;
-            exitSignEffect.LightingEnabled = true;
+            cubeEffect = new BasicEffect(_graphics.GraphicsDevice);
+            cubeEffect.TextureEnabled = true;
+            cubeEffect.LightingEnabled = true;
 
-            exitSignEffect.PreferPerPixelLighting = true;
+            cubeEffect.PreferPerPixelLighting = true;
 
-            //exitSignEffect.AmbientLightColor = Color.AntiqueWhite.ToVector3();
-            exitSignEffect.EmissiveColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
-            exitSignEffect.EnableDefaultLighting();
-            exitSignEffect.DirectionalLight0.DiffuseColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
-            exitSignEffect.DirectionalLight0.Direction = new Vector3(0, 0, 1);
+            cubeEffect.EmissiveColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
+            cubeEffect.EnableDefaultLighting();
+            cubeEffect.DirectionalLight0.DiffuseColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
+            cubeEffect.DirectionalLight0.Direction = new Vector3(0, 0, 1);
 
-            //exitSignEffect.AmbientLightColor = new Vector3(232 / 255f, 71 / 255f, 76 / 255f);
-
-            exitSignEffect.AmbientLightColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
+            cubeEffect.AmbientLightColor = new Vector3(165 / 255f, 226 / 255f, 255 / 255f);
 
             #endregion
         }
@@ -789,7 +790,7 @@ namespace GD.App
                 target.Transform.SetRotation(curveDictionary[AppData.INTRO_CURVE_ROTATIONS_NAME].Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
             };
 
-            cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
+            cameraManager.SetActiveCamera(AppData.INTRO_CURVE_CAMERA_NAME);
 
             cameraManager.ActiveCamera.gameObject.RemoveComponent<CurveBehaviour>();
 
@@ -959,7 +960,7 @@ namespace GD.App
             cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
 
             //Curve Camera
-            cameraManager.Add(AppData.CURVE_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.CURVE_CAMERA_NAME, new Vector3(0,0,0), new Vector3(0, 0, 0)));
+            cameraManager.Add(AppData.INTRO_CURVE_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.INTRO_CURVE_CAMERA_NAME, new Vector3(0,0,0), new Vector3(0, 0, 0)));
 
             cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
             #endregion Snake Cameras
@@ -1015,7 +1016,7 @@ namespace GD.App
             var meshBase2 = new CubeMesh(_graphics.GraphicsDevice);
 
             gameObject.AddComponent(new Renderer(
-                new GDBasicEffect(exitSignEffect),
+                new GDBasicEffect(cubeEffect),
                 new Material(texture, 1f),
                 meshBase2));
 
@@ -1100,12 +1101,22 @@ namespace GD.App
             var snakeSkin = new Material(texture, 1);
             CubeMesh snakeBodyMesh = new CubeMesh(_graphics.GraphicsDevice);
             OctahedronMesh snakeTailMesh = new OctahedronMesh(_graphics.GraphicsDevice);
+
+
+            Dictionary<string, CameraKeys> cameraKeyDictionary = new Dictionary<string, CameraKeys>();
+       
+            cameraKeyDictionary.Add(AppData.FRONT_CAMERA_NAME, new CameraKeys(AppData.FRONT_CAMERA_LEFT_KEY, AppData.FRONT_CAMERA_RIGHT_KEY, AppData.FRONT_CAMERA_BACKWARD_KEY, AppData.FRONT_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.BACK_CAMERA_NAME, new CameraKeys(AppData.BACK_CAMERA_LEFT_KEY, AppData.BACK_CAMERA_RIGHT_KEY, AppData.BACK_CAMERA_BACKWARD_KEY, AppData.BACK_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.RIGHT_CAMERA_NAME, new CameraKeys(AppData.RIGHT_CAMERA_LEFT_KEY, AppData.RIGHT_CAMERA_RIGHT_KEY, AppData.RIGHT_CAMERA_BACKWARD_KEY, AppData.RIGHT_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.LEFT_CAMERA_NAME, new CameraKeys(AppData.LEFT_CAMERA_LEFT_KEY, AppData.LEFT_CAMERA_RIGHT_KEY, AppData.LEFT_CAMERA_BACKWARD_KEY, AppData.LEFT_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.TOP_CAMERA_NAME, new CameraKeys(AppData.TOP_CAMERA_LEFT_KEY, AppData.TOP_CAMERA_RIGHT_KEY, AppData.TOP_CAMERA_BACKWARD_KEY, AppData.TOP_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.BOTTOM_CAMERA_NAME, new CameraKeys(AppData.BOTTOM_CAMERA_LEFT_KEY, AppData.BOTTOM_CAMERA_RIGHT_KEY, AppData.BOTTOM_CAMERA_BACKWARD_KEY, AppData.BOTTOM_CAMERA_FORWARD_KEY));
+
+            snakeGameObject.AddComponent(new CollidableSnakeController(cameraKeyDictionary));
+            snakeGameObject.Transform.SetRotation(0, 90, 0);
+
             snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh, snakeTailMesh, snakeSkin, AppData.SNAKE_DEFAULT_MOVE_SPEED, AppData.SNAKE_MULTIPLIER);
             Application.SnakeManager = snakeManager;
-
-            snakeGameObject.Transform.SetRotation(0, 90, 0);
-            snakeGameObject.AddComponent(new CollidableSnakeController());
-
         }
 
         private void InitilizeFood()
@@ -1407,6 +1418,101 @@ namespace GD.App
             #endregion
         }
 
+        private void InitializeSoundManagerEffects()
+        {
+
+            #region Non Diegetic Sounds
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME,
+                    soundEffectDictionary[AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME],
+                    SoundCategoryType.BackgroundMusic,
+                    AppData.SNAKE_MENU_BACKGROUND_SOUND_PITCH,
+                    true
+                )
+            );
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.BUTTON_CLICK_SOUND_NAME,
+                    soundEffectDictionary[AppData.BUTTON_CLICK_SOUND_NAME],
+                    SoundCategoryType.UI,
+                    AppData.BUTTON_CLICK_SOUND_PITCH,
+                    false
+                )
+            );
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_NAME,
+                    soundEffectDictionary[AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_NAME],
+                    SoundCategoryType.UI,
+                    AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_PITCH,
+                    false
+                )
+            );
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.IN_GAME_BACKGROUND_SOUND_NAME,
+                    soundEffectDictionary[AppData.IN_GAME_BACKGROUND_SOUND_NAME],
+                    SoundCategoryType.BackgroundMusic,
+                    AppData.IN_GAME_BACKGROUND_SOUND_PITCH,
+                    false
+                )
+            );
+            #endregion Non Diegetic Sounds
+
+            #region Diegetic Sounds
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.EAT_APPLE_SOUND_NAME,
+                    soundEffectDictionary[AppData.EAT_APPLE_SOUND_NAME],
+                    SoundCategoryType.Consumable,
+                    AppData.EAT_APPLE_SOUND_PITCH,
+                    false
+                )
+            );
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.EAT_POISON_SOUND_NAME,
+                    soundEffectDictionary[AppData.EAT_POISON_SOUND_NAME],
+                    SoundCategoryType.Consumable,
+                    AppData.EAT_POISON_SOUND_PITCH,
+                    false
+                )
+            );
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.SNAKE_HISSING_SOUND_NAME,
+                    soundEffectDictionary[AppData.SNAKE_HISSING_SOUND_NAME],
+                    SoundCategoryType.Player,
+                    AppData.SNAKE_HISSING_SOUND_PITCH,
+                    false
+                )
+            );
+            #endregion Diegetic Sounds
+
+        }
+
         private void InitializeDictionaries()
         {
             //TODO - add texture dictionary, soundeffect dictionary, model dictionary
@@ -1415,6 +1521,7 @@ namespace GD.App
 
             textureDictionary = new ContentDictionary<Texture2D>();
             fontDictionary = new ContentDictionary<SpriteFont>();
+            soundEffectDictionary = new Dictionary<string, SoundEffect>();
 
 
         }
@@ -1444,38 +1551,60 @@ namespace GD.App
         private void InitilizeButtonTextTranslationsDictionary()
         {
 
-            #region Main Menu Button
+            #region Main Menu Buttons
             menuButtonDictionary = new Dictionary<string, MenuButton>();
             menuButtonDictionary.Add(AppData.START_BUTTON_NAME, new MenuButton(AppData.START_BUTTON_TRANSLATION, AppData.START_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.START_BUTTON_TEXT, new EventData(EventCategoryType.SceneManager, EventActionType.OnLevelsScene, new object[] {AppData.LEVELS_SCENE_NAME})));
             menuButtonDictionary.Add(AppData.AUDIO_BUTTON_NAME, new MenuButton(AppData.AUDIO_BUTTON_TRANSLATION, AppData.AUDIO_BUTTON_TEXT_OFFSET, AppData.AUDIO_BUTTON_COLOR, AppData.AUDIO_BUTTON_TEXT, new EventData(EventCategoryType.SceneManager, EventActionType.OnAudioScene, new object[] { AppData.AUDIO_SCENE_NAME})));
             menuButtonDictionary.Add(AppData.CONTROLS_BUTTON_NAME, new MenuButton(AppData.CONTROLS_BUTTON_TRANSLATION, AppData.CONTROLS_BUTTON_TEXT_OFFSET, AppData.CONTROLS_BUTTON_COLOR, AppData.CONTROLS_BUTTON_TEXT, new EventData(EventCategoryType.SceneManager, EventActionType.OnControlsScene, new object[] { AppData.CONTROLS_SCENE_NAME })));
             menuButtonDictionary.Add(AppData.EXIT_BUTTON_NAME, new MenuButton(AppData.EXIT_BUTTON_TRANSLATION, AppData.EXIT_BUTTON_TEXT_OFFSET, AppData.EXIT_BUTTON_COLOR, AppData.EXIT_BUTTON_TEXT, new EventData(EventCategoryType.SceneManager, EventActionType.OnGameExit)));
-            #endregion Main Menu Button
+            #endregion Main Menu Buttons
 
-            #region Levels Menu Button
+            #region Levels Menu Buttons
             menuButtonDictionary.Add(AppData.LEVEL_ONE_BUTTON_NAME, new MenuButton(AppData.LEVEL_ONE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_ONE_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { AppData.LEVEL_ONE })));
             menuButtonDictionary.Add(AppData.LEVEL_TWO_BUTTON_NAME, new MenuButton(AppData.LEVEL_TWO_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_TWO_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { AppData.LEVEL_TWO })));
             menuButtonDictionary.Add(AppData.LEVEL_THREE_BUTTON_NAME, new MenuButton(AppData.LEVEL_THREE_BUTTON_TRANSLATION, AppData.LEVEL_GAME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.LEVEL_THREE_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { AppData.LEVEL_THREE })));
             #endregion Levels Menu Button
 
-            #region Pause Menu Button
+            #region Pause Menu Buttons
             menuButtonDictionary.Add(AppData.RESUME_BUTTON_NAME, new MenuButton(AppData.RESUME_BUTTON_TRANSLATION, AppData.RESUME_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.RESUME_BUTTON_TEXT, new EventData(EventCategoryType.Menu, EventActionType.OnPlay)));
             menuButtonDictionary.Add(AppData.MAIN_MENU_BUTTON_NAME, new MenuButton(AppData.MAIN_MENU_BUTTON_TRANSLATION, AppData.MAIN_MENU_BUTTON_TEXT_OFFSET, AppData.EXIT_BUTTON_COLOR, AppData.MAIN_MENU_BUTTON_TEXT, new EventData(EventCategoryType.SceneManager, EventActionType.OnMainMenuScene, new object[] { AppData.MAIN_MENU_SCENE_NAME })));
-            #endregion Pause Menu Button
+            #endregion Pause Menu Buttons
 
             #region Back Button
             menuButtonDictionary.Add(AppData.BACK_BUTTON_NAME, new MenuButton(AppData.BACK_BUTTON_TRANSLATION, AppData.BACK_BUTTON_TEXT_OFFSET, AppData.BACK_BUTTON_COLOR, AppData.BACK_BUTTON_TEXT, new EventData(EventCategoryType.SceneManager, EventActionType.OnMainMenuScene, new object[] { AppData.MAIN_MENU_SCENE_NAME })));
             #endregion Back Button
 
             #region Restart Button
-            menuButtonDictionary.Add(AppData.RESTART_BUTTON_NAME, new MenuButton(AppData.RESTART_BUTTON_TRANSLATION, AppData.RESTART_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.RESTART_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { stateManager.CurrentLevel})));
+            menuButtonDictionary.Add(AppData.RESTART_BUTTON_NAME, new MenuButton(AppData.RESTART_BUTTON_TRANSLATION, AppData.RESTART_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.RESTART_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.RestartOfLevel)));
             #endregion Restart Button
 
             #region Next Level Button
             menuButtonDictionary.Add(AppData.NEXT_LEVEL_BUTTON_NAME, new MenuButton(AppData.NEXT_LEVEL_BUTTON_TRANSLATION, AppData.NEXT_LEVEL_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.NEXT_LEVEL_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { stateManager.CurrentLevel + 1})));
             #endregion Next Level Button
+
+            #region Audio Level Buttons
+            menuButtonDictionary.Add(AppData.MUTE_VOLUME_BUTTON_NAME, new MenuButton(AppData.MUTE_VOLUME_BUTTON_TRANSLATION, AppData.MUTE_VOLUME_BUTTON_TEXT_OFFSET, AppData.AUDIO_BUTTON_COLOR, AppData.MUTE_VOLUME_BUTTON_TEXT, new EventData(EventCategoryType.Sound, EventActionType.OnMute)));
+            menuButtonDictionary.Add(AppData.UNMUTE_VOLUME_BUTTON_NAME, new MenuButton(AppData.UNMUTE_VOLUME_BUTTON_TRANSLATION, AppData.UNMUTE_VOLUME_BUTTON_TEXT_OFFSET, AppData.AUDIO_BUTTON_COLOR, AppData.UNMUTE_VOLUME_BUTTON_TEXT, new EventData(EventCategoryType.Sound, EventActionType.OnUnMute)));
+            #endregion Audio Level Buttons
     }
 
+    private int GetCurrentLevel()
+        {
+            if(stateManager.CurrentLevel == AppData.LEVEL_ONE)
+                {
+                return AppData.LEVEL_ONE;
+            }
+            else if (stateManager.CurrentLevel == AppData.LEVEL_TWO)
+            {
+                return AppData.LEVEL_TWO;
+            }
+            else if (stateManager.CurrentLevel == AppData.LEVEL_THREE)
+            {
+                return AppData.LEVEL_THREE;
+            }
+
+            return 0;
+        }
         private void InitializeDebug(bool showCollisionSkins = true)
         {
             //intialize the utility component
@@ -1543,6 +1672,9 @@ namespace GD.App
                 menuManager.SetActiveScene(AppData.PAUSE_SCENE_NAME);
                 EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                     EventActionType.OnPause));
+
+
+                EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { AppData.IN_GAME_BACKGROUND_SOUND_NAME }));
             }
 
             #endregion

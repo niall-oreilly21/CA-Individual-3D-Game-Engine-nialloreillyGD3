@@ -10,6 +10,7 @@ using GD.Engine.Data;
 using GD.Engine.Globals;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System.Drawing;
 using Color = Microsoft.Xna.Framework.Color;
 
@@ -142,7 +143,7 @@ namespace GD.App
 
         #region GameObjects Scale
         public static readonly float SCALE_AMOUNT = 3f;
-        public static readonly float COLLIDER_SCALE_AMOUNT = 2.5f;
+        public static readonly float COLLIDER_SCALE_AMOUNT = 3f;
         public static readonly Vector3 SNAKE_GAMEOBJECTS_SCALE =  new Vector3(SCALE_AMOUNT, SCALE_AMOUNT, SCALE_AMOUNT);
         public static readonly Vector3 SNAKE_GAMEOBJECTS_COLLIDER_SCALE = new Vector3(COLLIDER_SCALE_AMOUNT, COLLIDER_SCALE_AMOUNT, COLLIDER_SCALE_AMOUNT);
         #endregion GameObjects Scale
@@ -191,8 +192,8 @@ namespace GD.App
         #endregion Left Camera
 
         #region Intro Camera
-        public static readonly string CURVE_CAMERA_NAME = "Intro curve camera";
-        public static readonly int CURVE_TIME_SPAN = 4000;
+        public static readonly string INTRO_CURVE_CAMERA_NAME = "Intro curve camera";
+        public static readonly int CURVE_TIME_SPAN = 3000;
 
         #region Curve Translations
         public static readonly Vector3[] CURVE_TRANSLATIONS = {DEFAULT_FRONT_CAMERA_TRANSLATION, DEFAULT_RIGHT_CAMERA_TRANSLATION, DEFAULT_BACK_CAMERA_TRANSLATION, DEFAULT_LEFT_CAMERA_TRANSLATION,DEFAULT_FRONT_CAMERA_TRANSLATION };
@@ -206,6 +207,55 @@ namespace GD.App
         #endregion Curve Rotations
 
         #endregion Intro Camera
+
+        #region Camera Keys
+
+        #region Front Camera Keys
+        public static readonly Keys FRONT_CAMERA_LEFT_KEY = Keys.A;
+        public static readonly Keys FRONT_CAMERA_RIGHT_KEY = Keys.D;
+        public static readonly Keys FRONT_CAMERA_BACKWARD_KEY = Keys.S;
+        public static readonly Keys FRONT_CAMERA_FORWARD_KEY = Keys.W;
+        #endregion Front Camera Keys
+
+        #region Back Camera Keys
+        public static readonly Keys BACK_CAMERA_LEFT_KEY = Keys.D;
+        public static readonly Keys BACK_CAMERA_RIGHT_KEY = Keys.A;
+        public static readonly Keys BACK_CAMERA_BACKWARD_KEY = Keys.W;
+        public static readonly Keys BACK_CAMERA_FORWARD_KEY = Keys.S;
+        #endregion Back Camera Keys
+
+
+        #region Right Camera Keys
+        public static readonly Keys RIGHT_CAMERA_LEFT_KEY = Keys.W;
+        public static readonly Keys RIGHT_CAMERA_RIGHT_KEY = Keys.S;
+        public static readonly Keys RIGHT_CAMERA_BACKWARD_KEY = Keys.A;
+        public static readonly Keys RIGHT_CAMERA_FORWARD_KEY = Keys.D;
+        #endregion Right Camera Keys
+
+
+        #region Left Camera Keys
+        public static readonly Keys LEFT_CAMERA_LEFT_KEY = Keys.S;
+        public static readonly Keys LEFT_CAMERA_RIGHT_KEY = Keys.W;
+        public static readonly Keys LEFT_CAMERA_BACKWARD_KEY = Keys.D;
+        public static readonly Keys LEFT_CAMERA_FORWARD_KEY = Keys.A;
+        #endregion Left Camera Keys
+
+        #region Top Camera Keys
+        public static readonly Keys TOP_CAMERA_LEFT_KEY = Keys.A;
+        public static readonly Keys TOP_CAMERA_RIGHT_KEY = Keys.D;
+        public static readonly Keys TOP_CAMERA_BACKWARD_KEY = Keys.S;
+        public static readonly Keys TOP_CAMERA_FORWARD_KEY = Keys.W;
+        #endregion Top Camera Keys
+
+        #region Bottom Camera Keys
+        public static readonly Keys BOTTOM_CAMERA_LEFT_KEY = Keys.A;
+        public static readonly Keys BOTTOM_CAMERA_RIGHT_KEY = Keys.D;
+        public static readonly Keys BOTTOM_CAMERA_BACKWARD_KEY = Keys.W;
+        public static readonly Keys BOTTOM_CAMERA_FORWARD_KEY = Keys.S;
+        #endregion Bottom Camera Keys
+
+        #endregion Camera Keys
+
         #endregion Cameras
 
         #region Consumables
@@ -338,6 +388,24 @@ namespace GD.App
 
         #endregion End Menu
 
+        #region Audio Menu
+
+        #region Mute Volume
+        public static readonly string MUTE_VOLUME_BUTTON_NAME = "Mute Button";
+        public static readonly Vector2 MUTE_VOLUME_BUTTON_TRANSLATION = new Vector2(0f, 85f);
+        public static readonly Vector2 MUTE_VOLUME_BUTTON_TEXT_OFFSET = new Vector2(70f, 5f);
+        public static readonly string MUTE_VOLUME_BUTTON_TEXT = "MUTE";
+        #endregion Mute Volume
+
+        #region Un Mute Volume
+        public static readonly string UNMUTE_VOLUME_BUTTON_NAME = "Un Mute Button";
+        public static readonly Vector2 UNMUTE_VOLUME_BUTTON_TRANSLATION = new Vector2(0f, -25f);
+        public static readonly Vector2 UNMUTE_VOLUME_BUTTON_TEXT_OFFSET = new Vector2(25f, 5f);
+        public static readonly string UNMUTE_VOLUME_BUTTON_TEXT = "UNMUTE";
+        #endregion UN Mute Volume
+
+        #endregion Audio Menu
+
         #endregion Menus
 
         #region Snake State Manager
@@ -349,7 +417,7 @@ namespace GD.App
         #region Food Level Default Figures
         private static readonly int DEFAULT_FOOD_LEVEL_ONE = 20;
         private static readonly int DEFAULT_FOOD_LEVEL_TWO = 15;
-        private static readonly int DEFAULT_FOOD_LEVEL_THREE = 5;
+        private static readonly int DEFAULT_FOOD_LEVEL_THREE = 10;
 
         public static readonly int[] DEFAULT_FOOD_EACH_LEVEL = { DEFAULT_FOOD_LEVEL_ONE, DEFAULT_FOOD_LEVEL_TWO, DEFAULT_FOOD_LEVEL_THREE };
         #endregion Food Level Default Figures
@@ -459,7 +527,7 @@ namespace GD.App
         public static readonly Vector2 END_MENU_UI_TEXT_OFFSET = new Vector2(350, APP_RESOLUTION.Y / 2 - 310);
 
         public static readonly string SNAKE_MENU_UI_TEXT_HIT_SNAKE = "You ran out of room!";
-        public static readonly string SNAKE_MENU_UI_TEXT_HIT_BOMB = "You ran into the fire!";
+        public static readonly string SNAKE_MENU_UI_TEXT_HIT_BOMB = "You ate some poison!";
         public static readonly string SNAKE_MENU_UI_TEXT_OUT_OF_TIME = "You ran out of time!";
         #endregion End Menu Screen Menu UI Text
 
@@ -468,7 +536,6 @@ namespace GD.App
         public static readonly Vector2 END_MENU_UI_FINAL_SCORE_TEXT_SCALE = new Vector2(1.4f, 1.4f);
         public static readonly Vector2 END_MENU_UI_FINAL_SCORE_TEXT_OFFSET = new Vector2(250, APP_RESOLUTION.Y / 2 - 200);
         public static readonly string END_MENU_UI_FINAL_SCORE_TEXT = "SCORE: ";
-        public static readonly string END_MENU_UI_HIGH_SCORE_TEXT = "HIGH SCORE: ";
         #endregion End Menu Final Score UI Text
 
         #endregion End Menu UI Text
@@ -486,7 +553,7 @@ namespace GD.App
         public static readonly Vector2 UI_TEXT_HELPER_TEXT_OFFSET = new Vector2(1040f, 370f);
 
         private static readonly string UI_TEXT_HELPER_TEXT_LEVEL_ONE = "Eat 10 Apples \nbefore the \ntimer runs out";
-        private static readonly string UI_TEXT_HELPER_TEXT_LEVEL_TWO = UI_TEXT_HELPER_TEXT_LEVEL_ONE + "\n\nAvoid the fire \nobstactles";
+        private static readonly string UI_TEXT_HELPER_TEXT_LEVEL_TWO = UI_TEXT_HELPER_TEXT_LEVEL_ONE + "\n\nAvoid the \npoison";
         private static readonly string UI_TEXT_HELPER_TEXT_LEVEL_THREE = "Survive for \nas long \nas possible";
         public static readonly string[] UI_TEXT_HELPER_TEXT = { UI_TEXT_HELPER_TEXT_LEVEL_ONE, UI_TEXT_HELPER_TEXT_LEVEL_TWO, UI_TEXT_HELPER_TEXT_LEVEL_THREE };
         #endregion UI Text Helper
@@ -578,6 +645,59 @@ namespace GD.App
         public static readonly string MENU_FONT_NAME = "Menu Font";
         public static readonly string UI_FONT_NAME = "UI Font";
         #endregion Fonts
+
+        #region Sounds
+        private static readonly string SOUND_BASE_PATH = "Assets/Audio/";
+        private static readonly string DIEGETIC_SOUND_BASE_PATH = SOUND_BASE_PATH + "Diegetic/";
+        private static readonly string NON_DIEGEITC_SOUND_BASE_PATH = SOUND_BASE_PATH + "Non Diegetic/";
+
+        #region Non Diegetic Sounds
+        #region Snake Menu Background Sound
+        public static readonly string SNAKE_MENU_BACKGROUND_SOUND_NAME = "Menu Background Sound";
+        public static readonly string SNAKE_MENU_BACKGROUND_SOUND_TEXTURE_PATH = NON_DIEGEITC_SOUND_BASE_PATH + "snake_3D_background_music";
+        public static readonly Vector3 SNAKE_MENU_BACKGROUND_SOUND_PITCH = new Vector3(0.5f, 0, 0);
+        #endregion Snake Menu Background Sound
+
+        #region Menu Button Click Sound
+        public static readonly string BUTTON_CLICK_SOUND_NAME = "Menu Button Click Sound";
+        public static readonly string BUTTON_CLICK_SOUND_TEXTURE_PATH = NON_DIEGEITC_SOUND_BASE_PATH + "menu_button_click_sound";
+        public static readonly Vector3 BUTTON_CLICK_SOUND_PITCH = new Vector3(0.4f, 0, 0);
+        #endregion Menu Button Click Sound
+    
+        #region Start Level Countdown Timer Sound
+        public static readonly string START_TIMER_COUNTDOWN_TIMER_SOUND_NAME = "Start Level Countdown Timer Sound";
+        public static readonly string START_TIMER_COUNTDOWN_TIMER_SOUND_TEXTURE_PATH = NON_DIEGEITC_SOUND_BASE_PATH + "start_level_countdown_timer_sound";
+        public static readonly Vector3 START_TIMER_COUNTDOWN_TIMER_SOUND_PITCH = new Vector3(0.5f, 0, 0);
+        #endregion Start Level Countdown Timer Sound
+
+        #region In Game Background Sound
+        public static readonly string IN_GAME_BACKGROUND_SOUND_NAME = "In Game Background Sound";
+        public static readonly string IN_GAME_BACKGROUND_SOUND_TEXTURE_PATH = NON_DIEGEITC_SOUND_BASE_PATH + "game_background_sound";
+        public static readonly Vector3 IN_GAME_BACKGROUND_SOUND_PITCH = new Vector3(0.25f, 0, 0);
+        #endregion In Game Background Sound
+        #endregion Non Diegetic Sounds
+
+        #region Diegetic Sounds
+        #region Eat Apple Sound
+        public static readonly string EAT_APPLE_SOUND_NAME = "Eat Apple Sound";
+        public static readonly string EAT_APPLE_SOUND_TEXTURE_PATH = DIEGETIC_SOUND_BASE_PATH + "eat_apple_sound";
+        public static readonly Vector3 EAT_APPLE_SOUND_PITCH = new Vector3(0.4f, 0, 0);
+        #endregion Eat Apple Sound
+
+        #region Eat Poison Sound
+        public static readonly string EAT_POISON_SOUND_NAME = "Eat Poison Sound";
+        public static readonly string EAT_POISON_SOUND_TEXTURE_PATH = DIEGETIC_SOUND_BASE_PATH + "eat_poison_sound";
+        public static readonly Vector3 EAT_POISON_SOUND_PITCH = new Vector3(0.4f, 0, 0);
+        #endregion Eat Poison Sound
+
+        #region Snake Hissing Sound
+        public static readonly string SNAKE_HISSING_SOUND_NAME = "Snake Hissing Sound";
+        public static readonly string SNAKE_HISSING_SOUND_TEXTURE_PATH = DIEGETIC_SOUND_BASE_PATH + "snake_hissing";
+        public static readonly Vector3 SNAKE_HISSING_SOUND_PITCH = new Vector3(0.7f, 0, 0);
+        #endregion Snake Hissing Sound
+        #endregion Diegetic Sounds
+
+        #endregion Sounds
 
         #endregion Snake
     }
