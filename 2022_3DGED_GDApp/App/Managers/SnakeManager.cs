@@ -87,7 +87,7 @@ namespace GD.Engine
                     Vector3 direction = (Vector3)eventData.Parameters[0];
                     GameTime gameTime = (GameTime)eventData.Parameters[1];
 
-                    if(Application.StateManager.Enabled == true)
+                    if(Application.StateManager.StartMove)
                     {
                         Move(direction, gameTime);
                     }                  
@@ -147,6 +147,7 @@ namespace GD.Engine
             Application.Player = newHead;
 
             this.snakeNumber = 0;
+
             this.snakeMoveSpeed = defaultMoveSpeed;
 
             Grow();
@@ -237,7 +238,7 @@ namespace GD.Engine
         gameObjectClone.AddComponent(cloneRenderer);
 
 
-            Collider cloneCollider = new SnakeCollider(gameObjectClone, false);
+            Collider cloneCollider = new SnakeCollider(gameObjectClone, true);
 
         cloneCollider.AddPrimitive(
             new Box(
@@ -263,7 +264,7 @@ namespace GD.Engine
             Renderer cloneRenderer = new Renderer(renderer.Effect, snakeMaterial, snakeTailMesh);
             gameObjectClone.AddComponent(cloneRenderer);
 
-            Collider cloneCollider = new SnakeCollider(gameObjectClone, false);
+            Collider cloneCollider = new SnakeCollider(gameObjectClone, true);
 
             cloneCollider.AddPrimitive(
                 new Box(
@@ -306,6 +307,9 @@ namespace GD.Engine
 
             gameObjectClone.GetComponent<CollidableSnakeController>().Direction = new Vector3(AppData.SCALE_AMOUNT, 0, 0);
 
+            gameObjectClone.AddComponent(new AudioListenerBehaviour());
+            gameObjectClone.AddComponent(new AudioEmitterBehaviour());
+
             return gameObjectClone;
         }
 
@@ -325,7 +329,7 @@ namespace GD.Engine
             {
                 snakeNumber++;
                 snakePart = CloneModelGameObjectSnakeBody(snakePart, "snake part " + snakeNumber, new Vector3(tail.Transform.Position.X, tail.Transform.Position.Y, tail.Transform.Position.Z));
-
+                System.Diagnostics.Debug.WriteLine(snakePart.Name);
                 snakePartsListBodies.Add(snakePart.GetComponent<SnakeCollider>().Body as Character);
 
                 snakePartsListBodies.Remove(tail);
@@ -336,7 +340,7 @@ namespace GD.Engine
 
             snakeMoveSpeed -= snakeMultiplier;
 
-            if(snakePartsListBodies.Count > 2 && Application.StateManager.Enabled == true)
+            if(snakePartsListBodies.Count > 2 && Application.StateManager.StartMove == true)
             {
                 EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
                 EventActionType.UpdateScore));

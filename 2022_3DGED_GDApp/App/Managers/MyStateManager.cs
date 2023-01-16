@@ -9,6 +9,7 @@ using SharpDX.MediaFoundation.DirectX;
 using System;
 using static System.Net.Mime.MediaTypeNames;
 using Application = GD.Engine.Globals.Application;
+using System.Windows.Forms;
 
 namespace App.Managers
 {
@@ -44,6 +45,7 @@ namespace App.Managers
         private int currentLevel;
         private int currentScore;
         private SnakeLevelsData snakeLevelsData;
+        private bool startMove;
 
         public MyStateManager(Game game, SnakeLevelsData snakeLevelsData) : base(game)
         {
@@ -52,9 +54,11 @@ namespace App.Managers
             this.totalSeconds = 0;
             this.minutes = 0;
             this.seconds = 0;
+            this.currentScore = 0;
             this.currentLevel = AppData.LEVEL_ONE;
             this.snakeLevelsData = snakeLevelsData;
             Enabled = false;
+            startMove = false;
         }
 
         #region Properties
@@ -94,7 +98,16 @@ namespace App.Managers
             }
             set
             {
+                System.Diagnostics.Debug.WriteLine(value);
                 currentLevel = value;
+            }
+        }
+
+        public bool StartMove
+        {
+            get
+            {
+                return startMove;
             }
         }
 
@@ -129,6 +142,10 @@ namespace App.Managers
                     UpdateEndScreenUI(endScreenMessage);
                     break;
 
+                case EventActionType.RestartOfLevel:
+                    StartOfLevel();
+                    break;
+
                 default:
                     break;
             }
@@ -149,7 +166,7 @@ namespace App.Managers
             
             if(currentLevel == AppData.LEVEL_THREE)
             {
-                material2D.StringBuilder.Append(AppData.END_MENU_UI_FINAL_SCORE_TEXT + currentScore + "   " + AppData.END_MENU_UI_HIGH_SCORE_TEXT + 10);
+                material2D.StringBuilder.Append(AppData.END_MENU_UI_FINAL_SCORE_TEXT + currentScore);
             }
             
 
@@ -193,7 +210,12 @@ namespace App.Managers
 
         private void UpdateScoreText()
         {
-            currentScore++;
+            if(startMove)
+            {
+                System.Diagnostics.Debug.WriteLine("HERE");
+                currentScore++;
+            }
+            
             GameObject scoreGameObject = Application.UISceneManager.ActiveScene.Find((uiElement) => uiElement.Name == AppData.SCORE_UI_TEXT_NAME);
 
             var material2D = (TextMaterial2D)scoreGameObject.GetComponent<Renderer2D>().Material;
@@ -217,18 +239,22 @@ namespace App.Managers
 
             Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Static, RenderType.Opaque, (consumable) => consumable.GameObjectType == GameObjectType.Consumable);
 
-
+            System.Diagnostics.Debug.WriteLine(CurrentLevel);
             EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
-               EventActionType.UITextIsDrawn));
+               EventActionType.UITextIsNotDrawn));
 
-            //EventDispatcher.Raise(new EventData(EventCategoryType.Game,
-            //   EventActionType.ResetIntroCamera));
+            EventDispatcher.Raise(new EventData(EventCategoryType.Game,
+               EventActionType.ResetIntroCamera));
 
-            Application.CameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
+            currentScore = 0;
+            UpdateScoreText();
+
+            //Application.CameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
         }
 
         private void StartOfLevel()
         {
+            startMove = false;
             ResetLevel();
 
             int defaultFoodNumber = 0;
@@ -251,9 +277,12 @@ namespace App.Managers
                 EventActionType.InitilizeBombsStartOfLevel, parametersBombs));
             }
 
-            Enabled = true;
             EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
             EventActionType.OnPlay));
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnPause, new object[] { AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME }));
+
+           
         }
 
         private void StartNewLevel(GameObject removeGameObject)
@@ -261,10 +290,11 @@ namespace App.Managers
             Application.UISceneManager.ActiveScene.Remove((uiElement) => uiElement.Name == removeGameObject.Name);
 
             totalElapsedTimeMS = 0;
-            currentScore = 0;
-            UpdateScoreText();
+
             UpdateLevelText();
- 
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.Game, EventActionType.ResetCameraUI, new object[] { AppData.FRONT_CAMERA_UI_TEXT }));
+
             if (currentLevel > 0)
             {
                 maxTimeInMS = snakeLevelsData.TimesEachLevel[currentLevel - 1];
@@ -273,6 +303,8 @@ namespace App.Managers
 
             EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
             EventActionType.UITextIsDrawn));
+
+            startMove = true;
         }
     
     }

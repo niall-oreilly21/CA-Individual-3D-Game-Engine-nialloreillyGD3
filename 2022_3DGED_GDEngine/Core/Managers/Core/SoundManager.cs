@@ -1,6 +1,8 @@
 ﻿using GD.Engine.Events;
+using GD.Engine.Globals;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
+using SharpDX.X3DAudio;
 using System;
 using System.Collections.Generic;
 
@@ -165,18 +167,41 @@ namespace GD.Engine.Managers
 
         private void HandleSoundEvent(EventData eventData)
         {
+            string soundName = "";
+
             switch (eventData.EventActionType)
             {
                 case EventActionType.OnPlay2D:
-                    string soundName = (string)eventData.Parameters[0];
+                    soundName = (string)eventData.Parameters[0];
                     Play2D(soundName);
                     break;
-            } 
-        
-                //    if (eventData.EventActionType == EventActionType.OnPlay3D)
-                //Play3D(eventData.Parameters[0] as string,
-                //    eventData.Parameters[1] as AudioListener,
-                //    eventData.Parameters[2] as AudioEmitter);
+
+                case EventActionType.OnPause:
+                    soundName = (string)eventData.Parameters[0];
+                    Pause(soundName);
+                    break;
+
+                case EventActionType.OnResume:
+                    soundName = (string)eventData.Parameters[0];
+                    Resume(soundName);
+                    break;
+
+                case EventActionType.OnPlay3D:
+                    soundName = (string)eventData.Parameters[0];
+                    AudioListener listener = (AudioListener)eventData.Parameters[1];
+                    AudioEmitter emitter = (AudioEmitter)eventData.Parameters[2];
+                    Play3D(soundName, listener, emitter);
+                    break;
+
+                case EventActionType.OnMute:
+                    SetMasterVolume(0);
+                    break;
+
+                case EventActionType.OnUnMute:
+                    SetMasterVolume(5);
+                    break;
+            }
+
         }
 
         private void HandleMenuEvent(EventData eventData)

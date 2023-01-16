@@ -95,6 +95,23 @@ namespace GD.Engine
             if (gameObject.Name == AppData.RESTART_BUTTON_NAME)
             {
                 Application.StateManager.Enabled = true;
+
+                System.Diagnostics.Debug.WriteLine(Application.StateManager.CurrentLevel);
+            }
+
+            if (gameObject.Name == AppData.NEXT_LEVEL_BUTTON_NAME)
+            {
+                Application.StateManager.Enabled = true;
+            }
+
+            if (gameObject.Name == AppData.LEVEL_ONE_BUTTON_NAME || gameObject.Name == AppData.LEVEL_TWO_BUTTON_NAME || gameObject.Name == AppData.LEVEL_THREE_BUTTON_NAME)
+            {
+                Application.StateManager.Enabled = true;
+            }
+
+            if (gameObject.Name == AppData.MAIN_MENU_BUTTON_NAME)
+            {
+                EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnResume, new object[] { AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME }));
             }
         }
     }

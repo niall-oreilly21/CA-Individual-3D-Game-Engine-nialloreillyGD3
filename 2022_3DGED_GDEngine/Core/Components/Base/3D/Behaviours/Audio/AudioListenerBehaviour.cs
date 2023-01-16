@@ -15,6 +15,14 @@ namespace GD.Engine
             audioListener = new AudioListener();
         }
 
+        public AudioListener AudioListener 
+        {
+            get 
+            {
+                return audioListener; 
+            } 
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (transform == null || audioListener == null)
@@ -23,7 +31,6 @@ namespace GD.Engine
             audioListener.Position = transform.Translation;
             audioListener.Forward = transform.World.Forward;
             audioListener.Up = transform.World.Up;
-            //audioListener.Velocity = transform.Velocity;
         }
     }
 }

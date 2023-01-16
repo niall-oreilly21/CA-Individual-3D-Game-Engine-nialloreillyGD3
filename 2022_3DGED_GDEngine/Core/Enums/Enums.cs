@@ -215,7 +215,9 @@
         UITextIsNotDrawn,
         ResetIntroCamera,
         UpdateEndMenuScreenUIText,
-        RemoveSnake
+        RemoveSnake,
+        ResetCameraUI,
+        RestartOfLevel
     }
 
     /// <summary>

@@ -78,22 +78,7 @@ namespace GD.Engine
 
         protected override void HandleResponse(GameObject parentGameObject)
         {
-
-            if (parentGameObject.GameObjectType == GameObjectType.SnakePart)
-            {
-
-                if (parentGameObject.GetComponent<SnakeCollider>().Body as Character == Application.SnakeManager.SnakePartsListBodies[1]) return;
-
-                if (Application.SnakeManager.SnakePartsListBodies.Count > 2)
-                {
-                    if (parentGameObject.GetComponent<SnakeCollider>().Body as Character == Application.SnakeManager.SnakePartsListBodies[2]) return;
-                }
-
-    
-                    EventDispatcher.Raise(new EventData(EventCategoryType.SnakeManager,
-                    EventActionType.RemoveSnake, new object[] { parentGameObject }));
-
-            }
+           
 
 
         }

@@ -12,6 +12,14 @@ namespace GD.Engine
             audioEmitter = new AudioEmitter();
         }
 
+        public AudioEmitter AudioEmitter 
+        {
+            get 
+            { 
+                return audioEmitter; 
+            } 
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (transform == null || audioEmitter == null)
@@ -20,7 +28,6 @@ namespace GD.Engine
             audioEmitter.Position = transform.Translation;
             audioEmitter.Up = transform.World.Up;
             audioEmitter.Forward = transform.World.Forward;
-            //emitter.Velocity = transform.Velocity;
         }
     }
 }
