@@ -46,12 +46,12 @@ namespace GD.Engine.Managers
         protected override void SubscribeToEvents()
         {
             //handle add/remove events
-            EventDispatcher.Subscribe(EventCategoryType.SceneManager, HandleGameObjectEvents);
+            EventDispatcher.Subscribe(EventCategoryType.SceneManager, HandleMenuChangeEvents);
 
             base.SubscribeToEvents();
         }
 
-        protected void HandleGameObjectEvents(EventData eventData)
+        protected void HandleMenuChangeEvents(EventData eventData)
         {
             string menuName = "";
             switch (eventData.EventActionType)

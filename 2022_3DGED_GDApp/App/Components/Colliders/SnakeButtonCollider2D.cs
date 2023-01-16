@@ -84,8 +84,15 @@ namespace GD.Engine
         protected override void HandleMouseClick(MouseButton mouseButton)
         {
             base.HandleMouseClick(mouseButton);
-            
-            if(gameObject.Name == AppData.RESUME_BUTTON_NAME)
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnPlay2D, new object[] {AppData.BUTTON_CLICK_SOUND_NAME }));
+
+            if (gameObject.Name == AppData.RESUME_BUTTON_NAME)
+            {
+                Application.StateManager.Enabled = true;
+            }
+
+            if (gameObject.Name == AppData.RESTART_BUTTON_NAME)
             {
                 Application.StateManager.Enabled = true;
             }

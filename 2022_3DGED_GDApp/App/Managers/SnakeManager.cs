@@ -118,14 +118,15 @@ namespace GD.Engine
 
         private void RemoveSnake(GameObject removeSnakePart)
         {
-            if (Application.SceneManager.ActiveScene.Remove(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.Name == removeSnakePart.Name))
-            {
+                Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.SnakePart);
+                Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.Player);
+
                 EventDispatcher.Raise(new EventData(EventCategoryType.SceneManager,
                 EventActionType.OnLose, new object[] { AppData.END_MENU_SCENE_NAME }));
 
-                EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
-                EventActionType.UpdateEndMenuScreenUIText, new object[] { AppData.SNAKE_MENU_UI_TEXT_HIT_SNAKE }));
-            }
+            EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
+            EventActionType.UpdateEndMenuScreenUIText, new object[] { AppData.SNAKE_MENU_UI_TEXT_HIT_SNAKE }));
+
 
         }
 
@@ -236,7 +237,7 @@ namespace GD.Engine
         gameObjectClone.AddComponent(cloneRenderer);
 
 
-            Collider cloneCollider = new SnakeCollider(gameObjectClone, true);
+            Collider cloneCollider = new SnakeCollider(gameObjectClone, false);
 
         cloneCollider.AddPrimitive(
             new Box(
@@ -262,7 +263,7 @@ namespace GD.Engine
             Renderer cloneRenderer = new Renderer(renderer.Effect, snakeMaterial, snakeTailMesh);
             gameObjectClone.AddComponent(cloneRenderer);
 
-            Collider cloneCollider = new SnakeCollider(gameObjectClone, true);
+            Collider cloneCollider = new SnakeCollider(gameObjectClone, false);
 
             cloneCollider.AddPrimitive(
                 new Box(

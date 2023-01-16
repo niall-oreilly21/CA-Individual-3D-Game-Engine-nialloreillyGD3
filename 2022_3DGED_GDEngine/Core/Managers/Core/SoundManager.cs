@@ -165,10 +165,18 @@ namespace GD.Engine.Managers
 
         private void HandleSoundEvent(EventData eventData)
         {
-            if (eventData.EventActionType == EventActionType.OnPlay3D)
-                Play3D(eventData.Parameters[0] as string,
-                    eventData.Parameters[1] as AudioListener,
-                    eventData.Parameters[2] as AudioEmitter);
+            switch (eventData.EventActionType)
+            {
+                case EventActionType.OnPlay2D:
+                    string soundName = (string)eventData.Parameters[0];
+                    Play2D(soundName);
+                    break;
+            } 
+        
+                //    if (eventData.EventActionType == EventActionType.OnPlay3D)
+                //Play3D(eventData.Parameters[0] as string,
+                //    eventData.Parameters[1] as AudioListener,
+                //    eventData.Parameters[2] as AudioEmitter);
         }
 
         private void HandleMenuEvent(EventData eventData)
@@ -203,6 +211,8 @@ namespace GD.Engine.Managers
         }
 
         #endregion Constructors
+
+        
 
         #region Actions - Add, Play, Pause, Volume
 
@@ -250,6 +260,7 @@ namespace GD.Engine.Managers
         {
             if (id == null)
                 return;
+
 
             id = id.Trim();
 

@@ -52,7 +52,11 @@ namespace GD.Engine
 
         private void HandleCameraSwitch()
         {
-            this.activeCameraKeys = cameraKeysDictionary[Application.CameraManager.ActiveCamera.gameObject.Name];
+            if(Application.CameraManager.ActiveCamera.gameObject.Name != AppData.INTRO_CURVE_CAMERA_NAME)
+            {
+                this.activeCameraKeys = cameraKeysDictionary[Application.CameraManager.ActiveCamera.gameObject.Name];
+            }
+            
         }
 
         public virtual void HandleKeyboardInput(GameTime gameTime)

@@ -69,6 +69,7 @@ namespace GD.App
         private ContentDictionary<Texture2D> textureDictionary;
         private ContentDictionary<SpriteFont> fontDictionary;
         private Dictionary<string, Curve3D> curveDictionary;
+        private Dictionary<string, SoundEffect> soundEffectDictionary;
         private SnakeManager snakeManager;
 
 #if DEMO
@@ -193,11 +194,11 @@ namespace GD.App
             //initialize curves used by cameras
             InitializeCurves();
 
-            //initialize rails used by cameras
-            InitializeRails();
-
             //add scene manager and starting scenes
             InitializeScenes();
+
+            //add aounds to Sound Manager
+            InitializeSoundManagerEffects();
 
             //add collidable drawn stuff
             InitializeCollidableContent(worldScale);
@@ -221,7 +222,14 @@ namespace GD.App
             #region Start Events - Menu etc
 
             //start the game paused
+
+
+            string dialogueObjectName = "Menu Background Music";
+            object[] parameters = { dialogueObjectName };
+            EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnPlay2D, parameters));
+
             EventDispatcher.Raise(new EventData(EventCategoryType.Menu, EventActionType.OnPause));
+
 
             #endregion
         }
@@ -645,25 +653,19 @@ namespace GD.App
 
         private void LoadMediaAssets()
         {
-            //sounds, models, textures
             LoadSounds();
             LoadTextures();
-            LoadModels();
             LoadFonts();
         }
 
         private void LoadSounds()
         {
-            var soundEffect =
-                Content.Load<SoundEffect>("Assets/Audio/Diegetic/explode1");
 
-            //add the new sound effect
-            soundManager.Add(new Cue(
-                "boom1",
-                soundEffect,
-                SoundCategoryType.Alarm,
-                new Vector3(1, 1, 0),
-                false));
+            soundEffectDictionary.Add(AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME, Content.Load<SoundEffect>(AppData.SNAKE_MENU_BACKGROUND_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.BUTTON_CLICK_SOUND_NAME, Content.Load<SoundEffect>(AppData.BUTTON_CLICK_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.EAT_APPLE_SOUND_NAME, Content.Load<SoundEffect>(AppData.EAT_APPLE_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.EAT_POISON_SOUND_NAME, Content.Load<SoundEffect>(AppData.EAT_POISON_SOUND_TEXTURE_PATH));
+            soundEffectDictionary.Add(AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_NAME, Content.Load<SoundEffect>(AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_TEXTURE_PATH));
         }
 
         private void LoadFonts()
@@ -671,6 +673,7 @@ namespace GD.App
             fontDictionary.Add(AppData.MENU_FONT_NAME, AppData.MENU_FONT_PATH);
             fontDictionary.Add(AppData.UI_FONT_NAME, AppData.UI_FONT_PATH);
         }
+
         private void LoadTextures()
         {
             #region Game Textures
@@ -699,12 +702,8 @@ namespace GD.App
             #endregion Controls Textures
 
             #endregion Menu Textures
-    }
-
-        private void LoadModels()
-        {
-            //load and add to dictionary
         }
+
 
         private void InitializeCurves()
         {
@@ -723,11 +722,6 @@ namespace GD.App
             }
 
 
-        }
-
-        private void InitializeRails()
-        {
-            //load and add to dictionary
         }
 
         private void InitializeScenes()
@@ -789,7 +783,7 @@ namespace GD.App
                 target.Transform.SetRotation(curveDictionary[AppData.INTRO_CURVE_ROTATIONS_NAME].Evaluate(gameTime.TotalGameTime.TotalMilliseconds, 1));
             };
 
-            cameraManager.SetActiveCamera(AppData.CURVE_CAMERA_NAME);
+            cameraManager.SetActiveCamera(AppData.INTRO_CURVE_CAMERA_NAME);
 
             cameraManager.ActiveCamera.gameObject.RemoveComponent<CurveBehaviour>();
 
@@ -959,7 +953,7 @@ namespace GD.App
             cameraManager.Add(AppData.LEFT_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.LEFT_CAMERA_NAME, AppData.DEFAULT_LEFT_CAMERA_ROTATION, AppData.DEFAULT_LEFT_CAMERA_TRANSLATION));
 
             //Curve Camera
-            cameraManager.Add(AppData.CURVE_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.CURVE_CAMERA_NAME, new Vector3(0,0,0), new Vector3(0, 0, 0)));
+            cameraManager.Add(AppData.INTRO_CURVE_CAMERA_NAME, CloneModelGameObjectCamera(cameraGameObject, AppData.INTRO_CURVE_CAMERA_NAME, new Vector3(0,0,0), new Vector3(0, 0, 0)));
 
             cameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
             #endregion Snake Cameras
@@ -1103,9 +1097,7 @@ namespace GD.App
 
 
             Dictionary<string, CameraKeys> cameraKeyDictionary = new Dictionary<string, CameraKeys>();
-
-            
-
+       
             cameraKeyDictionary.Add(AppData.FRONT_CAMERA_NAME, new CameraKeys(AppData.FRONT_CAMERA_LEFT_KEY, AppData.FRONT_CAMERA_RIGHT_KEY, AppData.FRONT_CAMERA_BACKWARD_KEY, AppData.FRONT_CAMERA_FORWARD_KEY));
             cameraKeyDictionary.Add(AppData.BACK_CAMERA_NAME, new CameraKeys(AppData.BACK_CAMERA_LEFT_KEY, AppData.BACK_CAMERA_RIGHT_KEY, AppData.BACK_CAMERA_BACKWARD_KEY, AppData.BACK_CAMERA_FORWARD_KEY));
             cameraKeyDictionary.Add(AppData.RIGHT_CAMERA_NAME, new CameraKeys(AppData.RIGHT_CAMERA_LEFT_KEY, AppData.RIGHT_CAMERA_RIGHT_KEY, AppData.RIGHT_CAMERA_BACKWARD_KEY, AppData.RIGHT_CAMERA_FORWARD_KEY));
@@ -1118,12 +1110,6 @@ namespace GD.App
 
             snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh, snakeTailMesh, snakeSkin, AppData.SNAKE_DEFAULT_MOVE_SPEED, AppData.SNAKE_MULTIPLIER);
             Application.SnakeManager = snakeManager;
-
-
-
-
-
-
         }
 
         private void InitilizeFood()
@@ -1425,6 +1411,78 @@ namespace GD.App
             #endregion
         }
 
+        private void InitializeSoundManagerEffects()
+        {
+
+            #region Non Diegetic Sounds
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME,
+                    soundEffectDictionary[AppData.SNAKE_MENU_BACKGROUND_SOUND_NAME],
+                    SoundCategoryType.BackgroundMusic,
+                    AppData.SNAKE_MENU_BACKGROUND_SOUND_PITCH,
+                    true
+                )
+            );
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.BUTTON_CLICK_SOUND_NAME,
+                    soundEffectDictionary[AppData.BUTTON_CLICK_SOUND_NAME],
+                    SoundCategoryType.UI,
+                    AppData.BUTTON_CLICK_SOUND_PITCH,
+                    false
+                )
+            );
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_NAME,
+                    soundEffectDictionary[AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_NAME],
+                    SoundCategoryType.UI,
+                    AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_PITCH,
+                    false
+                )
+            );
+
+            #endregion Non Diegetic Sounds
+
+            #region Diegetic Sounds
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.EAT_APPLE_SOUND_NAME,
+                    soundEffectDictionary[AppData.EAT_APPLE_SOUND_NAME],
+                    SoundCategoryType.Consumable,
+                    AppData.EAT_APPLE_SOUND_PITCH,
+                    false
+                )
+            );
+
+            soundManager.Add
+            (
+                new Cue
+                (
+                    AppData.EAT_POISON_SOUND_NAME,
+                    soundEffectDictionary[AppData.EAT_POISON_SOUND_NAME],
+                    SoundCategoryType.Consumable,
+                    AppData.EAT_POISON_SOUND_PITCH,
+                    false
+                )
+            );
+            #endregion Diegetic Sounds
+
+        }
+
         private void InitializeDictionaries()
         {
             //TODO - add texture dictionary, soundeffect dictionary, model dictionary
@@ -1433,6 +1491,7 @@ namespace GD.App
 
             textureDictionary = new ContentDictionary<Texture2D>();
             fontDictionary = new ContentDictionary<SpriteFont>();
+            soundEffectDictionary = new Dictionary<string, SoundEffect>();
 
 
         }

@@ -1,4 +1,5 @@
-﻿using GD.Engine.Events;
+﻿using GD.App;
+using GD.Engine.Events;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace GD.Engine
         public UIStartLevelTimerController(float milliSeconds)
         {
             this.milliSeconds = milliSeconds;
+            EventDispatcher.Raise(new EventData(EventCategoryType.Sound, EventActionType.OnPlay2D, new object[] { AppData.START_TIMER_COUNTDOWN_TIMER_SOUND_NAME }));
         }
 
         public override void Update(GameTime gameTime)

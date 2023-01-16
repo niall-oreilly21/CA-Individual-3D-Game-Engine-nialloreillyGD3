@@ -64,7 +64,9 @@
         WinLose,
         Explosion,
         BackgroundMusic,
-        Alarm
+        UI,
+        Alarm,
+        Consumable
     }
 
     #region Unused

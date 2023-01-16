@@ -163,8 +163,6 @@ namespace App.Managers
                 seconds = Math.Round(totalSeconds % 60);
                 CheckTimer();
                 CheckScore();
-
-            System.Diagnostics.Debug.WriteLine("BOOM");
         }
 
         private void CheckTimer()
