@@ -22,19 +22,19 @@ namespace GD.Engine
     /// </summary>
     public class SnakeManager : PausableGameComponent
     {
-            #region Fields
-            private List<Character> snakePartsListBodies = new List<Character>();
-            private GameObject snakePart;
-            private GameObject head;
-            private Character tail;
-            private CubeMesh snakeBodyMesh;
-            private OctahedronMesh snakeTailMesh;
-            private Material snakeMaterial;
-            private int snakeNumber;
-            private float snakeMoveSpeed;
-            private float defaultMoveSpeed;
-            private float totalMilliseconds;
-            private float snakeMultiplier;
+        #region Fields
+        private List<Character> snakePartsListBodies = new List<Character>();
+        private GameObject snakePart;
+        private GameObject head;
+        private Character tail;
+        private CubeMesh snakeBodyMesh;
+        private OctahedronMesh snakeTailMesh;
+        private Material snakeMaterial;
+        private int snakeNumber;
+        private float snakeMoveSpeed;
+        private float defaultMoveSpeed;
+        private float totalMilliseconds;
+        private float snakeMultiplier;
 
         #endregion Fields
 
@@ -301,7 +301,9 @@ namespace GD.Engine
             cloneCollider.Enable(gameObjectClone, false, 1);
             gameObjectClone.AddComponent(cloneCollider);
 
-            gameObjectClone.AddComponent(new CollidableSnakeController());
+            gameObjectClone.AddComponent(gameObject.GetComponent<CollidableSnakeController>());
+
+            gameObjectClone.GetComponent<CollidableSnakeController>().Direction = new Vector3(AppData.SCALE_AMOUNT, 0, 0);
 
             return gameObjectClone;
         }

@@ -206,6 +206,56 @@ namespace GD.App
         #endregion Curve Rotations
 
         #endregion Intro Camera
+
+        #region Camera Keys
+
+        #region Front Camera Keys
+        public static readonly Keys FRONT_CAMERA_LEFT_KEY = Keys.A;
+        public static readonly Keys FRONT_CAMERA_RIGHT_KEY = Keys.D;
+        public static readonly Keys FRONT_CAMERA_BACKWARD_KEY = Keys.S;
+        public static readonly Keys FRONT_CAMERA_FORWARD_KEY = Keys.W;
+        #endregion Front Camera Keys
+
+        #region Back Camera Keys
+        public static readonly Keys BACK_CAMERA_LEFT_KEY = Keys.D;
+        public static readonly Keys BACK_CAMERA_RIGHT_KEY = Keys.A;
+        public static readonly Keys BACK_CAMERA_BACKWARD_KEY = Keys.W;
+        public static readonly Keys BACK_CAMERA_FORWARD_KEY = Keys.S;
+        #endregion Back Camera Keys
+
+
+        #region Right Camera Keys
+        public static readonly Keys RIGHT_CAMERA_LEFT_KEY = Keys.W;
+        public static readonly Keys RIGHT_CAMERA_RIGHT_KEY = Keys.S;
+        public static readonly Keys RIGHT_CAMERA_BACKWARD_KEY = Keys.A;
+        public static readonly Keys RIGHT_CAMERA_FORWARD_KEY = Keys.D;
+        #endregion Right Camera Keys
+
+
+        #region Left Camera Keys
+        public static readonly Keys LEFT_CAMERA_LEFT_KEY = Keys.S;
+        public static readonly Keys LEFT_CAMERA_RIGHT_KEY = Keys.W;
+        public static readonly Keys LEFT_CAMERA_BACKWARD_KEY = Keys.D;
+        public static readonly Keys LEFT_CAMERA_FORWARD_KEY = Keys.A;
+        #endregion Left Camera Keys
+
+        #region Top Camera Keys
+        public static readonly Keys TOP_CAMERA_LEFT_KEY = Keys.A;
+        public static readonly Keys TOP_CAMERA_RIGHT_KEY = Keys.D;
+        public static readonly Keys TOP_CAMERA_BACKWARD_KEY = Keys.S;
+        public static readonly Keys TOP_CAMERA_FORWARD_KEY = Keys.W;
+        #endregion Top Camera Keys
+
+        #region Bottom Camera Keys
+        public static readonly Keys BOTTOM_CAMERA_LEFT_KEY = Keys.A;
+        public static readonly Keys BOTTOM_CAMERA_RIGHT_KEY = Keys.D;
+        public static readonly Keys BOTTOM_CAMERA_BACKWARD_KEY = Keys.W;
+        public static readonly Keys BOTTOM_CAMERA_FORWARD_KEY = Keys.S;
+        #endregion Bottom Camera Keys
+
+
+        #endregion Camera Keys
+
         #endregion Cameras
 
         #region Consumables

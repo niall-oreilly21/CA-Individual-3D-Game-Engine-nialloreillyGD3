@@ -1,7 +1,7 @@
 ﻿#region Pre-compiler directives
 
 #define DEMO
-#define SHOW_DEBUG_INFO
+//#define SHOW_DEBUG_INFO
 
 #endregion
 
@@ -1100,11 +1100,29 @@ namespace GD.App
             var snakeSkin = new Material(texture, 1);
             CubeMesh snakeBodyMesh = new CubeMesh(_graphics.GraphicsDevice);
             OctahedronMesh snakeTailMesh = new OctahedronMesh(_graphics.GraphicsDevice);
+
+
+            Dictionary<string, CameraKeys> cameraKeyDictionary = new Dictionary<string, CameraKeys>();
+
+            
+
+            cameraKeyDictionary.Add(AppData.FRONT_CAMERA_NAME, new CameraKeys(AppData.FRONT_CAMERA_LEFT_KEY, AppData.FRONT_CAMERA_RIGHT_KEY, AppData.FRONT_CAMERA_BACKWARD_KEY, AppData.FRONT_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.BACK_CAMERA_NAME, new CameraKeys(AppData.BACK_CAMERA_LEFT_KEY, AppData.BACK_CAMERA_RIGHT_KEY, AppData.BACK_CAMERA_BACKWARD_KEY, AppData.BACK_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.RIGHT_CAMERA_NAME, new CameraKeys(AppData.RIGHT_CAMERA_LEFT_KEY, AppData.RIGHT_CAMERA_RIGHT_KEY, AppData.RIGHT_CAMERA_BACKWARD_KEY, AppData.RIGHT_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.LEFT_CAMERA_NAME, new CameraKeys(AppData.LEFT_CAMERA_LEFT_KEY, AppData.LEFT_CAMERA_RIGHT_KEY, AppData.LEFT_CAMERA_BACKWARD_KEY, AppData.LEFT_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.TOP_CAMERA_NAME, new CameraKeys(AppData.TOP_CAMERA_LEFT_KEY, AppData.TOP_CAMERA_RIGHT_KEY, AppData.TOP_CAMERA_BACKWARD_KEY, AppData.TOP_CAMERA_FORWARD_KEY));
+            cameraKeyDictionary.Add(AppData.BOTTOM_CAMERA_NAME, new CameraKeys(AppData.BOTTOM_CAMERA_LEFT_KEY, AppData.BOTTOM_CAMERA_RIGHT_KEY, AppData.BOTTOM_CAMERA_BACKWARD_KEY, AppData.BOTTOM_CAMERA_FORWARD_KEY));
+
+            snakeGameObject.AddComponent(new CollidableSnakeController(cameraKeyDictionary));
+            snakeGameObject.Transform.SetRotation(0, 90, 0);
+
             snakeManager = new SnakeManager(this, snakeGameObject, snakeBodyMesh, snakeTailMesh, snakeSkin, AppData.SNAKE_DEFAULT_MOVE_SPEED, AppData.SNAKE_MULTIPLIER);
             Application.SnakeManager = snakeManager;
 
-            snakeGameObject.Transform.SetRotation(0, 90, 0);
-            snakeGameObject.AddComponent(new CollidableSnakeController());
+
+
+
+
 
         }
 
@@ -1472,7 +1490,7 @@ namespace GD.App
             #endregion Restart Button
 
             #region Next Level Button
-            menuButtonDictionary.Add(AppData.NEXT_LEVEL_BUTTON_NAME, new MenuButton(AppData.NEXT_LEVEL_BUTTON_TRANSLATION, AppData.NEXT_LEVEL_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.NEXT_LEVEL_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { stateManager.CurrentLevel + 1})));
+            menuButtonDictionary.Add(AppData.NEXT_LEVEL_BUTTON_NAME, new MenuButton(AppData.NEXT_LEVEL_BUTTON_TRANSLATION, AppData.NEXT_LEVEL_BUTTON_TEXT_OFFSET, AppData.START_BUTTON_COLOR, AppData.NEXT_LEVEL_BUTTON_TEXT, new EventData(EventCategoryType.StateManager, EventActionType.StartOfLevel, new object[] { stateManager.CurrentLevel++})));
             #endregion Next Level Button
     }
 
