@@ -100,21 +100,8 @@ namespace GD.App
 
             //shows us how to listen to a specific event
             DemoStateManagerEvent();
-
-            Demo3DSoundTree();
         }
 
-        private void Demo3DSoundTree()
-        {
-            //var camera = Application.CameraManager.ActiveCamera.AudioListener;
-            //var audioEmitter = //get tree, get emitterbehaviour, get audio emitter
-
-            //object[] parameters = {"sound name", audioListener, audioEmitter};
-
-            //EventDispatcher.Raise(new EventData(EventCategoryType.Sound,
-            //    EventActionType.OnPlay3D, parameters));
-            //throw new NotImplementedException();
-        }
 
         private void DemoStateManagerEvent()
         {
@@ -137,9 +124,6 @@ namespace GD.App
                     string uiName = (string)eventData.Parameters[0];
                     UpdateCameraUI(uiName);
                     break;
-
-
-
             }
         }
 
@@ -206,7 +190,7 @@ namespace GD.App
             InitializeSoundManagerEffects();
 
             //add collidable drawn stuff
-            InitializeCollidableContent(worldScale);
+            InitializeCollidableContent();
 
             //add non-collidable drawn stuff
             InitializeNonCollidableContent(worldScale);
@@ -245,16 +229,13 @@ namespace GD.App
 
         private void InitilizeUIScene()
         {
-            var mainHUD = new Scene2D("game HUD");
+            var mainHUD = new Scene2D(AppData.GAME_HUD_SCENE_NAME);
 
             #region Add Scene to Manager and Set Active
 
             //add scene2D to manager
             uiManager.Add(mainHUD.ID, mainHUD);
-
-            //what ui do i see first?
             uiManager.SetActiveScene(mainHUD.ID);
-
             #endregion
         }
 
@@ -690,11 +671,12 @@ namespace GD.App
         private void LoadTextures()
         {
             #region Game Textures
-            textureDictionary.Add(AppData.BACKGROUND_TEXTURE_NAME, AppData.BACKGROUND_TEXTURE_PATH);
+            textureDictionary.Add(AppData.SKYBOX_BACKGROUND_TEXTURE_NAME, AppData.SKYBOX_BACKGROUND_TEXTURE_PATH);
             #endregion Game Textures
 
             #region Consumables Textures
             textureDictionary.Add(AppData.FOOD_TEXTURE_NAME, AppData.FOOD_TEXTURE_PATH);
+            textureDictionary.Add(AppData.POISON_TEXTURE_NAME, AppData.POISON_TEXTURE_PATH);
             #endregion Consumables Textures
 
             #region Snake Textures
@@ -713,6 +695,11 @@ namespace GD.App
             textureDictionary.Add(AppData.SNAKE_CONTROLS_BACKGROUND_NAME, AppData.SNAKE_CONTROLS_BACKGROUND_TEXTURE_PATH);
             textureDictionary.Add(AppData.XYZ_CONTROLS_BACKGROUND_NAME, AppData.XYZ_CONTROLS_BACKGROUND_TEXTURE_PATH);
             #endregion Controls Textures
+
+            #region Background Textures
+            textureDictionary.Add(AppData.SNAKE_TRANSPARENT_CUBE_TEXTURE_NAME, AppData.SNAKE_TRANSPARENT_CUBE_TEXTURE_PATH);
+            textureDictionary.Add(AppData.SKYBOX_BACKGROUND_TEXTURE_NAME, AppData.SKYBOX_BACKGROUND_TEXTURE_PATH);
+            #endregion Background Textures
 
             #endregion Menu Textures
         }
@@ -966,7 +953,7 @@ namespace GD.App
             #endregion Snake Cameras
         }
 
-        private void InitializeCollidableContent(float worldScale)
+        private void InitializeCollidableContent()
         {;
             InitializeBaseModel();
             InitilizeFood();
@@ -1012,12 +999,11 @@ namespace GD.App
                 Vector3.Zero,
                 new Vector3(0, 0, 0)
                 );
-            var texture = Content.Load<Texture2D>("Assets/niall");
             var meshBase2 = new CubeMesh(_graphics.GraphicsDevice);
 
             gameObject.AddComponent(new Renderer(
                 new GDBasicEffect(cubeEffect),
-                new Material(texture, 1f),
+                new Material(textureDictionary[AppData.SNAKE_TRANSPARENT_CUBE_TEXTURE_NAME], 1f),
                 meshBase2));
 
             sceneManager.ActiveScene.Add(gameObject);
@@ -1056,12 +1042,12 @@ namespace GD.App
                 AppData.SNAKE_GAMEOBJECTS_SCALE,
                 Vector3.Zero,
                 AppData.SNAKE_START_POSITION);
-            var texture = Content.Load<Texture2D>(AppData.SNAKE_HEAD_TEXTURE_PATH);
+            
             var meshBase = new SphereMesh(_graphics.GraphicsDevice);
 
             snakeGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 1),
+                new Material(textureDictionary[AppData.SNAKE_HEAD_TEXTURE_NAME], 1),
                 meshBase));
 
             Application.Player = snakeGameObject;
@@ -1085,20 +1071,20 @@ namespace GD.App
                 new Vector3(2.5f,0.6f,0.6f),
                 Vector3.Zero,
                 null);
-            texture = Content.Load<Texture2D>(AppData.SNAKE_TONGUE_TEXTURE_PATH);
+
             var meshBase2 = new OctahedronMesh(_graphics.GraphicsDevice);
 
             snakeGameObjectTongue.AddComponent(new Renderer(
                 new GDBasicEffect(litEffect),
-                new Material(texture, 1),
+                new Material(textureDictionary[AppData.SNAKE_TONGUE_TEXTURE_NAME], 1),
                 meshBase2));
 
             snakeGameObjectTongue.AddComponent(new SnakeTongueController(AppData.SNAKE_HEAD_TRANSLATE_AMOUNT));
             sceneManager.ActiveScene.Add(snakeGameObjectTongue);
 
 
-            texture = Content.Load<Texture2D>(AppData.SNAKE_SKIN_TEXTURE_PATH);
-            var snakeSkin = new Material(texture, 1);
+            
+            var snakeSkin = new Material(textureDictionary[AppData.SNAKE_SKIN_TEXTURE_NAME], 1);
             CubeMesh snakeBodyMesh = new CubeMesh(_graphics.GraphicsDevice);
             OctahedronMesh snakeTailMesh = new OctahedronMesh(_graphics.GraphicsDevice);
 
@@ -1130,12 +1116,12 @@ namespace GD.App
                 AppData.SNAKE_GAMEOBJECTS_SCALE,
                 Vector3.Zero,
                 Vector3.Zero);
-            var texture = textureDictionary[AppData.FOOD_TEXTURE_NAME];
+
             var meshBase = new SphereMesh(_graphics.GraphicsDevice);
 
             foodGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 1),
+                new Material(textureDictionary[AppData.FOOD_TEXTURE_NAME], 1),
                 meshBase));
 
             Collider collider = new FoodCollider(foodGameObject, true,true);
@@ -1165,12 +1151,12 @@ namespace GD.App
                 AppData.SNAKE_GAMEOBJECTS_SCALE,
                 Vector3.Zero,
                 Vector3.Zero);
-            var texture = Content.Load<Texture2D>("Assets/Textures/Props/Crates/crate2");
+
             var meshBase = new TetrahedronMesh(_graphics.GraphicsDevice);
 
             bombGameObject.AddComponent(new Renderer(
                 new GDBasicEffect(unlitEffect),
-                new Material(texture, 1, Color.Green),
+                new Material(textureDictionary[AppData.POISON_TEXTURE_NAME], 1, Color.Green),
                 meshBase));
 
             Collider collider = new FoodCollider(bombGameObject, true, true);
@@ -1195,34 +1181,34 @@ namespace GD.App
             GameObject quad = null;
             var gdBasicEffect = new GDBasicEffect(unlitEffect);
             var quadMesh = new QuadMesh(_graphics.GraphicsDevice);
-            var texture = Content.Load<Texture2D>(AppData.BACKGROUND_TEXTURE_PATH);
+
 
             //skybox - back face
             quad = new GameObject("skybox back face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1), null, new Vector3(0, 0, -halfWorldScale));
             
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1,Color.Blue), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(textureDictionary[AppData.SKYBOX_BACKGROUND_TEXTURE_NAME], 1,Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
 
             //skybox - left face
             quad = new GameObject("skybox left face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
                 new Vector3(0, 90, 0), new Vector3(-halfWorldScale, 0, 0));
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(textureDictionary[AppData.SKYBOX_BACKGROUND_TEXTURE_NAME], 1, Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
 
             //skybox - right face
             quad = new GameObject("skybox right face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
                 new Vector3(0, -90, 0), new Vector3(halfWorldScale, 0, 0));
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(textureDictionary[AppData.SKYBOX_BACKGROUND_TEXTURE_NAME], 1, Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
 
             //skybox - top face
             quad = new GameObject("skybox top face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
                 new Vector3(90, -90, 0), new Vector3(0, halfWorldScale, 0));
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(textureDictionary[AppData.SKYBOX_BACKGROUND_TEXTURE_NAME], 1, Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
 
 
@@ -1230,14 +1216,14 @@ namespace GD.App
             quad = new GameObject("skybox bottom face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
                 new Vector3(-90, 90, 0), new Vector3(0, -halfWorldScale, 0));
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(textureDictionary[AppData.SKYBOX_BACKGROUND_TEXTURE_NAME], 1, Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
 
             //skybox - front face
             quad = new GameObject("skybox front face");
             quad.Transform = new Transform(new Vector3(worldScale, worldScale, 1),
                 new Vector3(0, -180, 0), new Vector3(0, 0, halfWorldScale));
-            quad.AddComponent(new Renderer(gdBasicEffect, new Material(texture, 1, Color.Blue), quadMesh));
+            quad.AddComponent(new Renderer(gdBasicEffect, new Material(textureDictionary[AppData.SKYBOX_BACKGROUND_TEXTURE_NAME], 1, Color.Blue), quadMesh));
             sceneManager.ActiveScene.Add(quad);
         }
 
@@ -1523,7 +1509,6 @@ namespace GD.App
             fontDictionary = new ContentDictionary<SpriteFont>();
             soundEffectDictionary = new Dictionary<string, SoundEffect>();
 
-
         }
 
         private void InitilizeCurveDictionary()
@@ -1588,23 +1573,6 @@ namespace GD.App
             #endregion Audio Level Buttons
     }
 
-    private int GetCurrentLevel()
-        {
-            if(stateManager.CurrentLevel == AppData.LEVEL_ONE)
-                {
-                return AppData.LEVEL_ONE;
-            }
-            else if (stateManager.CurrentLevel == AppData.LEVEL_TWO)
-            {
-                return AppData.LEVEL_TWO;
-            }
-            else if (stateManager.CurrentLevel == AppData.LEVEL_THREE)
-            {
-                return AppData.LEVEL_THREE;
-            }
-
-            return 0;
-        }
         private void InitializeDebug(bool showCollisionSkins = true)
         {
             //intialize the utility component

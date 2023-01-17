@@ -424,7 +424,7 @@ namespace GD.App
 
         #region Bomb Level Default Figures
         private static readonly int DEFAULT_BOMB_LEVEL_ONE = 0;
-        private static readonly int DEFAULT_BOMB_LEVEL_TWO = 15;
+        private static readonly int DEFAULT_BOMB_LEVEL_TWO = 10;
         private static readonly int DEFAULT_BOMB_LEVEL_THREE = 5;
 
         public static readonly int[] DEFAULT_BOMB_EACH_LEVEL = { DEFAULT_BOMB_LEVEL_ONE, DEFAULT_BOMB_LEVEL_TWO, DEFAULT_BOMB_LEVEL_THREE };
@@ -561,12 +561,15 @@ namespace GD.App
         #endregion UI
 
         #region Textures
-        private static readonly string TEXTURES_BASE_PATH = "Assets/Textures/Snake Game/";
+        private static readonly string TEXTURES_BASE_PATH = "Assets/Textures/";
 
         #region Consumables Textures
         private static readonly string CONSUMABLES_BASE_TEXTURE_PATH = TEXTURES_BASE_PATH + "Consumables/";
         public static readonly string FOOD_TEXTURE_PATH = CONSUMABLES_BASE_TEXTURE_PATH + "apple_texture";
         public static readonly string FOOD_TEXTURE_NAME = "Apple Texture";
+        public static readonly string POISON_TEXTURE_NAME = "Poison Texture";
+        public static readonly string POISON_TEXTURE_PATH = CONSUMABLES_BASE_TEXTURE_PATH + "poison_texture";
+        
         #endregion Consumables Textures
 
         #region Snake Textures
@@ -581,13 +584,18 @@ namespace GD.App
         #endregion Snake Textures
 
         #region Background Texture
-        public static readonly string BACKGROUND_TEXTURE_PATH = "Assets/black";
-        public static readonly string BACKGROUND_TEXTURE_NAME = "Background Black Sky Texture";
+        private static readonly string SKYBOX_BACKGROUND_BASE_TEXTURE_PATH = TEXTURES_BASE_PATH + "Skybox/";
+        public static readonly string SKYBOX_BACKGROUND_TEXTURE_PATH = SKYBOX_BACKGROUND_BASE_TEXTURE_PATH + "background_black_sky";
+        public static readonly string SKYBOX_BACKGROUND_TEXTURE_NAME = "Background Black Sky Texture";
+
+        public static readonly string SNAKE_TRANSPARENT_CUBE_TEXTURE_PATH = SKYBOX_BACKGROUND_BASE_TEXTURE_PATH + "snake_transparent_cube_texture";
+        public static readonly string SNAKE_TRANSPARENT_CUBE_TEXTURE_NAME = "Snake Transparent Cube Texture";
         #endregion Background Texture
 
         #region Menu Background Textures
-        private static readonly string MENU_BACKGROUND_BASE_TEXTURE_PATH = TEXTURES_BASE_PATH + "Backgrounds/";
-        private static readonly string CONTROLS_MENU_BACKGROUND_BASE_TEXTURE_PATH = MENU_BACKGROUND_BASE_TEXTURE_PATH + "Controls/";
+        private static readonly string MENU_BASE_TEXTURE_PATH = TEXTURES_BASE_PATH + "Menu/";
+        private static readonly string MENU_BACKGROUND_BASE_TEXTURE_PATH = MENU_BASE_TEXTURE_PATH + "Backgrounds/";
+        private static readonly string CONTROLS_MENU_BACKGROUND_BASE_TEXTURE_PATH = MENU_BASE_TEXTURE_PATH + "Controls/";
 
         public static readonly string MENU_BACKGROUND_TEXTURE_PATH = MENU_BACKGROUND_BASE_TEXTURE_PATH + "menu_background";
         public static readonly string SNAKE_MENU_BACKGROUND_TEXTURE_PATH = MENU_BACKGROUND_BASE_TEXTURE_PATH + "snakes_menu_background";
@@ -634,6 +642,7 @@ namespace GD.App
         public static readonly string CONTROLS_SCENE_NAME = "Controls Menu Scene";
         public static readonly string END_MENU_SCENE_NAME = "End Menu Scene";
         public static readonly string WIN_LEVEL_MENU_SCENE_NAME = "Win Level Menu Scene";
+        public static readonly string GAME_HUD_SCENE_NAME = "Snake 3D Game HUD Scene";
         #endregion Scene Manager
 
         #region Fonts
@@ -655,7 +664,7 @@ namespace GD.App
         #region Snake Menu Background Sound
         public static readonly string SNAKE_MENU_BACKGROUND_SOUND_NAME = "Menu Background Sound";
         public static readonly string SNAKE_MENU_BACKGROUND_SOUND_TEXTURE_PATH = NON_DIEGEITC_SOUND_BASE_PATH + "snake_3D_background_music";
-        public static readonly Vector3 SNAKE_MENU_BACKGROUND_SOUND_PITCH = new Vector3(0.5f, 0, 0);
+        public static readonly Vector3 SNAKE_MENU_BACKGROUND_SOUND_PITCH = new Vector3(0.15f, 0, 0);
         #endregion Snake Menu Background Sound
 
         #region Menu Button Click Sound
@@ -698,6 +707,7 @@ namespace GD.App
         #endregion Diegetic Sounds
 
         #endregion Sounds
+
 
         #endregion Snake
     }
