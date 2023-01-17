@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Updates the text for the Timer UI
+    /// </summary>
     public class UITimerController : Component
     {
         private TextMaterial2D material2D;

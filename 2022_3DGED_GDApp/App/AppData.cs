@@ -143,9 +143,11 @@ namespace GD.App
 
         #region GameObjects Scale
         public static readonly float SCALE_AMOUNT = 3f;
+        public static readonly float SNAKE_PARTS_COLLIDER_SCALE_AMOUNT = 2.7f;
         public static readonly float COLLIDER_SCALE_AMOUNT = 3f;
         public static readonly Vector3 SNAKE_GAMEOBJECTS_SCALE =  new Vector3(SCALE_AMOUNT, SCALE_AMOUNT, SCALE_AMOUNT);
         public static readonly Vector3 SNAKE_GAMEOBJECTS_COLLIDER_SCALE = new Vector3(COLLIDER_SCALE_AMOUNT, COLLIDER_SCALE_AMOUNT, COLLIDER_SCALE_AMOUNT);
+        public static readonly Vector3 SNAKE_PARTS_GAMEOBJECTS_COLLIDER_SCALE = new Vector3(SNAKE_PARTS_COLLIDER_SCALE_AMOUNT, SNAKE_PARTS_COLLIDER_SCALE_AMOUNT, SNAKE_PARTS_COLLIDER_SCALE_AMOUNT);
         #endregion GameObjects Scale
 
         #endregion Snake World
@@ -267,6 +269,7 @@ namespace GD.App
         #endregion Food
 
         #region Bomb
+        public static readonly string CONSUMABLE_BASE_NAME = "bomb";
         public static readonly string BOMB_BASE_NAME = "bomb";
         public static readonly float BOMB_ROTATE_SPEED = 0.03f;
         public static readonly int DEFAULT_INITIAL_BOMBS = 2;

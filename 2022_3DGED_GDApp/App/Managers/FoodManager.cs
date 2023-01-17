@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Maanges events for the apple consumable
+    /// </summary>
     public class FoodManager : ConsumableManager
     {
         public FoodManager(Game game, GameObject consumable) : base(game, consumable)
@@ -80,10 +83,10 @@ namespace GD.Engine
         }
  
 
-        protected override GameObject CloneModelGameObject(string newName)
+        protected override GameObject CloneModelGameObject(string newName, Vector3 newTranslation)
         {
 
-            GameObject gameObjectClone = base.CloneModelGameObject(newName);
+            GameObject gameObjectClone = base.CloneModelGameObject(newName, newTranslation);
 
             Collider cloneCollider = new FoodCollider(gameObjectClone, true);
 

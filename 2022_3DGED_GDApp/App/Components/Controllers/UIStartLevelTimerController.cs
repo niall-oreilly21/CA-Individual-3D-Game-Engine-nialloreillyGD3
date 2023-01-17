@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Updates the text for the Start Level Timer UI
+    /// </summary>
     public class UIStartLevelTimerController : Component
     {
         float milliSeconds;

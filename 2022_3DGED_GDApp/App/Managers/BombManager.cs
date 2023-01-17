@@ -13,6 +13,9 @@ using GD.Engine.Globals;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Maanges events for the poison consumable
+    /// </summary>
     public class BombManager : ConsumableManager
     {
         public BombManager(Game game, GameObject consumable) : base(game, consumable)
@@ -69,10 +72,10 @@ namespace GD.Engine
             }
 
         }
-        protected override GameObject CloneModelGameObject(string newName)
+        protected override GameObject CloneModelGameObject(string newName, Vector3 newTranslation)
         {
 
-            GameObject gameObjectClone = base.CloneModelGameObject(newName);
+            GameObject gameObjectClone = base.CloneModelGameObject(newName, newTranslation);
 
             Collider cloneCollider = new BombCollider(gameObjectClone, true);
 

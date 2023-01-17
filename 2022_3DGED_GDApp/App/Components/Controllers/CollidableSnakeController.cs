@@ -10,6 +10,9 @@ using System.Text;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Controller which is attached to the head of the snake to allow movement
+    /// </summary>
     class CollidableSnakeController : SnakeController
     {
         private bool pressed;
@@ -50,7 +53,7 @@ namespace GD.Engine
 
         public override void Update(GameTime gameTime)
         {
-            if (Application.StateManager.StartMove)
+            if (Application.StateManager.GameStarted)
             {
                 HandleKeyboardInput(gameTime);
                 HandleCameraSwitch();

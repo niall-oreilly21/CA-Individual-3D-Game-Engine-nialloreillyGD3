@@ -75,6 +75,7 @@ namespace GD.Engine
                     if (renderers != null)
                     {
 
+                        //Check if game ui should be drawn
                         switch (uiIsDrawn)
                         {
                             case true:

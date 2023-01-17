@@ -196,6 +196,7 @@ namespace GD.App
             InitializeNonCollidableContent(worldScale);
 
             //add the player
+            InitializeSnakeTongue();
             InitializeSnakeHead();
             InitilizeConsumableManagers();
 
@@ -957,7 +958,7 @@ namespace GD.App
         {;
             InitializeBaseModel();
             InitilizeFood();
-            InitilizeBomb();
+            InitilizePoison();
         }
 
        
@@ -1032,6 +1033,25 @@ namespace GD.App
             return gameObjectClone;
         }
 
+        private void InitializeSnakeTongue()
+        {
+            var snakeGameObjectTongue = new GameObject("snake tongue", ObjectType.Dynamic, RenderType.Opaque);
+
+            snakeGameObjectTongue.Transform = new Transform(
+                new Vector3(2.5f, 0.6f, 0.6f),
+                Vector3.Zero,
+                null);
+
+            var meshBase = new OctahedronMesh(_graphics.GraphicsDevice);
+
+            snakeGameObjectTongue.AddComponent(new Renderer(
+               new GDBasicEffect(litEffect),
+               new Material(textureDictionary[AppData.SNAKE_TONGUE_TEXTURE_NAME], 1),
+               meshBase));
+
+            snakeGameObjectTongue.AddComponent(new SnakeTongueController(AppData.SNAKE_HEAD_TRANSLATE_AMOUNT));
+            sceneManager.ActiveScene.Add(snakeGameObjectTongue);
+        }
         private void InitializeSnakeHead()
         {
             //game object
@@ -1064,31 +1084,13 @@ namespace GD.App
                 );
 
             collider.Enable(snakeGameObject, false, 1);
-
-            var snakeGameObjectTongue = new GameObject("snake tongue", ObjectType.Dynamic, RenderType.Opaque);
-
-            snakeGameObjectTongue.Transform = new Transform(
-                new Vector3(2.5f,0.6f,0.6f),
-                Vector3.Zero,
-                null);
-
-            var meshBase2 = new OctahedronMesh(_graphics.GraphicsDevice);
-
-            snakeGameObjectTongue.AddComponent(new Renderer(
-                new GDBasicEffect(litEffect),
-                new Material(textureDictionary[AppData.SNAKE_TONGUE_TEXTURE_NAME], 1),
-                meshBase2));
-
-            snakeGameObjectTongue.AddComponent(new SnakeTongueController(AppData.SNAKE_HEAD_TRANSLATE_AMOUNT));
-            sceneManager.ActiveScene.Add(snakeGameObjectTongue);
-
-
-            
+          
             var snakeSkin = new Material(textureDictionary[AppData.SNAKE_SKIN_TEXTURE_NAME], 1);
             CubeMesh snakeBodyMesh = new CubeMesh(_graphics.GraphicsDevice);
             OctahedronMesh snakeTailMesh = new OctahedronMesh(_graphics.GraphicsDevice);
 
 
+            #region Camera Key Dictionary
             Dictionary<string, CameraKeys> cameraKeyDictionary = new Dictionary<string, CameraKeys>();
        
             cameraKeyDictionary.Add(AppData.FRONT_CAMERA_NAME, new CameraKeys(AppData.FRONT_CAMERA_LEFT_KEY, AppData.FRONT_CAMERA_RIGHT_KEY, AppData.FRONT_CAMERA_BACKWARD_KEY, AppData.FRONT_CAMERA_FORWARD_KEY));
@@ -1097,6 +1099,7 @@ namespace GD.App
             cameraKeyDictionary.Add(AppData.LEFT_CAMERA_NAME, new CameraKeys(AppData.LEFT_CAMERA_LEFT_KEY, AppData.LEFT_CAMERA_RIGHT_KEY, AppData.LEFT_CAMERA_BACKWARD_KEY, AppData.LEFT_CAMERA_FORWARD_KEY));
             cameraKeyDictionary.Add(AppData.TOP_CAMERA_NAME, new CameraKeys(AppData.TOP_CAMERA_LEFT_KEY, AppData.TOP_CAMERA_RIGHT_KEY, AppData.TOP_CAMERA_BACKWARD_KEY, AppData.TOP_CAMERA_FORWARD_KEY));
             cameraKeyDictionary.Add(AppData.BOTTOM_CAMERA_NAME, new CameraKeys(AppData.BOTTOM_CAMERA_LEFT_KEY, AppData.BOTTOM_CAMERA_RIGHT_KEY, AppData.BOTTOM_CAMERA_BACKWARD_KEY, AppData.BOTTOM_CAMERA_FORWARD_KEY));
+            #endregion Camera Key Dictionary
 
             snakeGameObject.AddComponent(new CollidableSnakeController(cameraKeyDictionary));
             snakeGameObject.Transform.SetRotation(0, 90, 0);
@@ -1139,11 +1142,11 @@ namespace GD.App
             foodGameObject.AddComponent(new FoodController(AppData.FOOD_ROTATE_SPEED));
         }
 
-        private void InitilizeBomb()
+        private void InitilizePoison()
         {
 
             //game object
-            bombGameObject = new GameObject("bomb 1", ObjectType.Static, RenderType.Opaque);
+            bombGameObject = new GameObject("poison 1", ObjectType.Static, RenderType.Opaque);
             bombGameObject.GameObjectType = GameObjectType.Consumable;
 
             bombGameObject.Transform = new Transform
@@ -1636,7 +1639,7 @@ namespace GD.App
 
             if (Input.Keys.WasJustPressed(Keys.P))
             {
-                stateManager.Enabled = false;
+                stateManager.GameStarted = false;
                 menuManager.SetActiveScene(AppData.PAUSE_SCENE_NAME);
                 EventDispatcher.Raise(new EventData(EventCategoryType.Menu,
                     EventActionType.OnPause));

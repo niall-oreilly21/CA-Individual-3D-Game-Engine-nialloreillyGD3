@@ -9,6 +9,9 @@ using Keys = Microsoft.Xna.Framework.Input.Keys;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Stores Keys for as left, right, forward and backwards
+    /// </summary>
     public class CameraKeys
     {
         #region Fields

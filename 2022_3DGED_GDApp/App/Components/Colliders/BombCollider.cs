@@ -1,5 +1,6 @@
 ﻿using GD.App;
 using GD.Engine.Events;
+using GD.Engine.Globals;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,19 +17,13 @@ namespace GD.Engine
 
         protected override void HandleResponse(GameObject parentGameObject)
         {
-            if (parentGameObject.GameObjectType == GameObjectType.Player)
+            if (parentGameObject == Application.Player)
             {
-
-
                 object[] parameters = { this.gameObject };
 
                 EventDispatcher.Raise(new EventData(EventCategoryType.BombManager, EventActionType.RemoveBomb, parameters));
-
-
             }
-
-               
-
+             
         }
       
     }

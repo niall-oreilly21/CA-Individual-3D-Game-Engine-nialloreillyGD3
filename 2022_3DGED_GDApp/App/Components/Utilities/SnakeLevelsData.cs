@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Updates Data for the snake game levels
+    /// </summary>
     public class SnakeLevelsData
     {
         #region Fields

@@ -17,6 +17,9 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Manages all consumables in the scene and where they are spawned
+    /// </summary>
     public class ConsumableManager : PausableGameComponent
     {
         GameObject consumable;
@@ -69,9 +72,6 @@ namespace GD.Engine
 
         protected void InitializeConsumableItem()
         {
-            //ResetSnakeHeadColliding();
-
-            //consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
 
             GameObject snakePart;
             CharacterCollider snakePartCollider;
@@ -80,13 +80,7 @@ namespace GD.Engine
 
             List<GameObject> consumables = Application.SceneManager.ActiveScene.FindAll(ObjectType.Static, RenderType.Opaque, (consumable) => consumable.GameObjectType == GameObjectType.Consumable);
 
-            //foreach(GameObject consumable in consumables)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(consumable.Transform.Translation);
-            //}
-            //System.Diagnostics.Debug.WriteLine(consumables.Count);
-
-            Vector3 newTranslation;
+            Vector3 newTranslation = Vector3.Zero;
             while (!noCollision)
             {
                 noCollision = true;
@@ -98,17 +92,14 @@ namespace GD.Engine
 
                     if (IsColliding(snakePart, newTranslation))
                     {
-
                         noCollision = false;                   
                         break;
                     }
-
-      
                 }
   
             }
 
-            GameObject consumable = CloneModelGameObject(AppData.BOMB_BASE_NAME + ConsumableID);
+            GameObject consumable = CloneModelGameObject(AppData.CONSUMABLE_BASE_NAME + ConsumableID, newTranslation);
             Application.SceneManager.ActiveScene.Add(consumable);
             ConsumableID++;
 
@@ -151,7 +142,7 @@ namespace GD.Engine
             return newTranslation;
         }
 
-        protected virtual GameObject CloneModelGameObject(string newName)
+        protected virtual GameObject CloneModelGameObject(string newName, Vector3 newTranslation)
         {
             GameObject gameObjectClone = new GameObject(newName, consumable.ObjectType, consumable.RenderType);
             gameObjectClone.GameObjectType = consumable.GameObjectType;
@@ -159,7 +150,7 @@ namespace GD.Engine
             gameObjectClone.Transform = new Transform(
             consumable.Transform.Scale,
             consumable.Transform.Rotation,
-            GetRandomTranslation()
+            newTranslation
             );
 
             Renderer renderer = consumable.GetComponent<Renderer>();

@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Updates the text for the Helper UI
+    /// </summary>
     public class UIHelperController : Component
     {
         private TextMaterial2D material2D;

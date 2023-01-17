@@ -33,7 +33,7 @@ namespace App.Managers
     }
 
     /// <summary>
-    /// Countdown/up timer and we need an inventory system
+    /// Handles all level states for the Snake game
     /// </summary>
     public class MyStateManager : PausableGameComponent
     {
@@ -57,7 +57,6 @@ namespace App.Managers
             this.currentScore = 0;
             this.currentLevel = AppData.LEVEL_ONE;
             this.snakeLevelsData = snakeLevelsData;
-            Enabled = false;
             gameStarted = false;
         }
 
@@ -98,16 +97,20 @@ namespace App.Managers
             }
             set
             {
-                System.Diagnostics.Debug.WriteLine(value);
                 currentLevel = value;
             }
         }
 
-        public bool StartMove
+        public bool GameStarted
         {
             get
             {
                 return gameStarted;
+            }
+
+            set
+            {
+                gameStarted = value;
             }
         }
 
@@ -213,7 +216,6 @@ namespace App.Managers
            
         }
 
-
         private void UpdateScoreText()
         {
             if(gameStarted)
@@ -255,8 +257,6 @@ namespace App.Managers
 
             currentScore = 0;
             UpdateScoreText();
-
-            //Application.CameraManager.SetActiveCamera(AppData.FRONT_CAMERA_NAME);
         }
 
         private void StartOfLevel()

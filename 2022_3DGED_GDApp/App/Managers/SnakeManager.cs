@@ -18,7 +18,7 @@ using Application = GD.Engine.Globals.Application;
 namespace GD.Engine
 {
     /// <summary>
-    /// Adds simple movement controller for Snake Head using keyboard
+    /// Stores and manages the movement of all snake parts in relation to the snake head
     /// </summary>
     public class SnakeManager : PausableGameComponent
     {
@@ -35,6 +35,7 @@ namespace GD.Engine
         private float defaultMoveSpeed;
         private float totalMilliseconds;
         private float snakeMultiplier;
+        private float totalTime;
 
         #endregion Fields
 
@@ -57,8 +58,6 @@ namespace GD.Engine
         {
             this.head = CreateSnakeHead(snakePart);
             this.snakePart = snakePart;
-            //this.tail = snakePart.GetComponent<CharacterCollider>().Body as Character;
-            //snakePartsListBodies.Add(tail);
             this.snakeBodyMesh = snakeBodyMesh;
             this.snakeTailMesh = snakeTailMesh;
             this.snakeMaterial = snakeMaterial;
@@ -66,8 +65,8 @@ namespace GD.Engine
             this.defaultMoveSpeed = snakeMoveSpeed;
             this.totalMilliseconds = 0f;
             this.snakeMultiplier = snakeMutplier;
-
             this.snakeNumber = 0;
+            totalTime = 0f;
         }
         #endregion Constructors
 
@@ -99,8 +98,7 @@ namespace GD.Engine
                     break;
 
                 case EventActionType.RemoveSnake:
-                    GameObject removeSnakePart = (GameObject)eventData.Parameters[0];
-                    RemoveSnake(removeSnakePart);
+                    RemoveSnake();
                     break;
 
                 default:
@@ -112,45 +110,7 @@ namespace GD.Engine
             base.HandleEvent(eventData);
         }
 
-
-        private void RemoveSnake(GameObject removeSnakePart)
-        {
-                Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.SnakePart);
-                Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.Player);
-
-                EventDispatcher.Raise(new EventData(EventCategoryType.SceneManager,
-                EventActionType.OnLose, new object[] { AppData.END_MENU_SCENE_NAME }));
-
-            EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
-            EventActionType.UpdateEndMenuScreenUIText, new object[] { AppData.SNAKE_MENU_UI_TEXT_HIT_SNAKE }));
-
-
-        }
-
-        private void ResetSnake()
-        {
-
-            Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.SnakePart);
-            Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.Player);
-
-            snakePartsListBodies.Clear();
-
-            GameObject newHead = CreateSnakeHead(this.head);
-            snakePartsListBodies.Add(newHead.GetComponent<CharacterCollider>().Body as Character);
-           
-            Application.SceneManager.ActiveScene.Add(newHead);           
-
-            this.snakePart = newHead;
-            Application.Player = newHead;
-
-            this.snakeNumber = 0;
-
-            this.snakeMoveSpeed = defaultMoveSpeed;
-
-            Grow();
-        }
-
-
+        #region Movement of Snake
         private void ZeroPosition(Character snake)
         {
             if (snake.Position.X > AppData.SNAKE_GAME_MAX_BOUNDARY)
@@ -178,8 +138,6 @@ namespace GD.Engine
                 snake.transform.Position.Z = AppData.SNAKE_GAME_MIN_BOUNDARY;
             }
         }
-
-        private float totalTime = 0f;
         private void Move(Vector3 newTranslation, GameTime gameTime)
         {
 
@@ -209,7 +167,9 @@ namespace GD.Engine
             snakePartsListBodies[0].Position += newTranslation;
             ZeroPosition(snakePartsListBodies[0]);
         }
+        #endregion Movement of Snake
 
+        #region Create Snake Parts
         private GameObject CloneModelGameObjectSnake(GameObject gameObject, string newName, Vector3 translation)
         {
             GameObject gameObjectClone = new GameObject(newName, gameObject.ObjectType, gameObject.RenderType);
@@ -241,7 +201,7 @@ namespace GD.Engine
             new Box(
                 gameObjectClone.Transform.Translation,
                 gameObjectClone.Transform.Rotation,
-                AppData.SNAKE_GAMEOBJECTS_COLLIDER_SCALE
+                AppData.SNAKE_PARTS_GAMEOBJECTS_COLLIDER_SCALE
                 ),
             new MaterialProperties(0.8f, 0.8f, 0.7f)
             );
@@ -267,7 +227,7 @@ namespace GD.Engine
                 new Box(
                     gameObjectClone.Transform.Translation,
                     gameObjectClone.Transform.Rotation,
-                    AppData.SNAKE_GAMEOBJECTS_COLLIDER_SCALE
+                    AppData.SNAKE_PARTS_GAMEOBJECTS_COLLIDER_SCALE
                     ),
                 new MaterialProperties(0.8f, 0.8f, 0.7f)
                 );
@@ -309,8 +269,47 @@ namespace GD.Engine
 
             return gameObjectClone;
         }
+        #endregion Create Snake Parts
 
         #region Snake Parts Methods
+
+        private void RemoveSnake()
+        {
+            Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.SnakePart);
+            Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.Player);
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.SceneManager,
+            EventActionType.OnLose, new object[] { AppData.END_MENU_SCENE_NAME }));
+
+            EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
+            EventActionType.UpdateEndMenuScreenUIText, new object[] { AppData.SNAKE_MENU_UI_TEXT_HIT_SNAKE }));
+
+
+        }
+
+        private void ResetSnake()
+        {
+
+            Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.SnakePart);
+            Application.SceneManager.ActiveScene.RemoveAll(ObjectType.Dynamic, RenderType.Opaque, (snake) => snake.GameObjectType == GameObjectType.Player);
+
+            snakePartsListBodies.Clear();
+
+            GameObject newHead = CreateSnakeHead(this.head);
+            snakePartsListBodies.Add(newHead.GetComponent<CharacterCollider>().Body as Character);
+
+            Application.SceneManager.ActiveScene.Add(newHead);
+
+            this.snakePart = newHead;
+            Application.Player = newHead;
+
+            this.snakeNumber = 0;
+
+            this.snakeMoveSpeed = defaultMoveSpeed;
+
+                Grow();           
+        }
+
         public void Grow()
             {
 
@@ -337,7 +336,7 @@ namespace GD.Engine
 
             snakeMoveSpeed -= snakeMultiplier;
 
-            if(snakePartsListBodies.Count > 2 && Application.StateManager.StartMove == true)
+            if(snakePartsListBodies.Count > 2 && Application.StateManager.GameStarted == true)
             {
                 EventDispatcher.Raise(new EventData(EventCategoryType.StateManager,
                 EventActionType.UpdateScore));

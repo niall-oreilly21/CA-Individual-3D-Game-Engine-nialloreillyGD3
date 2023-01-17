@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace GD.Engine
 {
+    /// <summary>
+    /// Stores Data for the Menu Buttons
+    /// </summary>
     public class MenuButton
     {
         #region Fields
