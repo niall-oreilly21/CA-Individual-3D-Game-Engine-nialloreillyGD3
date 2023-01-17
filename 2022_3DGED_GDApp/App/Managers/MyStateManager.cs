@@ -45,7 +45,7 @@ namespace App.Managers
         private int currentLevel;
         private int currentScore;
         private SnakeLevelsData snakeLevelsData;
-        private bool startMove;
+        private bool gameStarted;
 
         public MyStateManager(Game game, SnakeLevelsData snakeLevelsData) : base(game)
         {
@@ -58,7 +58,7 @@ namespace App.Managers
             this.currentLevel = AppData.LEVEL_ONE;
             this.snakeLevelsData = snakeLevelsData;
             Enabled = false;
-            startMove = false;
+            gameStarted = false;
         }
 
         #region Properties
@@ -107,7 +107,7 @@ namespace App.Managers
         {
             get
             {
-                return startMove;
+                return gameStarted;
             }
         }
 
@@ -174,18 +174,24 @@ namespace App.Managers
 
         public override void Update(GameTime gameTime)
         {
+            if(gameStarted)
+            {
                 totalElapsedTimeMS += gameTime.ElapsedGameTime.Milliseconds;
                 totalSeconds = maxTimeInMS - totalElapsedTimeMS / 1000d;
                 minutes = Math.Floor(totalSeconds / 60);
                 seconds = Math.Round(totalSeconds % 60);
                 CheckTimer();
                 CheckScore();
+            }
+              
         }
 
         private void CheckTimer()
         {
+
             if(totalSeconds <= 0)
             {
+                    gameStarted = false;
                 EventDispatcher.Raise(new EventData(EventCategoryType.SceneManager,
                 EventActionType.OnLose, new object[] { AppData.END_MENU_SCENE_NAME}));
 
@@ -210,7 +216,7 @@ namespace App.Managers
 
         private void UpdateScoreText()
         {
-            if(startMove)
+            if(gameStarted)
             {
                 System.Diagnostics.Debug.WriteLine("HERE");
                 currentScore++;
@@ -255,7 +261,7 @@ namespace App.Managers
 
         private void StartOfLevel()
         {
-            startMove = false;
+            gameStarted = false;
             ResetLevel();
 
 
@@ -306,7 +312,7 @@ namespace App.Managers
             EventDispatcher.Raise(new EventData(EventCategoryType.RenderUIGameObjects,
             EventActionType.UITextIsDrawn));
 
-            startMove = true;
+            gameStarted = true;
         }
     
     }
